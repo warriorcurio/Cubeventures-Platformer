@@ -1,0 +1,10 @@
+OBJS = src/*.cpp
+CC = g++
+INCLUDE_PATHS = -I include
+LIBRARY_PATHS = -L lib
+COMPILER_FLAGS = -Wall -O3 -static-libgcc -static-libstdc++
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
+OBJ_NAME = bin/cube
+
+all : $(OBJS)
+	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME) -s
