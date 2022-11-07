@@ -3,6 +3,14 @@
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
+const int SCREEN_WIDTH = 1920;
+const int SCREEN_HEIGHT = 1080;
+
+void (*update)();
+void (*render)();
+
+LTexture bg;
+
 bool init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -28,25 +36,13 @@ bool init()
         printf("SDL_image couldn't init: %s\n", IMG_GetError());
         return false;
     }
+    update = &mainMenuUpdate;
+    render = &mainMenuRender;
     return true;
 }
 
 bool loadMedia()
 {
+    bg.loadFromFile("./res/bg.png");
     return true;
-}
-
-void update()
-{
-
-}
-
-void render()
-{
-    SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0xFF, 0xFF);
-    SDL_RenderClear(gRenderer);
-    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-    SDL_Rect rect = {5, 5, 15, 20};
-    SDL_RenderDrawRect(gRenderer, &rect);
-    SDL_RenderPresent(gRenderer);
 }
