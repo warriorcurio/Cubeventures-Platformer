@@ -6,6 +6,7 @@ SDL_Renderer* gRenderer = NULL;
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
+void (*handleEvent)(SDL_Event*);
 void (*update)();
 void (*render)();
 
@@ -20,7 +21,7 @@ bool init()
     if (!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
         printf("W: Linear texture filtering not enabled\n");
     }
-    gWindow = SDL_CreateWindow("test", 50, 50, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    gWindow = SDL_CreateWindow("test", 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
     if (gWindow == NULL) {
         printf("Window couldn't create: %s\n", SDL_GetError());
         return false;
@@ -36,6 +37,11 @@ bool init()
         printf("SDL_image couldn't init: %s\n", IMG_GetError());
         return false;
     }
+    if (TTF_Init() == -1) {
+        printf("SDL_ttf couldn't initialise: %s\n", TTF_GetError());
+        return false;
+    }
+    handleEvent = &mainMenuHandleEvent;
     update = &mainMenuUpdate;
     render = &mainMenuRender;
     return true;
@@ -43,6 +49,6 @@ bool init()
 
 bool loadMedia()
 {
-    bg.loadFromFile("./res/bg.png");
+    bg.loadFromFile("res/bg.png");
     return true;
 }

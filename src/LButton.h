@@ -11,11 +11,11 @@ enum ButtonFrames
 class LButton
 {
     public:
-        LButton(int x, int y, int w, int h, std::string label, void (*callback)());
+        LButton(int x, int y, int w, int h, std::string bgPath, std::string label, SDL_Color labelColour, void (*callback)());
         void handleEvent(SDL_Event* e);
         void render();
     private:
-        int mX, mY;
+        int mX, mY, mW, mH;
         LTexture mTexture;
         LTexture mLabelTexture;
         ButtonFrames mCurFrame;

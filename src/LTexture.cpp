@@ -1,5 +1,7 @@
 #include "LTexture.h"
 
+TTF_Font* gFont= NULL;
+
 LTexture::LTexture()
 {
     mTexture = NULL;
@@ -35,6 +37,31 @@ bool LTexture::loadFromFile(std::string path)
         SDL_FreeSurface(loadedSurface);
     }
     mTexture = newTexture;
+    return mTexture != NULL;
+}
+bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, std::string path, int size)
+{
+    free();
+    gFont = TTF_OpenFont(path.c_str(), size);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+    if(textSurface == NULL)
+    {
+        printf("Couldn't render text surface: %s\n", TTF_GetError());
+    }
+    else
+    {
+        mTexture = SDL_CreateTextureFromSurface(gRenderer, textSurface);
+        if(mTexture == NULL)
+        {
+            printf("Unable to create rendered text texture: %s\n", SDL_GetError());
+        }
+        else
+        {
+            mWidth = textSurface->w;
+            mHeight = textSurface->h;
+        }
+        SDL_FreeSurface(textSurface);
+    }
     return mTexture != NULL;
 }
 void LTexture::free()
