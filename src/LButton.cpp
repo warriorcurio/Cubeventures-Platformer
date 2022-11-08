@@ -32,12 +32,14 @@ void LButton::handleEvent(SDL_Event* e)
     switch(e->type)
     {
         case SDL_MOUSEMOTION:
+            if (mCurFrame == BUTTON_MOUSE_DOWN) break;
             mCurFrame = BUTTON_MOUSE_OVER;
             break;
         case SDL_MOUSEBUTTONDOWN:
             mCurFrame = BUTTON_MOUSE_DOWN;
             break;
         case SDL_MOUSEBUTTONUP:
+            if (mCurFrame != BUTTON_MOUSE_DOWN) break;
             mCurFrame = BUTTON_MOUSE_OVER;
             mCallback();
             break;

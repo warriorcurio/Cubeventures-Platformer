@@ -50,5 +50,6 @@ bool init()
 bool loadMedia()
 {
     bg.loadFromFile("res/bg.png");
+    button1 = new LButton(50, 50, 200, 36, "res/first.png", "Exit", gColour, &callback);
     return true;
 }

@@ -9,6 +9,7 @@
 
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
+extern bool quit;
 extern void (*handleEvent)(SDL_Event*);
 extern void (*update)();
 extern void (*render)();

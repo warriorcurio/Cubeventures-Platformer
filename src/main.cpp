@@ -2,6 +2,8 @@
 
 void runMainLoop();
 
+bool quit = false;
+
 int main(int argc, char* args[])
 {
     if (!init()) {
@@ -12,7 +14,6 @@ int main(int argc, char* args[])
         printf("Failed to load media\n");
         return 2;
     }
-    bool quit = false;
     SDL_Event e;
     while (!quit) {
         while (SDL_PollEvent(&e) != 0) {
