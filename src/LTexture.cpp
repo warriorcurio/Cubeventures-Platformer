@@ -64,6 +64,33 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
     }
     return mTexture != NULL;
 }
+bool LTexture::loadFromSVG(std::string svg)
+{
+    free();
+    SDL_RWops* rw = SDL_RWFromConstMem(svg.c_str(), svg.size());
+    SDL_Surface* loadedSurface = IMG_Load_RW(rw, 1);
+    SDL_Texture* newTexture = NULL;
+    if(loadedSurface == NULL)
+    {
+        printf("Unable to load svg. SDL Error: %s\n", SDL_GetError());
+    }
+    else
+    {
+        newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+        if(newTexture == NULL)
+        {
+            printf("Unable to create texture from svg. SDL Error: %s\n", SDL_GetError());
+        }
+        else
+        {
+            mWidth = loadedSurface->w;
+            mHeight = loadedSurface->h;
+        }
+        SDL_FreeSurface(loadedSurface);
+    }
+    mTexture = newTexture;
+    return mTexture != NULL;
+}
 void LTexture::free()
 {
     if(mTexture != NULL)

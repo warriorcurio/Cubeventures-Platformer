@@ -1,10 +1,13 @@
 #include "LMainMenu.h"
 
-SDL_Color gColour = {0xFF, 0xFF, 0xFF, 0xFF};
+SDL_Color gLabelColour = {0xFF, 0xFF, 0xFF, 0xFF};
+SDL_Color gBgColours[3] = {{0xFF, 0xFF, 0x00, 0xFF}, {0x00, 0xFF, 0xFF, 0xFF}, {0xFF, 0x00, 0x00, 0xFF}};
+
 LButton* button1;
 
 void callback() {
     quit = true;
+    printf("%d, %d, %d", gBgColours[0].r, gBgColours[0].g, gBgColours[0].b);
 }
 
 void mainMenuHandleEvent(SDL_Event* e)
