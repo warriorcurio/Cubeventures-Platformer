@@ -15,6 +15,16 @@ extern void (*handleEvent)(SDL_Event*);
 extern void (*update)();
 extern void (*render)();
 extern void (*close)();
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
+extern bool mainMenuLoadMedia();
+extern void mainMenuHandleEvent(SDL_Event*);
+extern void mainMenuUpdate();
+extern void mainMenuRender();
+extern void mainMenuClose();
+extern bool settingsLoadMedia();
+extern void settingsHandleEvent(SDL_Event*);
+extern void settingsUpdate();
+extern void settingsRender();
+extern void settingsClose();
+extern const int LOGICAL_SCREEN_WIDTH;
+extern const int LOGICAL_SCREEN_HEIGHT;
 #endif

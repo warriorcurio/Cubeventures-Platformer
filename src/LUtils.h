@@ -1,8 +1,10 @@
 #include "LSDL.h"
 #include "LMainMenu.h"
+#include "LSettings.h"
 
 enum Scene {
     SCENE_MAIN_MENU,
+    SCENE_SETTINGS,
     SCENE_TOTAL
 };
 

@@ -25,6 +25,10 @@ int main(int argc, char* args[])
         runMainLoop();
     }
     close();
+    SDL_DestroyWindow(gWindow);
+    SDL_DestroyRenderer(gRenderer);
+    gWindow = NULL;
+    gRenderer = NULL;
     return 0;
 }
 

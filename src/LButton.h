@@ -1,3 +1,5 @@
+#ifndef LBUTTON_H
+#define LBUTTON_H
 #include "LSDL.h"
 #include "LTexture.h"
 
@@ -22,3 +24,4 @@ class LButton
         ButtonFrames mCurFrame;
         void (*mCallback)();
 };
+#endif

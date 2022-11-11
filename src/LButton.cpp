@@ -24,12 +24,16 @@ void LButton::handleEvent(SDL_Event* e)
     }
     int x, y;
     SDL_GetMouseState(&x, &y);
+    int sW, sH;
+    SDL_GetWindowSize(gWindow, &sW, &sH);
+    int sX = x;
+    int sY = y;
     bool inside = true;
     (
-        x < mX ||
-        x > mX + mW ||
-        y < mY ||
-        y > mY + mH
+        sX < mX ||
+        sX > mX + mW ||
+        sY < mY ||
+        sY > mY + mH
     )?inside = false:true;
     if(!inside)
     {

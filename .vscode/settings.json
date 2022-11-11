@@ -2,6 +2,7 @@
     "files.associations": {
         "ios": "cpp",
         "xstring": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "new": "cpp"
     }
 }
