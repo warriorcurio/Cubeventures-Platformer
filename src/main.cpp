@@ -24,6 +24,7 @@ int main(int argc, char* args[])
         }
         runMainLoop();
     }
+    close();
     return 0;
 }
 

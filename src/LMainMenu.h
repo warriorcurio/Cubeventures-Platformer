@@ -2,9 +2,13 @@
 #include "LTexture.h"
 #include "LButton.h"
 
-extern LTexture bg;
+void newGameCall();
+void levelSelectCall();
+void settingsCall();
+void exitCall();
 
-void callback();
+bool mainMenuLoadMedia();
 void mainMenuHandleEvent(SDL_Event* e);
 void mainMenuUpdate();
 void mainMenuRender();
+void mainMenuClose();

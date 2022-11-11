@@ -6,9 +6,11 @@ SDL_Renderer* gRenderer = NULL;
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
+bool (*loadMedia)();
 void (*handleEvent)(SDL_Event*);
 void (*update)();
 void (*render)();
+void (*close)();
 
 LTexture bg;
 
@@ -41,15 +43,10 @@ bool init()
         printf("SDL_ttf couldn't initialise: %s\n", TTF_GetError());
         return false;
     }
+    loadMedia = &mainMenuLoadMedia;
     handleEvent = &mainMenuHandleEvent;
     update = &mainMenuUpdate;
     render = &mainMenuRender;
-    return true;
-}
-
-bool loadMedia()
-{
-    bg.loadFromFile("res/bg.png");
-    button1 = new LButton(50, 50, 26, gBgColours, "Exit", gLabelColour, &callback);
+    close = &mainMenuClose;
     return true;
 }

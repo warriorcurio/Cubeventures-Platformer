@@ -10,9 +10,11 @@
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern bool quit;
+extern bool (*loadMedia)();
 extern void (*handleEvent)(SDL_Event*);
 extern void (*update)();
 extern void (*render)();
+extern void (*close)();
 extern const int SCREEN_WIDTH;
 extern const int SCREEN_HEIGHT;
 #endif

@@ -23,7 +23,7 @@ bool LTexture::loadFromFile(std::string path)
     }
     else
     {
-        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0, 0xFF, 0xFF));
+        SDL_SetColorKey(loadedSurface, SDL_TRUE, SDL_MapRGB(loadedSurface->format, 0x00, 0xFF, 0xFF));
         newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
         if(newTexture == NULL)
         {
