@@ -1,12 +1,16 @@
 #include "LButton.h"
 
-LButton::LButton(int x, int y, int fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)())
+LButton::LButton(int x, int y, int fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w, int h)
 {
     mX = x;
     mY = y;
     mLabelTexture.loadFromRenderedText(label.c_str(), labelColour, "res/04b.TTF", fontSize);
     mW = mLabelTexture.getWidth() + 10;
     mH = mLabelTexture.getHeight() + 10;
+    if (w > 0) {
+        mW = w;
+        mH = h;
+    }
     mClickable = true;
     char svg[300];
     sprintf(svg, "<svg width='%d' height='%d'><rect y='0' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#3F3F3F' /></svg>", mW, mH*4, mW, mH, bgColours[0].c_str(), mH, mW, mH, bgColours[1].c_str(), mH*2, mW, mH, bgColours[2].c_str(), mH*3, mW, mH);

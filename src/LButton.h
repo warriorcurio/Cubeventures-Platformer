@@ -13,7 +13,7 @@ enum ButtonFrames
 class LButton
 {
     public:
-        LButton(int x, int y, int  fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)());
+        LButton(int x, int y, int  fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w = 0, int h = 0);
         ~LButton();
         void handleEvent(SDL_Event* e);
         void render();

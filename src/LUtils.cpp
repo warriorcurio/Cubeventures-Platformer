@@ -6,6 +6,24 @@ SDL_Renderer* gRenderer = NULL;
 const int LOGICAL_SCREEN_WIDTH = 1920;
 const int LOGICAL_SCREEN_HEIGHT = 1080;
 
+typedef void (*voidProcedure)();
+typedef bool (*boolProcedure)();
+typedef void (*handleEventProcedure)(SDL_Event*);
+
+voidProcedure voidScenes[SCENE_TOTAL * 3] = {
+    &mainMenuUpdate, &mainMenuRender, &mainMenuClose,
+    &settingsUpdate, &settingsRender, &settingsClose,
+    &levelSelectUpdate, &levelSelectRender, &levelSelectClose
+};
+
+boolProcedure boolScenes[SCENE_TOTAL] = {
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia
+};
+
+handleEventProcedure eventScenes[SCENE_TOTAL] = {
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent
+};
+
 bool (*loadMedia)();
 void (*handleEvent)(SDL_Event*);
 void (*update)();
@@ -14,6 +32,16 @@ void (*close)();
 
 LTexture bg;
 
+void transition(Scene scene)
+{
+    close();
+    loadMedia = boolScenes[scene];
+    loadMedia();
+    handleEvent = eventScenes[scene];
+    update = voidScenes[scene * 3];
+    render = voidScenes[1 + scene * 3];
+    close = voidScenes[2 + scene * 3];
+}
 bool init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {

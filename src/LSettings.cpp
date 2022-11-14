@@ -47,13 +47,7 @@ void resolutionCall()
 }
 void backCall()
 {
-    close();
-    loadMedia = &mainMenuLoadMedia;
-    loadMedia();
-    handleEvent = &mainMenuHandleEvent;
-    update = &mainMenuUpdate;
-    render = &mainMenuRender;
-    close = &mainMenuClose;
+    transition(SCENE_MAINMENU);
 }
 
 bool settingsLoadMedia()
@@ -82,7 +76,7 @@ bool settingsLoadMedia()
 void settingsHandleEvent(SDL_Event* e)
 {
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
-        settingsButtons[i]->handleEvent(e);
+        if (settingsButtons[i]) settingsButtons[i]->handleEvent(e);
     }
 }
 void settingsUpdate()
@@ -94,13 +88,13 @@ void settingsRender()
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
-        settingsButtons[i]->render();
+        if (settingsButtons[i]) settingsButtons[i]->render();
     }
     SDL_RenderPresent(gRenderer);
 }
 void settingsClose()
 {
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
-        delete settingsButtons[i];
+        if (settingsButtons[i]) delete settingsButtons[i];
     }
 }

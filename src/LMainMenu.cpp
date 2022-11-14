@@ -13,17 +13,11 @@ void newGameCall()
 }
 void levelSelectCall()
 {
-
+    transition(SCENE_LEVELSELECT);
 }
 void settingsCall()
 {
-    if (!settingsLoadMedia()) return;
-    close();
-    loadMedia = &settingsLoadMedia;
-    handleEvent = &settingsHandleEvent;
-    update = &settingsUpdate;
-    render = &settingsRender;
-    close = &settingsClose;
+    transition(SCENE_SETTINGS);
 }
 void exitCall()
 {
@@ -43,7 +37,7 @@ bool mainMenuLoadMedia()
 void mainMenuHandleEvent(SDL_Event* e)
 {
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
-        mainMenuButtons[i]->handleEvent(e);
+        if (mainMenuButtons[i]) mainMenuButtons[i]->handleEvent(e);
     }
 }
 void mainMenuUpdate()
@@ -57,14 +51,14 @@ void mainMenuRender()
     background.render(0, 0);
     logo.render(75, 230);
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
-        mainMenuButtons[i]->render();
+        if (mainMenuButtons[i]) mainMenuButtons[i]->render();
     }
     SDL_RenderPresent(gRenderer);
 }
 void mainMenuClose()
 {
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
-        delete mainMenuButtons[i];
+        if (mainMenuButtons[i]) delete mainMenuButtons[i];
     }
     background.free();
     logo.free();
