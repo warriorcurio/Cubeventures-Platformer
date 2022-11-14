@@ -1,10 +1,9 @@
 #include "LMainMenu.h"
 
-SDL_Color buttonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string buttonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
+SDL_Color mainMenuButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
+std::string mainMenuButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
-const int TOTAL_BUTTONS = 4;
-LButton* mainMenuButtons[TOTAL_BUTTONS];
+LButton* mainMenuButtons[MAINMENU_BUTTON_TOTAL];
 
 LTexture background, logo;
 
@@ -35,15 +34,15 @@ bool mainMenuLoadMedia()
 {
     if (!background.loadFromFile("res/bg.png")) return false;
     if (!logo.loadFromFile("res/logo.png")) return false;
-    mainMenuButtons[0] = new LButton(75, 545, 40, buttonBackgroundColours, "New Game", buttonTextColour, &newGameCall);
-    mainMenuButtons[1] = new LButton(75, 625, 40, buttonBackgroundColours, "Level Select", buttonTextColour, &levelSelectCall);
-    mainMenuButtons[2] = new LButton(75, 705, 40, buttonBackgroundColours, "Settings", buttonTextColour, &settingsCall);
-    mainMenuButtons[3] = new LButton(75, 785, 40, buttonBackgroundColours, "Exit", buttonTextColour, &exitCall);
+    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new LButton(75, 545, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &newGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new LButton(75, 625, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &levelSelectCall);
+    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new LButton(75, 705, 40, mainMenuButtonBackgroundColours, "Settings", mainMenuButtonTextColour, &settingsCall);
+    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new LButton(75, 785, 40, mainMenuButtonBackgroundColours, "Exit", mainMenuButtonTextColour, &exitCall);
     return true;
 }
 void mainMenuHandleEvent(SDL_Event* e)
 {
-    for (int i = 0; i < TOTAL_BUTTONS; i++) {
+    for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         mainMenuButtons[i]->handleEvent(e);
     }
 }
@@ -57,14 +56,14 @@ void mainMenuRender()
     SDL_RenderClear(gRenderer);
     background.render(0, 0);
     logo.render(75, 230);
-    for (int i = 0; i < TOTAL_BUTTONS; i++) {
+    for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         mainMenuButtons[i]->render();
     }
     SDL_RenderPresent(gRenderer);
 }
 void mainMenuClose()
 {
-    for (int i = 0; i < TOTAL_BUTTONS; i++) {
+    for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         delete mainMenuButtons[i];
     }
     background.free();

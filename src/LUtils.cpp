@@ -22,7 +22,7 @@ bool init()
     }
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
-    gWindow = SDL_CreateWindow("test", 0, 0, DM.w, DM.h, SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
+    gWindow = SDL_CreateWindow("Cubeventures", 0, (DM.h - (DM.w * 9/16)) / 2, DM.w, DM.w * 9/16, SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
     if (gWindow == NULL) {
         printf("Window couldn't create: %s\n", SDL_GetError());
         return false;

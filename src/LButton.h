@@ -17,8 +17,15 @@ class LButton
         ~LButton();
         void handleEvent(SDL_Event* e);
         void render();
+        void setPos(int x, int y);
+        void toggleClickable();
+        int getX();
+        int getY();
+        int getW();
+        int getH();
     private:
         int mX, mY, mW, mH;
+        bool mClickable;
         LTexture mTexture;
         LTexture mLabelTexture;
         ButtonFrames mCurFrame;
