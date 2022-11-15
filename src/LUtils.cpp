@@ -13,15 +13,16 @@ typedef void (*handleEventProcedure)(SDL_Event*);
 voidProcedure voidScenes[SCENE_TOTAL * 3] = {
     &mainMenuUpdate, &mainMenuRender, &mainMenuClose,
     &settingsUpdate, &settingsRender, &settingsClose,
-    &levelSelectUpdate, &levelSelectRender, &levelSelectClose
+    &levelSelectUpdate, &levelSelectRender, &levelSelectClose,
+    &saveSlotsUpdate, &saveSlotsRender, &saveSlotsClose
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
-    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &saveSlotsLoadMedia
 };
 
 handleEventProcedure eventScenes[SCENE_TOTAL] = {
-    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &saveSlotsHandleEvent
 };
 
 bool (*loadMedia)();
