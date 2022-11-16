@@ -3,6 +3,7 @@
         "ios": "cpp",
         "xstring": "cpp",
         "random": "cpp",
-        "new": "cpp"
+        "new": "cpp",
+        "vector": "cpp"
     }
 }

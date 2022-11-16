@@ -15,7 +15,6 @@ struct Resolution {
 
 void windowEditCall();
 void resolutionCall();
-void backCall();
 
 bool settingsLoadMedia();
 void settingsHandleEvent(SDL_Event* e);

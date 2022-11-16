@@ -9,14 +9,18 @@ LTexture background, logo;
 
 void newGameCall()
 {
-
+    backStack.push_back(SCENE_MAINMENU);
+    save.level = 1;
+    transition(SCENE_SAVESLOTS);
 }
 void levelSelectCall()
 {
+    backStack.push_back(SCENE_MAINMENU);
     transition(SCENE_LEVELSELECT);
 }
 void settingsCall()
 {
+    backStack.push_back(SCENE_MAINMENU);
     transition(SCENE_SETTINGS);
 }
 void exitCall()

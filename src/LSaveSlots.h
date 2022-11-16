@@ -19,7 +19,6 @@ void saveSlotsThreeCall();
 void saveSlotsDelOneCall();
 void saveSlotsDelTwoCall();
 void saveSlotsDelThreeCall();
-void saveSlotsBackCall();
 
 bool saveSlotsLoadMedia();
 void saveSlotsHandleEvent(SDL_Event* e);

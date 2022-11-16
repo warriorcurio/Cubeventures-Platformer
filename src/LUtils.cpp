@@ -31,8 +31,14 @@ void (*update)();
 void (*render)();
 void (*close)();
 
-LTexture bg;
+Save save;
+std::vector<Scene> backStack;
 
+void backCall()
+{
+    transition(backStack.back());
+    backStack.pop_back();
+}
 void transition(Scene scene)
 {
     close();

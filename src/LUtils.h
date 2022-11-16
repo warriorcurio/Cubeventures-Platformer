@@ -4,4 +4,6 @@
 #include "LLevelSelect.h"
 #include "LSaveSlots.h"
 
+void backCall();
+void transition(Scene scene);
 bool init();

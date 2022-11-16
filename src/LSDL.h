@@ -6,6 +6,7 @@
 #include <SDL_ttf.h>
 #include <stdio.h>
 #include <string>
+#include <vector>
 
 enum Scene {
     SCENE_MAINMENU,
@@ -15,9 +16,16 @@ enum Scene {
     SCENE_TOTAL
 };
 
+struct Save {
+    int level, x, y;
+};
+
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
+extern Save save;
+extern std::vector<Scene> backStack;
 extern bool quit;
+extern void backCall();
 extern void transition(Scene scene);
 extern bool (*loadMedia)();
 extern void (*handleEvent)(SDL_Event*);

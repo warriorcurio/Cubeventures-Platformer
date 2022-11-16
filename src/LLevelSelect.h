@@ -17,17 +17,16 @@ enum LevelSelectButtons {
     LEVELSELECT_BUTTON_TOTAL
 };
 
-void levelSelectOneCall();
-void levelSelectTwoCall();
-void levelSelectThreeCall();
-void levelSelectFourCall();
-void levelSelectFiveCall();
-void levelSelectSixCall();
-void levelSelectSevenCall();
-void levelSelectEightCall();
-void levelSelectNineCall();
-void levelSelectTenCall();
-void levelSelectBackCall();
+void levelSelectONECall();
+void levelSelectTWOCall();
+void levelSelectTHREECall();
+void levelSelectFOURCall();
+void levelSelectFIVECall();
+void levelSelectSIXCall();
+void levelSelectSEVENCall();
+void levelSelectEIGHTCall();
+void levelSelectNINECall();
+void levelSelectTENCall();
 
 bool levelSelectLoadMedia();
 void levelSelectHandleEvent(SDL_Event* e);
