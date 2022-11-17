@@ -3,6 +3,8 @@
 #include "Settings.h"
 #include "LevelSelect.h"
 #include "CreateSave.h"
+#include "DifficultySelect.h"
+#include "LoadSave.h"
 
 void backCall();
 void transition(Scene scene);

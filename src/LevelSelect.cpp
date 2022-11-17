@@ -13,7 +13,7 @@ LButton* levelSelectButtons[LEVELSELECT_BUTTON_TOTAL];
         save.x = 0;\
         save.y = 0;\
         save.health = 69;\
-        transition(SCENE_CREATESAVE);\
+        transition(SCENE_DIFFICULTYSELECT);\
     }
 GEN_LEVELSELECT_CALL(ONE);
 GEN_LEVELSELECT_CALL(TWO);

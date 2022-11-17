@@ -12,6 +12,7 @@ enum MainMenuButtons {
 };
 
 void newGameCall();
+void loadGameCall();
 void levelSelectCall();
 void settingsCall();
 void exitCall();

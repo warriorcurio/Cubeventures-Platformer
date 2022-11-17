@@ -28,7 +28,7 @@ GEN_CREATESAVE_CALL(THREE);
 bool createSaveLoadMedia()
 {
     saveBG.loadFromFile("res/saveslots.png");
-    textCreateSave.loadFromRenderedText("Create A Save", createSaveButtonTextColour, "res/04b.TTF", 40);
+    textCreateSave.loadFromRenderedText("Create Save", createSaveButtonTextColour, "res/04b.TTF", 40);
     createSaveButtons[CREATESAVE_BUTTON_BACK]  = new LButton(10, 1020, 40, createSaveButtonBackgroundColours, "Back", createSaveButtonTextColour, &backCall);
     createSaveButtons[CREATESAVE_BUTTON_ONE] = new LButton(402, 390, 60, createSaveButtonBackgroundColours, "1", createSaveButtonTextColour, &createSaveONECall, 300, 300);
     createSaveButtons[CREATESAVE_BUTTON_TWO] = new LButton(810, 390, 60, createSaveButtonBackgroundColours, "2", createSaveButtonTextColour, &createSaveTWOCall, 300, 300);
@@ -78,4 +78,5 @@ void createSaveClose()
         if (createSaveButtons[i]) delete createSaveButtons[i];
     }
     saveBG.free();
+    textCreateSave.free();
 }
