@@ -1,4 +1,4 @@
-#include "LMainMenu.h"
+#include "MainMenu.h"
 
 SDL_Color mainMenuButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string mainMenuButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
@@ -11,7 +11,7 @@ void newGameCall()
 {
     backStack.push_back(SCENE_MAINMENU);
     save.level = 1;
-    transition(SCENE_SAVESLOTS);
+    transition(SCENE_CREATESAVE);
 }
 void levelSelectCall()
 {
@@ -46,7 +46,7 @@ void mainMenuHandleEvent(SDL_Event* e)
 }
 void mainMenuUpdate()
 {
-
+    
 }
 void mainMenuRender()
 {

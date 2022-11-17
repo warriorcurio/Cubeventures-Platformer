@@ -18,7 +18,9 @@ class LButton
         void handleEvent(SDL_Event* e);
         void render();
         void setPos(int x, int y);
-        void toggleClickable();
+        void setBGFromPath(std::string path);
+        void setLabelFromPath(std::string path);
+        void setClickable(bool isClickable);
         int getX();
         int getY();
         int getW();

@@ -1,4 +1,4 @@
-#include "LSettings.h"
+#include "Settings.h"
 
 Resolution resolutions[5] = {{2560, 1440}, {1920, 1080}, {1600, 900}, {1280, 720}};
 int curRes = 4;
@@ -14,14 +14,12 @@ void windowEditCall()
     if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         SDL_SetWindowFullscreen(gWindow, 0);
         SDL_SetWindowBordered(gWindow, SDL_FALSE);
-        settingsButtons[SETTINGS_BUTTON_RESOLUTION]->toggleClickable();
         windowEditLabel = "Borderless";
     } else if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_BORDERLESS) {
         SDL_SetWindowBordered(gWindow, SDL_TRUE);
         windowEditLabel = "Bordered";
     } else {
         SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
-        settingsButtons[SETTINGS_BUTTON_RESOLUTION]->toggleClickable();
         windowEditLabel = "Fullscreen";
     }
     delete settingsButtons[SETTINGS_BUTTON_WINDOWEDIT];
@@ -56,7 +54,6 @@ bool settingsLoadMedia()
     sprintf(res, "%dx%d", resolutions[4].w, resolutions[4].h);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &resolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
-    if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) settingsButtons[SETTINGS_BUTTON_RESOLUTION]->toggleClickable();
     std::string windowEditLabel;
     if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
         windowEditLabel = "Fullscreen";
@@ -77,7 +74,7 @@ void settingsHandleEvent(SDL_Event* e)
 }
 void settingsUpdate()
 {
-
+    settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setClickable(!(SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP));
 }
 void settingsRender()
 {

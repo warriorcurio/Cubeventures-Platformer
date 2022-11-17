@@ -1,4 +1,4 @@
-#include "LLevelSelect.h"
+#include "LevelSelect.h"
 
 SDL_Color levelSelectButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string levelSelectButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
@@ -10,7 +10,10 @@ LButton* levelSelectButtons[LEVELSELECT_BUTTON_TOTAL];
     {\
         backStack.push_back(SCENE_LEVELSELECT);\
         save.level = (int)LEVELSELECT_BUTTON_##NUMBER;\
-        transition(SCENE_SAVESLOTS);\
+        save.x = 0;\
+        save.y = 0;\
+        save.health = 69;\
+        transition(SCENE_CREATESAVE);\
     }
 GEN_LEVELSELECT_CALL(ONE);
 GEN_LEVELSELECT_CALL(TWO);
@@ -46,7 +49,7 @@ void levelSelectHandleEvent(SDL_Event* e)
 }
 void levelSelectUpdate()
 {
-
+    
 }
 void levelSelectRender()
 {

@@ -14,15 +14,15 @@ voidProcedure voidScenes[SCENE_TOTAL * 3] = {
     &mainMenuUpdate, &mainMenuRender, &mainMenuClose,
     &settingsUpdate, &settingsRender, &settingsClose,
     &levelSelectUpdate, &levelSelectRender, &levelSelectClose,
-    &saveSlotsUpdate, &saveSlotsRender, &saveSlotsClose
+    &createSaveUpdate, &createSaveRender, &createSaveClose
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
-    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &saveSlotsLoadMedia
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia
 };
 
 handleEventProcedure eventScenes[SCENE_TOTAL] = {
-    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &saveSlotsHandleEvent
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent
 };
 
 bool (*loadMedia)();

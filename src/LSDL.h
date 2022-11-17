@@ -7,17 +7,21 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <filesystem>
 
 enum Scene {
     SCENE_MAINMENU,
     SCENE_SETTINGS,
     SCENE_LEVELSELECT,
-    SCENE_SAVESLOTS,
+    SCENE_CREATESAVE,
     SCENE_TOTAL
 };
 
 struct Save {
-    int level, x, y;
+    int slot, level, x, y, health;
 };
 
 extern SDL_Window* gWindow;

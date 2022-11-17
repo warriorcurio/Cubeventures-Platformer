@@ -1,8 +1,8 @@
 #include "LSDL.h"
-#include "LMainMenu.h"
-#include "LSettings.h"
-#include "LLevelSelect.h"
-#include "LSaveSlots.h"
+#include "MainMenu.h"
+#include "Settings.h"
+#include "LevelSelect.h"
+#include "CreateSave.h"
 
 void backCall();
 void transition(Scene scene);

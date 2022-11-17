@@ -76,9 +76,19 @@ void LButton::setPos(int x, int y)
     mX = x;
     mY = y;
 }
-void LButton::toggleClickable()
+void LButton::setBGFromPath(std::string path)
 {
-    mClickable = !mClickable;
+    mTexture.free();
+    mTexture.loadFromFile(path.c_str());
+}
+void LButton::setLabelFromPath(std::string path)
+{
+    mLabelTexture.free();
+    mLabelTexture.loadFromFile(path.c_str());
+}
+void LButton::setClickable(bool isClickable)
+{
+    mClickable = isClickable;
 }
 int LButton::getX()
 {
