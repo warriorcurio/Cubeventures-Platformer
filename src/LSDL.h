@@ -19,11 +19,22 @@ enum Scene {
     SCENE_CREATESAVE,
     SCENE_DIFFICULTYSELECT,
     SCENE_LOADSAVE,
+    SCENE_NAMESAVE,
     SCENE_TOTAL
 };
 
+enum Difficulty {
+    DIFFICULTY_EASY = 0,
+    DIFFICULTY_MEDIUM = 1,
+    DIFFICULTY_HARD = 2,
+    DIFFICULTY_EASY_HEALTH = 5,
+    DIFFICULTY_MEDIUM_HEALTH = 3,
+    DIFFICULTY_HARD_HEALTH = 1
+};
+
 struct Save {
-    int slot, level, x, y, health;
+    std::string name;
+    int slot, level, x, y, difficulty, curHealth;
 };
 
 extern SDL_Window* gWindow;

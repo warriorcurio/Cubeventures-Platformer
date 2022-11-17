@@ -33,9 +33,9 @@ bool createSaveLoadMedia()
     createSaveButtons[CREATESAVE_BUTTON_ONE] = new LButton(402, 390, 60, createSaveButtonBackgroundColours, "1", createSaveButtonTextColour, &createSaveONECall, 300, 300);
     createSaveButtons[CREATESAVE_BUTTON_TWO] = new LButton(810, 390, 60, createSaveButtonBackgroundColours, "2", createSaveButtonTextColour, &createSaveTWOCall, 300, 300);
     createSaveButtons[CREATESAVE_BUTTON_THREE] = new LButton(1218, 390, 60, createSaveButtonBackgroundColours, "3", createSaveButtonTextColour, &createSaveTHREECall, 300, 300);
-    createSaveButtons[CREATESAVE_BUTTON_DELONE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 20, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelONECall);
-    createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 20, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTWOCall);
-    createSaveButtons[CREATESAVE_BUTTON_DELTHREE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 20, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTHREECall);
+    createSaveButtons[CREATESAVE_BUTTON_DELONE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelONECall);
+    createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTWOCall);
+    createSaveButtons[CREATESAVE_BUTTON_DELTHREE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTHREECall);
     for (int i = CREATESAVE_BUTTON_DELONE; i <= CREATESAVE_BUTTON_DELTHREE; i++) {
         createSaveButtons[i]->setLabelFromPath("res/trash.png");
     }
@@ -55,7 +55,7 @@ void createSaveUpdate()
     }
     for (int i = CREATESAVE_BUTTON_DELONE; i <= CREATESAVE_BUTTON_DELTHREE; i++) {
         if (std::filesystem::exists(saveFileNames[i - 4].c_str())) {
-            createSaveButtons[i]->setPos(createSaveButtons[i - 3]->getX() - createSaveButtons[i]->getW() / 2, createSaveButtons[i - 3]->getY() + createSaveButtons[i - 3]->getH() - createSaveButtons[i]->getW() / 2);
+            createSaveButtons[i]->setPos(createSaveButtons[i - 3]->getX() + createSaveButtons[i - 3]->getW() - createSaveButtons[i]->getW() / 2, createSaveButtons[i - 3]->getY() + createSaveButtons[i - 3]->getH() - createSaveButtons[i]->getH() / 2);
         } else {
             createSaveButtons[i]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
         }

@@ -16,15 +16,16 @@ voidProcedure voidScenes[SCENE_TOTAL * 3] = {
     &levelSelectUpdate, &levelSelectRender, &levelSelectClose,
     &createSaveUpdate, &createSaveRender, &createSaveClose,
     &difficultySelectUpdate, &difficultySelectRender, &difficultySelectClose,
-    &loadSaveUpdate, &loadSaveRender, &loadSaveClose
+    &loadSaveUpdate, &loadSaveRender, &loadSaveClose,
+    &nameSaveUpdate, &nameSaveRender, &nameSaveClose
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
-    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia
 };
 
 handleEventProcedure eventScenes[SCENE_TOTAL] = {
-    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent
 };
 
 bool (*loadMedia)();

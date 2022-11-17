@@ -11,21 +11,24 @@ LTexture textdifficultySelect;
 void difficultySelectGeneralCall()
 {
     backStack.push_back(SCENE_DIFFICULTYSELECT);
-    transition(SCENE_CREATESAVE);
+    transition(SCENE_NAMESAVE);
 }
 void difficultySelectEasyCall()
 {
-    save.health = 5;
+    save.difficulty = DIFFICULTY_EASY;
+    save.curHealth = DIFFICULTY_EASY_HEALTH;
     difficultySelectGeneralCall();
 }
 void difficultySelectMediumCall()
 {
-    save.health = 3;
+    save.difficulty = DIFFICULTY_MEDIUM;
+    save.curHealth = DIFFICULTY_MEDIUM_HEALTH;
     difficultySelectGeneralCall();
 }
 void difficultySelectHardCall()
 {
-    save.health = 1;
+    save.difficulty = DIFFICULTY_HARD;
+    save.curHealth = DIFFICULTY_HARD_HEALTH;
     difficultySelectGeneralCall();
 }
 
