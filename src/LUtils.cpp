@@ -17,15 +17,16 @@ voidProcedure voidScenes[SCENE_TOTAL * 3] = {
     &createSaveUpdate, &createSaveRender, &createSaveClose,
     &difficultySelectUpdate, &difficultySelectRender, &difficultySelectClose,
     &loadSaveUpdate, &loadSaveRender, &loadSaveClose,
-    &nameSaveUpdate, &nameSaveRender, &nameSaveClose
+    &nameSaveUpdate, &nameSaveRender, &nameSaveClose,
+    &gameUpdate, &gameRender, &gameClose
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
-    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia, &gameLoadMedia
 };
 
 handleEventProcedure eventScenes[SCENE_TOTAL] = {
-    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent, &gameHandleEvent
 };
 
 bool (*loadMedia)();
@@ -44,9 +45,9 @@ void backCall()
 }
 void transition(Scene scene)
 {
+    if (!boolScenes[scene]()) return;
     close();
     loadMedia = boolScenes[scene];
-    loadMedia();
     handleEvent = eventScenes[scene];
     update = voidScenes[scene * 3];
     render = voidScenes[1 + scene * 3];

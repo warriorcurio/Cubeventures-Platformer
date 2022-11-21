@@ -1,6 +1,6 @@
 #include "LTexture.h"
 
-TTF_Font* gFont= NULL;
+TTF_Font* font= NULL;
 
 LTexture::LTexture()
 {
@@ -42,8 +42,8 @@ bool LTexture::loadFromFile(std::string path)
 bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, std::string path, int size)
 {
     free();
-    gFont = TTF_OpenFont(path.c_str(), size);
-    SDL_Surface* textSurface = TTF_RenderText_Solid(gFont, textureText.c_str(), textColor);
+    font = TTF_OpenFont(path.c_str(), size);
+    SDL_Surface* textSurface = TTF_RenderText_Solid(font, textureText.c_str(), textColor);
     if(textSurface == NULL)
     {
         printf("Couldn't render text surface: %s\n", TTF_GetError());

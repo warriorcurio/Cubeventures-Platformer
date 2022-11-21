@@ -6,6 +6,7 @@
 #include "DifficultySelect.h"
 #include "LoadSave.h"
 #include "NameSave.h"
+#include "Game.h"
 
 void backCall();
 void transition(Scene scene);

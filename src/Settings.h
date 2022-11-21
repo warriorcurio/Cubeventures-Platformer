@@ -9,10 +9,6 @@ enum SettingsButtons {
     SETTINGS_BUTTON_TOTAL
 };
 
-struct Resolution {
-    int w, h;
-};
-
 void windowEditCall();
 void resolutionCall();
 

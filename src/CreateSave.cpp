@@ -12,10 +12,10 @@ LTexture textCreateSave;
 #define GEN_CREATESAVE_CALL(NUMBER)\
     void createSave##NUMBER##Call()\
     {\
-        save.slot = CREATESAVE_BUTTON_##NUMBER;\
-        std::ofstream writingStream("saves/save_"#NUMBER".bin", std::ios::out|std::ios::binary);\
-        writingStream.write((char*)&save, sizeof(Save));\
-        writingStream.close();\
+        SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
+        SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\
+        SDL_RWclose(writeFile);\
+        transition(SCENE_GAME);\
     }\
     void createSaveDel##NUMBER##Call()\
     {\

@@ -12,9 +12,10 @@ LTexture textloadSave;
 #define GEN_LOADSAVE_CALL(NUMBER)\
     void loadSave##NUMBER##Call()\
     {\
-        std::ifstream readingStream("saves/save_"#NUMBER".bin", std::ios::in|std::ios::binary);\
-        readingStream.read((char*)&save, sizeof(Save));\
-        readingStream.close();\
+        SDL_RWops* readFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "rb");\
+        SDL_RWread(readFile, &save, sizeof(Save), 1);\
+        SDL_RWclose(readFile);\
+        transition(SCENE_GAME);\
     }\
     void loadSaveDel##NUMBER##Call()\
     {\

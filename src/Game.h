@@ -1,6 +1,7 @@
 #include "LSDL.h"
 #include "LTexture.h"
 #include "LButton.h"
+#include "LPlayer.h"
 
 enum GameButtons {
     GAME_BUTTON_ITEM,

@@ -20,7 +20,31 @@ enum Scene {
     SCENE_DIFFICULTYSELECT,
     SCENE_LOADSAVE,
     SCENE_NAMESAVE,
+    SCENE_GAME,
     SCENE_TOTAL
+};
+
+enum Levels {
+    LEVEL_ONE,
+    LEVEL_TWO,
+    LEVEL_THREE,
+    LEVEL_FOUR,
+    LEVEL_FIVE,
+    LEVEL_SIX,
+    LEVEL_EIGHT,
+    LEVEL_NINE,
+    LEVEL_TEN,
+    LEVEL_TOTAL
+};
+
+enum Tiles {
+    TILE_EMPTY,
+    TILE_GREEN,
+    TILE_TOTAL
+};
+
+struct Resolution {
+    int w, h;
 };
 
 enum Difficulty {
@@ -34,21 +58,25 @@ enum Difficulty {
 
 struct Save {
     std::string name;
-    int slot, level, x, y, difficulty, curHealth;
+    int level, x, y, difficulty, curHealth;
 };
 
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern Save save;
 extern std::vector<Scene> backStack;
+extern Resolution levelDimensions[LEVEL_TOTAL];
+extern SDL_Rect tileClips[TILE_TOTAL];
 extern bool quit;
 extern void backCall();
 extern void transition(Scene scene);
+extern bool checkCollision(SDL_Rect a, SDL_Rect b);
 extern bool (*loadMedia)();
 extern void (*handleEvent)(SDL_Event*);
 extern void (*update)();
 extern void (*render)();
 extern void (*close)();
+extern int tileCount;
 extern const int LOGICAL_SCREEN_WIDTH;
 extern const int LOGICAL_SCREEN_HEIGHT;
 #endif
