@@ -4,6 +4,13 @@
 #include "LTexture.h"
 #include "LTile.h"
 
+enum Forms {
+    FORMS_RED,
+    FORMS_GREEN,
+    FORMS_BLUE,
+    FORMS_TOTAL
+};
+
 class LPlayer
 {
     public:
@@ -26,6 +33,8 @@ class LPlayer
         SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<LTile*>& tiles);
         LTexture mTexture;
         SDL_Rect mCollisionBox;
+        int mForm;
+        bool mIsClimbing;
         int mPlayerVel, mVelX, mVelY;
         int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining;
 };

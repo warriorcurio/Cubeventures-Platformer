@@ -4,13 +4,16 @@ LPlayer::LPlayer(int x, int y)
 {
     mTexture.loadFromFile("res/player.png");
     mCollisionBox = {x, y, PLAYER_WIDTH, PLAYER_HEIGHT};
-    mPlayerVel = 300;
+    mPlayerVel = 450;
     mVelX = 0;
     mVelY = 0;
     mGravity = 1680;
     mJumpVelMax = 840;
     mJumpVelMin = 380;
     mJumpsRemaining = 1;
+    mForm = FORMS_RED;
+    mTexture.setColor(0xFF, 0x00, 0x00);
+    mIsClimbing = false;
 }
 LPlayer::~LPlayer()
 {
@@ -20,14 +23,59 @@ void LPlayer::handleEvent(SDL_Event* e)
 {
     if (e->type == SDL_KEYDOWN && e->key.repeat == 0) {
         switch (e->key.keysym.sym) {
-            case SDLK_w: if (mJumpsRemaining > 0) {mVelY = -mJumpVelMax; mJumpsRemaining--;} break;
+            case SDLK_w: 
+                if (mIsClimbing) {
+                    mVelY -= mPlayerVel;
+                } else if (mJumpsRemaining > 0) {
+                    mVelY = -mJumpVelMax; mJumpsRemaining--;
+                } break;
+            case SDLK_s: if (mIsClimbing) mVelY += mPlayerVel; break;
             case SDLK_a: mVelX -= mPlayerVel; break;
             case SDLK_d: mVelX += mPlayerVel; break;
+            case SDLK_p:
+                int modifiedVel = 0;
+                mForm = (mForm + 1) % FORMS_TOTAL;
+                if (mVelX == mPlayerVel || mVelX == -mPlayerVel) {
+                    modifiedVel = mVelX == mPlayerVel ? 1 : -1;
+                    mVelX = 0;
+                }
+                switch (mForm) {
+                    case FORMS_RED:
+                        mIsClimbing = false;
+                        mTexture.setColor(0xFF, 0x00, 0x00);
+                        mPlayerVel = 450;
+                        mGravity = 1680;
+                        mJumpVelMax = 840;
+                        mJumpVelMin = 380;
+                        break;
+                    case FORMS_GREEN:
+                        mTexture.setColor(0x00, 0xFF, 0x00);
+                        mPlayerVel = 300;
+                        mGravity = 2520;
+                        mJumpVelMax = 1260;
+                        mJumpVelMin = 570;
+                        break;
+                    case FORMS_BLUE:
+                        mTexture.setColor(0x00, 0x00, 0xFF);
+                        mPlayerVel = 225;
+                        mGravity = 1260;
+                        mJumpVelMax = 630;
+                        mJumpVelMin = 285;
+                        break;
+                }
+                mVelX = mPlayerVel * modifiedVel;
+                break;
         }
     } else if(e->type == SDL_KEYUP && e->key.repeat == 0) {
         switch(e->key.keysym.sym)
         {
-            case SDLK_w: if (mVelY < -mJumpVelMin) mVelY = -mJumpVelMin; break;
+            case SDLK_w: if (mIsClimbing) {
+                    mVelY = 0;
+                } else if (mVelY < -mJumpVelMin) {
+                    mVelY = -mJumpVelMin;
+                }
+                break;
+            case SDLK_s: if (mIsClimbing) mVelY = 0; break;
             case SDLK_a: mVelX += mPlayerVel; break;
             case SDLK_d: mVelX -= mPlayerVel; break;
         }
@@ -39,7 +87,13 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
     mCollisionBox.x += mVelX * timeStep;
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
     else if(mCollisionBox.x > levelDimensions[save.level - 1].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level - 1].w - PLAYER_WIDTH;
-    mVelY += mGravity * timeStep;
+    if (!mIsClimbing && mForm == FORMS_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) {
+        mIsClimbing = true;
+        mVelY = 0;
+    } else if (!(mForm == FORMS_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) ){
+        mIsClimbing = false;
+        mVelY += mGravity * timeStep;
+    }
     mCollisionBox.y += mVelY * timeStep;
     if (mVelY > 6 * mGravity) mVelY = 6 * mGravity;
     if(mCollisionBox.y < 0) mCollisionBox.y = 0;
@@ -55,6 +109,7 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         mJumpsRemaining = 1;
     }
     if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
+
 }
 void LPlayer::setCamera(SDL_Rect& camera)
 {
