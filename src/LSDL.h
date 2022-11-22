@@ -38,9 +38,21 @@ enum Levels {
 };
 
 enum Tiles {
+    TILE_WHITECRYSTAL,
+    TILE_REDCRYSTAL,
+    TILE_GREENCRYSTAL,
+    TILE_BLUECRYSTAL,
     TILE_EMPTY,
     TILE_GREEN,
     TILE_TOTAL
+};
+
+enum Forms {
+    FORM_WHITE,
+    FORM_RED,
+    FORM_GREEN,
+    FORM_BLUE,
+    FORMS_TOTAL
 };
 
 struct Resolution {
@@ -58,7 +70,7 @@ enum Difficulty {
 
 struct Save {
     std::string name;
-    int level, x, y, difficulty, curHealth;
+    int level, x, y, form, difficulty, curHealth;
 };
 
 extern SDL_Window* gWindow;

@@ -11,7 +11,7 @@ Uint32 timeTicks;
 
 int tileCount;
 std::vector<LTile*> tiles;
-SDL_Rect tileClips[TILE_TOTAL] = {{0, 0, 40, 40}, {40, 0, 40, 40}};
+SDL_Rect tileClips[TILE_TOTAL];
 LTexture tileTexture;
 
 LPlayer* player;
@@ -30,11 +30,11 @@ bool setTiles()
 {
     int x = 0, y = 0;
     std::ifstream map("res/level.map");
-    if(map.fail()) {
+    if (map.fail()) {
         printf("Unable to load map\n");
         return false;
     }
-    for(int i = 0; i < tileCount; i++) {
+    for (int i = 0; i < tileCount; i++) {
         int tileType = -1;
         map >> tileType;
         if(map.fail()) {
@@ -53,13 +53,22 @@ bool setTiles()
             y += LTile::TILE_HEIGHT;
         }
     }
+    x = 0, y = 0;
+    for (int i = 0; i < TILE_TOTAL; i++) {
+        tileClips[i] = {x, y, LTile::TILE_WIDTH, LTile::TILE_HEIGHT};
+        x += LTile::TILE_WIDTH;
+        if(x >= tileTexture.getWidth()) {
+            x = 0;
+            y += LTile::TILE_HEIGHT;
+        }
+    }
     map.close();
     return true;
 }
 
 bool gameLoadMedia()
 {
-    player = new LPlayer(save.x, save.y);
+    player = new LPlayer(save.x, save.y, save.form);
     tileTexture.loadFromFile("res/tiles.png");
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();
@@ -78,6 +87,7 @@ void gameUpdate()
     player->move(tiles, timeStep);
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
+    player->checkItemCollisions(tiles);
 }
 void gameRender()
 {

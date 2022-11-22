@@ -101,7 +101,7 @@ void LTexture::free()
         mHeight = 0;
     }
 }
-void LTexture::setColor(Uint8 r, Uint8 g, Uint8 b)
+void LTexture::setColour(Uint8 r, Uint8 g, Uint8 b)
 {
     SDL_SetTextureColorMod(mTexture, r, g, b);
 }

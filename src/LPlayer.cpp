@@ -1,18 +1,14 @@
 #include "LPlayer.h"
 
-LPlayer::LPlayer(int x, int y)
+LPlayer::LPlayer(int x, int y, int form)
 {
     mTexture.loadFromFile("res/player.png");
     mCollisionBox = {x, y, PLAYER_WIDTH, PLAYER_HEIGHT};
-    mPlayerVel = 450;
+    mPlayerVel = -1;
     mVelX = 0;
     mVelY = 0;
-    mGravity = 1680;
-    mJumpVelMax = 840;
-    mJumpVelMin = 380;
     mJumpsRemaining = 1;
-    mForm = FORMS_RED;
-    mTexture.setColor(0xFF, 0x00, 0x00);
+    setForm(form);
     mIsClimbing = false;
 }
 LPlayer::~LPlayer()
@@ -33,37 +29,7 @@ void LPlayer::handleEvent(SDL_Event* e)
             case SDLK_a: mVelX -= mPlayerVel; break;
             case SDLK_d: mVelX += mPlayerVel; break;
             case SDLK_p:
-                int modifiedVel = 0;
-                mForm = (mForm + 1) % FORMS_TOTAL;
-                if (mVelX == mPlayerVel || mVelX == -mPlayerVel) {
-                    modifiedVel = mVelX == mPlayerVel ? 1 : -1;
-                    mVelX = 0;
-                }
-                switch (mForm) {
-                    case FORMS_RED:
-                        mIsClimbing = false;
-                        mTexture.setColor(0xFF, 0x00, 0x00);
-                        mPlayerVel = 450;
-                        mGravity = 1680;
-                        mJumpVelMax = 840;
-                        mJumpVelMin = 380;
-                        break;
-                    case FORMS_GREEN:
-                        mTexture.setColor(0x00, 0xFF, 0x00);
-                        mPlayerVel = 300;
-                        mGravity = 2520;
-                        mJumpVelMax = 1260;
-                        mJumpVelMin = 570;
-                        break;
-                    case FORMS_BLUE:
-                        mTexture.setColor(0x00, 0x00, 0xFF);
-                        mPlayerVel = 225;
-                        mGravity = 1260;
-                        mJumpVelMax = 630;
-                        mJumpVelMin = 285;
-                        break;
-                }
-                mVelX = mPlayerVel * modifiedVel;
+                setForm((mForm + 1) % FORMS_TOTAL);
                 break;
         }
     } else if(e->type == SDL_KEYUP && e->key.repeat == 0) {
@@ -87,10 +53,10 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
     mCollisionBox.x += mVelX * timeStep;
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
     else if(mCollisionBox.x > levelDimensions[save.level - 1].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level - 1].w - PLAYER_WIDTH;
-    if (!mIsClimbing && mForm == FORMS_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) {
+    if (!mIsClimbing && mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) {
         mIsClimbing = true;
         mVelY = 0;
-    } else if (!(mForm == FORMS_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) ){
+    } else if (!(mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) ){
         mIsClimbing = false;
         mVelY += mGravity * timeStep;
     }
@@ -125,6 +91,56 @@ void LPlayer::setCamera(SDL_Rect& camera)
         camera.x = levelDimensions[save.level - 1].w - camera.w;
     if(camera.y > levelDimensions[save.level - 1].h - camera.h)
         camera.y = levelDimensions[save.level - 1].h - camera.h;
+}
+void LPlayer::checkItemCollisions(std::vector<LTile*>& tiles)
+{
+    for(int i = 0; i < tileCount; i++)
+    {
+        if(tiles[i]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[i]->getBox()))
+        {
+            tiles[i]->collisionEvent();
+        }
+    }
+}
+void LPlayer::setForm(int form)
+{
+    int modifiedVel = 0;
+    if (mVelX == mPlayerVel || mVelX == -mPlayerVel) {
+        modifiedVel = mVelX == mPlayerVel ? 1 : -1;
+        mVelX = 0;
+    }
+    mForm = form;
+    switch (form) {
+        case FORM_WHITE:
+            mTexture.setColour(0xFF, 0xFF, 0xFF);
+            mPlayerVel = 300;
+            mGravity = 1680;
+            mJumpVelMax = 840;
+            mJumpVelMin = 380;
+            break;
+        case FORM_RED:
+            mTexture.setColour(0xFF, 0x00, 0x00);
+            mPlayerVel = 450;
+            mGravity = 1680;
+            mJumpVelMax = 840;
+            mJumpVelMin = 380;
+            break;
+        case FORM_GREEN:
+            mTexture.setColour(0x00, 0xFF, 0x00);
+            mPlayerVel = 300;
+            mGravity = 2520;
+            mJumpVelMax = 1260;
+            mJumpVelMin = 570;
+            break;
+        case FORM_BLUE:
+            mTexture.setColour(0x00, 0x00, 0xFF);
+            mPlayerVel = 225;
+            mGravity = 1260;
+            mJumpVelMax = 630;
+            mJumpVelMin = 285;
+            break;
+    }
+    mVelX = mPlayerVel * modifiedVel;
 }
 void LPlayer::render(SDL_Rect& camera)
 {

@@ -4,23 +4,18 @@
 #include "LTexture.h"
 #include "LTile.h"
 
-enum Forms {
-    FORMS_RED,
-    FORMS_GREEN,
-    FORMS_BLUE,
-    FORMS_TOTAL
-};
-
 class LPlayer
 {
     public:
         static const int PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
 
-        LPlayer(int x, int y);
+        LPlayer(int x, int y, int form);
         ~LPlayer();
         void handleEvent(SDL_Event* e);
         void move(std::vector<LTile*>& tiles, float timeStep);
         void setCamera(SDL_Rect& camera);
+        void checkItemCollisions(std::vector<LTile*>& tiles);
+        void setForm(int form);
         void render(SDL_Rect& camera);
         int getPosX();
         int getPosY();
