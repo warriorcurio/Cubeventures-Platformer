@@ -12,6 +12,7 @@ LTexture textCreateSave;
 #define GEN_CREATESAVE_CALL(NUMBER)\
     void createSave##NUMBER##Call()\
     {\
+        save.slot = #NUMBER;\
         SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
         SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\
         SDL_RWclose(writeFile);\

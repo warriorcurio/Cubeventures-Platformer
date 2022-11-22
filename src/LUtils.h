@@ -7,6 +7,7 @@
 #include "LoadSave.h"
 #include "NameSave.h"
 #include "Game.h"
+#include "Pause.h"
 
 void backCall();
 void transition(Scene scene);

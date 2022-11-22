@@ -76,6 +76,9 @@ bool gameLoadMedia()
 }
 void gameHandleEvent(SDL_Event* e)
 {
+    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
+        transition(SCENE_PAUSE);
+    }
     for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
         if (gameButtons[i]) gameButtons[i]->handleEvent(e);
     }

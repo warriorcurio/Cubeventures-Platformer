@@ -21,6 +21,7 @@ enum Scene {
     SCENE_LOADSAVE,
     SCENE_NAMESAVE,
     SCENE_GAME,
+    SCENE_PAUSE,
     SCENE_TOTAL
 };
 
@@ -69,7 +70,7 @@ enum Difficulty {
 };
 
 struct Save {
-    std::string name;
+    std::string name, slot;
     int level, x, y, form, difficulty, curHealth;
 };
 

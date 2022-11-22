@@ -18,15 +18,16 @@ voidProcedure voidScenes[SCENE_TOTAL * 3] = {
     &difficultySelectUpdate, &difficultySelectRender, &difficultySelectClose,
     &loadSaveUpdate, &loadSaveRender, &loadSaveClose,
     &nameSaveUpdate, &nameSaveRender, &nameSaveClose,
-    &gameUpdate, &gameRender, &gameClose
+    &gameUpdate, &gameRender, &gameClose,
+    &pauseUpdate, &pauseRender, &pauseClose
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
-    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia, &gameLoadMedia
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia, &gameLoadMedia, &pauseLoadMedia
 };
 
 handleEventProcedure eventScenes[SCENE_TOTAL] = {
-    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent, &gameHandleEvent
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent, &gameHandleEvent, &pauseHandleEvent
 };
 
 bool (*loadMedia)();
@@ -45,8 +46,8 @@ void backCall()
 }
 void transition(Scene scene)
 {
-    if (!boolScenes[scene]()) return;
-    close();
+    if ((backStack.back() != SCENE_PAUSE || scene != SCENE_GAME) && !boolScenes[scene]()) return;
+    if (scene != SCENE_PAUSE) close();
     loadMedia = boolScenes[scene];
     handleEvent = eventScenes[scene];
     update = voidScenes[scene * 3];

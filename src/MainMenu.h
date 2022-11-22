@@ -11,11 +11,11 @@ enum MainMenuButtons {
     MAINMENU_BUTTON_TOTAL
 };
 
-void newGameCall();
-void loadGameCall();
-void levelSelectCall();
-void settingsCall();
-void exitCall();
+void mainMenuNewGameCall();
+void mainMenuLoadGameCall();
+void mainMenuLevelSelectCall();
+void mainMenuSettingsCall();
+void mainMenuExitCall();
 
 bool mainMenuLoadMedia();
 void mainMenuHandleEvent(SDL_Event* e);

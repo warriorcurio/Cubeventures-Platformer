@@ -7,28 +7,28 @@ LButton* mainMenuButtons[MAINMENU_BUTTON_TOTAL];
 
 LTexture background, logo;
 
-void newGameCall()
+void mainMenuNewGameCall()
 {
     backStack.push_back(SCENE_MAINMENU);
     save.level = 1;
     transition(SCENE_DIFFICULTYSELECT);
 }
-void loadGameCall()
+void mainMenuLoadGameCall()
 {
     backStack.push_back(SCENE_MAINMENU);
     transition(SCENE_LOADSAVE);
 }
-void levelSelectCall()
+void mainMenuLevelSelectCall()
 {
     backStack.push_back(SCENE_MAINMENU);
     transition(SCENE_LEVELSELECT);
 }
-void settingsCall()
+void mainMenuSettingsCall()
 {
     backStack.push_back(SCENE_MAINMENU);
     transition(SCENE_SETTINGS);
 }
-void exitCall()
+void mainMenuExitCall()
 {
     quit = true;
 }
@@ -37,11 +37,11 @@ bool mainMenuLoadMedia()
 {
     if (!background.loadFromFile("res/bg.png")) return false;
     if (!logo.loadFromFile("res/logo.png")) return false;
-    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new LButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &newGameCall);
-    mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new LButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &loadGameCall);
-    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new LButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &levelSelectCall);
-    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new LButton(75, 740, 40, mainMenuButtonBackgroundColours, "Settings", mainMenuButtonTextColour, &settingsCall);
-    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new LButton(75, 820, 40, mainMenuButtonBackgroundColours, "Exit", mainMenuButtonTextColour, &exitCall);
+    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new LButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new LButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new LButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &mainMenuLevelSelectCall);
+    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new LButton(75, 740, 40, mainMenuButtonBackgroundColours, "Settings", mainMenuButtonTextColour, &mainMenuSettingsCall);
+    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new LButton(75, 820, 40, mainMenuButtonBackgroundColours, "Exit", mainMenuButtonTextColour, &mainMenuExitCall);
     return true;
 }
 void mainMenuHandleEvent(SDL_Event* e)
