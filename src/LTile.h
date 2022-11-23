@@ -11,12 +11,14 @@ class LTile
         static const int TILE_WIDTH = 40, TILE_HEIGHT = 40;
         LTile(int x, int y, int tileType);
         void collisionEvent();
+        void updateTimers(float timeStep);
         void render(SDL_Rect& camera);
         int getType();
         SDL_Rect getBox();
     private:
         SDL_Rect mCollisionBox;
         int mType;
+        float mActivationTime, mActivationCounter;
 };
 
 extern LPlayer* player;

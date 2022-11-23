@@ -89,13 +89,16 @@ void gameUpdate()
 {
     timeStep = (SDL_GetTicks() - timeTicks) / 1000.f;
     player->move(tiles, timeStep);
+    for (int i = 0; i < tileCount; i++) {
+        tiles[i]->updateTimers(timeStep);
+    }
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
     player->checkItemCollisions(tiles);
 }
 void gameRender()
 {
-    SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 0x27, 0xAF, 0xAF, 0xFF);
     SDL_RenderClear(gRenderer);
     for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
         if (gameButtons[i]) gameButtons[i]->render();

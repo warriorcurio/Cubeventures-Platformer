@@ -1,5 +1,8 @@
 #include "LPlayer.h"
 
+float coyoteTime = 0.1f;
+float coyoteCounter;
+
 LPlayer::LPlayer(int x, int y)
 {
     mTexture.loadFromFile("res/player.png");
@@ -77,9 +80,11 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         mIsOnGround = true;
         mJumpsRemaining = mMaxJumps;
     } else if (mIsOnGround) {
-        mIsOnGround = false;
-        if (mJumpsRemaining == mMaxJumps) {
-            mJumpsRemaining--;
+        coyoteCounter += timeStep;
+        if (coyoteCounter >= coyoteTime) {
+            coyoteCounter = 0;
+            mIsOnGround = false;
+            if (mJumpsRemaining == mMaxJumps) mJumpsRemaining--;
         }
     }
     if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
