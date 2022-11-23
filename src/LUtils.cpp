@@ -46,7 +46,7 @@ void backCall()
 }
 void transition(Scene scene)
 {
-    if ((backStack.back() != SCENE_PAUSE || scene != SCENE_GAME) && !boolScenes[scene]()) return;
+    if (!boolScenes[scene]()) return;
     if (scene != SCENE_PAUSE) close();
     loadMedia = boolScenes[scene];
     handleEvent = eventScenes[scene];

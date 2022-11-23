@@ -51,7 +51,7 @@ bool settingsLoadMedia()
     resolutions[4] = {DM.w, DM.w * 9/16};
     settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &backCall);
     char res[11];
-    sprintf(res, "%dx%d", resolutions[4].w, resolutions[4].h);
+    sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &resolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
     std::string windowEditLabel;
@@ -83,7 +83,6 @@ void settingsRender()
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
         if (settingsButtons[i]) settingsButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void settingsClose()
 {

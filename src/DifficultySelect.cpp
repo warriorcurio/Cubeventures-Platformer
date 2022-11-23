@@ -61,7 +61,6 @@ void difficultySelectRender()
     for (int i = 0; i < DIFFICULTYSELECT_BUTTON_TOTAL; i++) {
         if (difficultySelectButtons[i]) difficultySelectButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void difficultySelectClose()
 {

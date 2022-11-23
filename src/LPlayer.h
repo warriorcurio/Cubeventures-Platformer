@@ -9,7 +9,7 @@ class LPlayer
     public:
         static const int PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
 
-        LPlayer(int x, int y, int form);
+        LPlayer(int x, int y);
         ~LPlayer();
         void handleEvent(SDL_Event* e);
         void move(std::vector<LTile*>& tiles, float timeStep);
@@ -17,6 +17,7 @@ class LPlayer
         void checkItemCollisions(std::vector<LTile*>& tiles);
         void setForm(int form);
         void render(SDL_Rect& camera);
+        int getForm();
         int getPosX();
         int getPosY();
     private:
@@ -29,8 +30,8 @@ class LPlayer
         LTexture mTexture;
         SDL_Rect mCollisionBox;
         int mForm;
-        bool mIsClimbing;
+        bool mIsClimbing, mIsOnGround;
         int mPlayerVel, mVelX, mVelY;
-        int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining;
+        int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining, mMaxJumps;
 };
 #endif

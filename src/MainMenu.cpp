@@ -68,7 +68,6 @@ void mainMenuRender()
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void mainMenuClose()
 {

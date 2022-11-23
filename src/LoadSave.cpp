@@ -55,7 +55,7 @@ void loadSaveUpdate()
     }
     for (int i = LOADSAVE_BUTTON_DELONE; i <= LOADSAVE_BUTTON_DELTHREE; i++) {
         if (std::filesystem::exists(saveFileNames[i - 4].c_str())) {
-            loadSaveButtons[i]->setPos(loadSaveButtons[i - 3]->getX() + loadSaveButtons[i - 3]->getW() - loadSaveButtons[i]->getW() / 2, loadSaveButtons[i - 3]->getY() + loadSaveButtons[i - 3]->getH() - loadSaveButtons[i]->getH() / 2);
+            loadSaveButtons[i]->setPos(loadSaveButtons[i - 3]->getX() + (loadSaveButtons[i - 3]->getW() - loadSaveButtons[i]->getW()) / 2, loadSaveButtons[i - 3]->getY() + loadSaveButtons[i - 3]->getH() + 1);
         } else {
             loadSaveButtons[i]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
         }
@@ -70,7 +70,6 @@ void loadSaveRender()
     for (int i = 0; i < LOADSAVE_BUTTON_TOTAL; i++) {
         if (loadSaveButtons[i]) loadSaveButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void loadSaveClose()
 {

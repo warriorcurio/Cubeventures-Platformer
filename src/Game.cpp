@@ -68,7 +68,8 @@ bool setTiles()
 
 bool gameLoadMedia()
 {
-    player = new LPlayer(save.x, save.y, save.form);
+    timeTicks = SDL_GetTicks();
+    player = new LPlayer(save.x, save.y);
     tileTexture.loadFromFile("res/tiles.png");
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();
@@ -103,7 +104,6 @@ void gameRender()
         tiles[i]->render(camera);
     }
     player->render(camera);
-    SDL_RenderPresent(gRenderer);
 }
 void gameClose()
 {
@@ -113,4 +113,5 @@ void gameClose()
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i]) delete tiles[i];
     }
+    tiles.clear();
 }

@@ -36,4 +36,5 @@ void runMainLoop()
 {
     update();
     render();
+    SDL_RenderPresent(gRenderer);
 }

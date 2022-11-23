@@ -15,4 +15,6 @@ void gameHandleEvent(SDL_Event* e);
 void gameUpdate();
 void gameRender();
 void gameClose();
+
+extern Uint32 timeTicks;
 #endif

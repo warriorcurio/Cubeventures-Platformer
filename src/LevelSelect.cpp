@@ -66,7 +66,6 @@ void levelSelectRender()
     for (int i = 0; i < LEVELSELECT_BUTTON_TOTAL; i++) {
         if (levelSelectButtons[i]) levelSelectButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void levelSelectClose()
 {

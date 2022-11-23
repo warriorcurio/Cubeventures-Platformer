@@ -1,6 +1,6 @@
 #include "LPlayer.h"
 
-LPlayer::LPlayer(int x, int y, int form)
+LPlayer::LPlayer(int x, int y)
 {
     mTexture.loadFromFile("res/player.png");
     mCollisionBox = {x, y, PLAYER_WIDTH, PLAYER_HEIGHT};
@@ -8,8 +8,10 @@ LPlayer::LPlayer(int x, int y, int form)
     mVelX = 0;
     mVelY = 0;
     mJumpsRemaining = 1;
-    setForm(form);
+    mMaxJumps = save.maxJumps;
+    setForm(save.form);
     mIsClimbing = false;
+    mIsOnGround = false;
 }
 LPlayer::~LPlayer()
 {
@@ -72,7 +74,13 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
     }
     if (touchesGround(tiles)) {
         mVelY = 0;
-        mJumpsRemaining = 1;
+        mIsOnGround = true;
+        mJumpsRemaining = mMaxJumps;
+    } else if (mIsOnGround) {
+        mIsOnGround = false;
+        if (mJumpsRemaining == mMaxJumps) {
+            mJumpsRemaining--;
+        }
     }
     if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
 
@@ -145,6 +153,10 @@ void LPlayer::setForm(int form)
 void LPlayer::render(SDL_Rect& camera)
 {
     mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y);
+}
+int LPlayer::getForm()
+{
+    return (int)mForm;
 }
 int LPlayer::getPosX()
 {

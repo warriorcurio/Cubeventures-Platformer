@@ -13,6 +13,7 @@ LTexture textCreateSave;
     void createSave##NUMBER##Call()\
     {\
         save.slot = #NUMBER;\
+        save.maxJumps = save.level > 5 ? 2 : 1;\
         SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
         SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\
         SDL_RWclose(writeFile);\
@@ -56,7 +57,7 @@ void createSaveUpdate()
     }
     for (int i = CREATESAVE_BUTTON_DELONE; i <= CREATESAVE_BUTTON_DELTHREE; i++) {
         if (std::filesystem::exists(saveFileNames[i - 4].c_str())) {
-            createSaveButtons[i]->setPos(createSaveButtons[i - 3]->getX() + createSaveButtons[i - 3]->getW() - createSaveButtons[i]->getW() / 2, createSaveButtons[i - 3]->getY() + createSaveButtons[i - 3]->getH() - createSaveButtons[i]->getH() / 2);
+            createSaveButtons[i]->setPos(createSaveButtons[i - 3]->getX() + (createSaveButtons[i - 3]->getW() - createSaveButtons[i]->getW()) / 2, createSaveButtons[i - 3]->getY() + createSaveButtons[i - 3]->getH() + 1);
         } else {
             createSaveButtons[i]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
         }
@@ -71,7 +72,6 @@ void createSaveRender()
     for (int i = 0; i < CREATESAVE_BUTTON_TOTAL; i++) {
         if (createSaveButtons[i]) createSaveButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void createSaveClose()
 {

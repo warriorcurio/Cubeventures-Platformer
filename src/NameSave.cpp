@@ -56,7 +56,6 @@ void nameSaveRender()
     for (int i = 0; i < NAMESAVE_BUTTON_TOTAL; i++) {
         if (nameSaveButtons[i]) nameSaveButtons[i]->render();
     }
-    SDL_RenderPresent(gRenderer);
 }
 void nameSaveClose()
 {
