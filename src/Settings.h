@@ -9,8 +9,9 @@ enum SettingsButtons {
     SETTINGS_BUTTON_TOTAL
 };
 
-void windowEditCall();
-void resolutionCall();
+void settingsWindowEditCall();
+void settingsResolutionCall();
+void settingsSaveExitCall();
 
 bool settingsLoadMedia();
 void settingsHandleEvent(SDL_Event* e);

@@ -6,6 +6,8 @@ SDL_Renderer* gRenderer = NULL;
 const int LOGICAL_SCREEN_WIDTH = 1920;
 const int LOGICAL_SCREEN_HEIGHT = 1080;
 
+int maxLevel;
+
 typedef void (*voidProcedure)();
 typedef bool (*boolProcedure)();
 typedef void (*handleEventProcedure)(SDL_Event*);
@@ -63,7 +65,13 @@ bool init()
     }
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
-    gWindow = SDL_CreateWindow("Cubeventures", 0, (DM.h - (DM.w * 9/16)) / 2, DM.w, DM.w * 9/16, SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
+    resolutions[4] = {DM.w, DM.w * 9/16};
+    SDL_RWops* readFile = SDL_RWFromFile("saves/persistent.bin", "rb");
+    SDL_RWread (readFile, &curRes, sizeof(int), 1);
+    printf("%d", curRes);
+    SDL_RWread (readFile, &maxLevel, sizeof(int), 1);
+    SDL_RWclose (readFile);
+    gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
     if (gWindow == NULL) {
         printf("Window couldn't create: %s\n", SDL_GetError());
         return false;

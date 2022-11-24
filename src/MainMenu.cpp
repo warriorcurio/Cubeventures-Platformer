@@ -52,6 +52,13 @@ void mainMenuHandleEvent(SDL_Event* e)
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_SLASH && SDL_GetModState() & KMOD_CTRL) {
         save.level = 1;
         transition(SCENE_MAPEDITOR);
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_d && SDL_GetModState() & (KMOD_CTRL | KMOD_SHIFT)) {
+        curRes = 4;
+        maxLevel = 1;
+        SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
+        SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
+        SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
+        SDL_RWclose(writeFile);
     }
 }
 void mainMenuUpdate()

@@ -8,7 +8,7 @@ std::string settingsButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F
 
 LButton* settingsButtons[SETTINGS_BUTTON_TOTAL];
 
-void windowEditCall()
+void settingsWindowEditCall()
 {
     std::string windowEditLabel;
     if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
@@ -23,10 +23,10 @@ void windowEditCall()
         windowEditLabel = "Fullscreen";
     }
     delete settingsButtons[SETTINGS_BUTTON_WINDOWEDIT];
-    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &windowEditCall);
+    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
 }
-void resolutionCall()
+void settingsResolutionCall()
 {
     int tempRes = curRes;
     curRes = (curRes + 1) % 5;
@@ -40,19 +40,24 @@ void resolutionCall()
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
     delete settingsButtons[SETTINGS_BUTTON_RESOLUTION];
-    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &resolutionCall);
+    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
+}
+void settingsSaveExitCall()
+{
+    SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
+    SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
+    SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
+    SDL_RWclose(writeFile);
+    backCall();
 }
 
 bool settingsLoadMedia()
 {
-    SDL_DisplayMode DM;
-    SDL_GetCurrentDisplayMode(0, &DM);
-    resolutions[4] = {DM.w, DM.w * 9/16};
-    settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &backCall);
+    settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &settingsSaveExitCall);
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
-    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &resolutionCall);
+    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
     std::string windowEditLabel;
     if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
@@ -62,7 +67,7 @@ bool settingsLoadMedia()
     } else {
         windowEditLabel = "Bordered";
     }
-    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &windowEditCall);
+    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
     return true;
 }

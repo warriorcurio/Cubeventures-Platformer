@@ -16,6 +16,7 @@ Resolution editorLevelDimensions[LEVEL_TOTAL] = {
 SDL_Rect editorCamera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
 int editorTileCount;
+int dragType;
 std::vector<LTile*> editorTiles;
 
 bool editorSetTiles()
@@ -62,6 +63,7 @@ bool editorSetTiles()
 
 bool mapEditorLoadMedia()
 {
+    dragType = -1;
     tileTexture.loadFromFile("res/tiles.png");
     editorTileCount = (editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (editorLevelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     editorSetTiles();
@@ -95,18 +97,25 @@ void mapEditorHandleEvent(SDL_Event* e)
             case SDLK_d: editorCamera.x += 40; break;
         }
     }
-    if (e->type != SDL_MOUSEBUTTONUP) return;
-    int x, y;
-    SDL_GetMouseState(&x, &y);
-    float sX, sY;
-    SDL_RenderWindowToLogical(gRenderer, x, y, &sX, &sY);
-    sX += editorCamera.x;
-    sY += editorCamera.y;
-    int rowNum = (sY - (int)sY % LTile::TILE_HEIGHT) / LTile::TILE_HEIGHT;
-    int colNum = (sX - (int)sX % LTile::TILE_WIDTH) / LTile::TILE_WIDTH;
-    int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + colNum;
-    if (e->button.button == SDL_BUTTON_LEFT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() + 1) % TILE_TOTAL);
-    if (e->button.button == SDL_BUTTON_RIGHT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL);
+    if (e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONDOWN && e->type != SDL_MOUSEBUTTONUP) return;
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        float sX, sY;
+        SDL_RenderWindowToLogical(gRenderer, x, y, &sX, &sY);
+        sX += editorCamera.x;
+        sY += editorCamera.y;
+        int rowNum = (sY - (int)sY % LTile::TILE_HEIGHT) / LTile::TILE_HEIGHT;
+        int colNum = (sX - (int)sX % LTile::TILE_WIDTH) / LTile::TILE_WIDTH;
+        int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + colNum;
+    if (e->type == SDL_MOUSEBUTTONUP) {
+        dragType = -1;
+        if (e->button.button == SDL_BUTTON_LEFT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() + 1) % TILE_TOTAL);
+        if (e->button.button == SDL_BUTTON_RIGHT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL);
+    } else if (e->type == SDL_MOUSEMOTION && dragType != -1) {
+        editorTiles[tileNum]->setType(dragType);
+    } else if (e->type == SDL_MOUSEBUTTONDOWN) {
+        dragType = editorTiles[tileNum]->getType();
+    }
 }
 void mapEditorUpdate()
 {
@@ -117,7 +126,7 @@ void mapEditorUpdate()
 }
 void mapEditorRender()
 {
-    SDL_SetRenderDrawColor(gRenderer, 0x27, 0xAF, 0xAF, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 69, 69, 69, 0xFF);
     SDL_RenderClear(gRenderer);
     for (int i = 0; i < editorTileCount; i++) {
         editorTiles[i]->render(editorCamera);

@@ -121,7 +121,7 @@ void gameUpdate()
 }
 void gameRender()
 {
-    SDL_SetRenderDrawColor(gRenderer, 0x27, 0xAF, 0xAF, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 69, 69, 69, 0xFF);
     SDL_RenderClear(gRenderer);
     for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
         if (gameButtons[i]) gameButtons[i]->render();
