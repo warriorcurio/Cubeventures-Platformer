@@ -13,6 +13,7 @@ class LTile
         void collisionEvent();
         void updateTimers(float timeStep);
         void render(SDL_Rect& camera);
+        void setType(int type);
         int getType();
         SDL_Rect getBox();
     private:

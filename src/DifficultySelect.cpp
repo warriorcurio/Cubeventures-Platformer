@@ -17,18 +17,21 @@ void difficultySelectEasyCall()
 {
     save.difficulty = DIFFICULTY_EASY;
     save.curHealth = DIFFICULTY_EASY_HEALTH;
+    save.maxHealth = DIFFICULTY_EASY_HEALTH;
     difficultySelectGeneralCall();
 }
 void difficultySelectMediumCall()
 {
     save.difficulty = DIFFICULTY_MEDIUM;
     save.curHealth = DIFFICULTY_MEDIUM_HEALTH;
+    save.maxHealth = DIFFICULTY_MEDIUM_HEALTH;
     difficultySelectGeneralCall();
 }
 void difficultySelectHardCall()
 {
     save.difficulty = DIFFICULTY_HARD;
     save.curHealth = DIFFICULTY_HARD_HEALTH;
+    save.maxHealth = DIFFICULTY_HARD_HEALTH;
     difficultySelectGeneralCall();
 }
 

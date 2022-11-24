@@ -8,6 +8,7 @@
 #include "NameSave.h"
 #include "Game.h"
 #include "Pause.h"
+#include "MapEditor.h"
 
 void backCall();
 void transition(Scene scene);

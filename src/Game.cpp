@@ -1,6 +1,15 @@
 #include "Game.h"
 
 Resolution levelDimensions[LEVEL_TOTAL] = {
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
     {4000, 1080}
 };
 
@@ -29,7 +38,9 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
 bool setTiles()
 {
     int x = 0, y = 0;
-    std::ifstream map("res/level.map");
+    char* mapFile = (char*)calloc(18, sizeof(char));
+    sprintf(mapFile, "saves/maps/%d.map", save.level);
+    std::ifstream map(mapFile);
     if (map.fail()) {
         printf("Unable to load map\n");
         return false;
@@ -64,6 +75,18 @@ bool setTiles()
     }
     map.close();
     return true;
+}
+
+void nextLevel()
+{
+    for (int i = 0; i < tileCount; i++) {
+        if (tiles[i]) delete tiles[i];
+    }
+    tiles.clear();
+    save.level = save.level % LEVEL_TOTAL + 1;
+    timeTicks = SDL_GetTicks();
+    tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
+    setTiles();
 }
 
 bool gameLoadMedia()
@@ -117,4 +140,5 @@ void gameClose()
         if (tiles[i]) delete tiles[i];
     }
     tiles.clear();
+    delete player;
 }

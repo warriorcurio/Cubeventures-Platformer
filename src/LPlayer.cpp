@@ -38,8 +38,7 @@ void LPlayer::handleEvent(SDL_Event* e)
                 break;
         }
     } else if(e->type == SDL_KEYUP && e->key.repeat == 0) {
-        switch(e->key.keysym.sym)
-        {
+        switch(e->key.keysym.sym) {
             case SDLK_w: if (mIsClimbing) {
                     mVelY = 0;
                 } else if (mVelY < -mJumpVelMin) {
@@ -96,14 +95,10 @@ void LPlayer::setCamera(SDL_Rect& camera)
     camera.y = ((int)mCollisionBox.y + PLAYER_HEIGHT / 2) - LOGICAL_SCREEN_HEIGHT / 2;
     camera.w = LOGICAL_SCREEN_WIDTH;
     camera.h = LOGICAL_SCREEN_HEIGHT;
-    if(camera.x < 0)
-        camera.x = 0;
-    if(camera.y < 0)
-        camera.y = 0;
-    if(camera.x > levelDimensions[save.level - 1].w - camera.w)
-        camera.x = levelDimensions[save.level - 1].w - camera.w;
-    if(camera.y > levelDimensions[save.level - 1].h - camera.h)
-        camera.y = levelDimensions[save.level - 1].h - camera.h;
+    if(camera.x < 0) camera.x = 0;
+    if(camera.y < 0) camera.y = 0;
+    if(camera.x > levelDimensions[save.level - 1].w - camera.w) camera.x = levelDimensions[save.level - 1].w - camera.w;
+    if(camera.y > levelDimensions[save.level - 1].h - camera.h) camera.y = levelDimensions[save.level - 1].h - camera.h;
 }
 void LPlayer::checkItemCollisions(std::vector<LTile*>& tiles)
 {

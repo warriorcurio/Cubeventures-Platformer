@@ -49,6 +49,10 @@ void mainMenuHandleEvent(SDL_Event* e)
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->handleEvent(e);
     }
+    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_SLASH && SDL_GetModState() & KMOD_CTRL) {
+        save.level = 1;
+        transition(SCENE_MAPEDITOR);
+    }
 }
 void mainMenuUpdate()
 {

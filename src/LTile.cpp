@@ -1,5 +1,6 @@
 #include "LTile.h"
 #include "LPlayer.h"
+#include "Game.h"
 
 LTile::LTile(int x, int y, int tileType)
 {
@@ -34,6 +35,9 @@ void LTile::collisionEvent()
             mActivationTime = 2.f;
             player->setForm(FORM_BLUE);
             break;
+        case TILE_EXIT:
+            nextLevel();
+            break;
     }
 }
 void LTile::updateTimers(float timeStep)
@@ -56,6 +60,10 @@ void LTile::render(SDL_Rect& camera)
     {
         tileTexture.render(mCollisionBox.x - camera.x, mCollisionBox.y - camera.y, &tileClips[mType]);
     }
+}
+void LTile::setType(int type)
+{
+    mType = type;
 }
 int LTile::getType()
 {

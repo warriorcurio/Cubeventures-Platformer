@@ -22,6 +22,7 @@ enum Scene {
     SCENE_NAMESAVE,
     SCENE_GAME,
     SCENE_PAUSE,
+    SCENE_MAPEDITOR,
     SCENE_TOTAL
 };
 
@@ -32,6 +33,7 @@ enum Levels {
     LEVEL_FOUR,
     LEVEL_FIVE,
     LEVEL_SIX,
+    LEVEL_SEVEN,
     LEVEL_EIGHT,
     LEVEL_NINE,
     LEVEL_TEN,
@@ -47,6 +49,7 @@ enum Tiles {
     TILE_GREENCRYSTAL_D,
     TILE_BLUECRYSTAL,
     TILE_BLUECRYSTAL_D,
+    TILE_EXIT,
     TILE_EMPTY,
     TILE_GREEN,
     TILE_TOTAL
@@ -75,7 +78,7 @@ enum Difficulty {
 
 struct Save {
     std::string name, slot;
-    int level, x, y, form, maxJumps, difficulty, curHealth;
+    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth;
 };
 
 extern SDL_Window* gWindow;

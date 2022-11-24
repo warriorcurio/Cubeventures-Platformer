@@ -1,0 +1,132 @@
+#include "MapEditor.h"
+
+Resolution editorLevelDimensions[LEVEL_TOTAL] = {
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080},
+    {4000, 1080}
+};
+
+SDL_Rect editorCamera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
+
+int editorTileCount;
+std::vector<LTile*> editorTiles;
+
+bool editorSetTiles()
+{
+    int x = 0, y = 0;
+    char* mapFile = (char*)calloc(17, sizeof(char));
+    sprintf(mapFile, "saves/maps/%d.map", save.level);
+    std::ifstream map(mapFile);
+    if (map.fail()) {
+        printf("Unable to load map\n");
+        return false;
+    }
+    for (int i = 0; i < editorTileCount; i++) {
+        int tileType = -1;
+        map >> tileType;
+        if(map.fail()) {
+            printf("Error loading map: Unexpected EoF\n");
+            return false;
+        }
+        if(tileType >= 0 && tileType < TILE_TOTAL) {
+            editorTiles.push_back(new LTile(x, y, tileType));
+        } else {
+            printf("Error loading map: Invalid tile type at %d\n", i);
+            return false;
+        }
+        x += LTile::TILE_WIDTH;
+        if(x >= editorLevelDimensions[save.level - 1].w) {
+            x = 0;
+            y += LTile::TILE_HEIGHT;
+        }
+    }
+    x = 0, y = 0;
+    for (int i = 0; i < TILE_TOTAL; i++) {
+        tileClips[i] = {x, y, LTile::TILE_WIDTH, LTile::TILE_HEIGHT};
+        x += LTile::TILE_WIDTH;
+        if(x >= tileTexture.getWidth()) {
+            x = 0;
+            y += LTile::TILE_HEIGHT;
+        }
+    }
+    map.close();
+    return true;
+}
+
+bool mapEditorLoadMedia()
+{
+    tileTexture.loadFromFile("res/tiles.png");
+    editorTileCount = (editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (editorLevelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
+    editorSetTiles();
+    return true;
+}
+void mapEditorHandleEvent(SDL_Event* e)
+{
+    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
+        quit = true;
+    } else if (SDL_GetModState() & KMOD_CTRL && e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_s) {
+        char* mapFile = (char*)calloc(17, sizeof(char));
+        sprintf(mapFile, "saves/maps/%d.map", save.level);
+        std::ofstream map(mapFile);
+        for (int i = 0; i < editorTileCount; i++) {
+            if (editorTiles[i]->getType() < 10) map << 0;
+            map << editorTiles[i]->getType();
+            if ((i + 1) % (editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) == 0 && i != editorTileCount - 1) map << "\n";
+            else if (i != editorTileCount - 1) map << " ";
+        }
+        map.close();
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_RIGHTBRACKET) {
+        save.level = save.level % LEVEL_TOTAL + 1;
+        mapEditorClose();
+        mapEditorLoadMedia();
+    }
+    if (e->type == SDL_KEYDOWN) {
+        switch(e->key.keysym.sym) {
+            case SDLK_w: editorCamera.y -= 40; break;
+            case SDLK_s: editorCamera.y += 40; break;
+            case SDLK_a: editorCamera.x -= 40; break;
+            case SDLK_d: editorCamera.x += 40; break;
+        }
+    }
+    if (e->type != SDL_MOUSEBUTTONUP) return;
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    float sX, sY;
+    SDL_RenderWindowToLogical(gRenderer, x, y, &sX, &sY);
+    sX += editorCamera.x;
+    sY += editorCamera.y;
+    int rowNum = (sY - (int)sY % LTile::TILE_HEIGHT) / LTile::TILE_HEIGHT;
+    int colNum = (sX - (int)sX % LTile::TILE_WIDTH) / LTile::TILE_WIDTH;
+    int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + colNum;
+    if (e->button.button == SDL_BUTTON_LEFT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() + 1) % TILE_TOTAL);
+    if (e->button.button == SDL_BUTTON_RIGHT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL);
+}
+void mapEditorUpdate()
+{
+    if(editorCamera.x < 0) editorCamera.x = 0;
+    if(editorCamera.y < 0) editorCamera.y = 0;
+    if(editorCamera.x > levelDimensions[save.level - 1].w - editorCamera.w) editorCamera.x = levelDimensions[save.level - 1].w - editorCamera.w;
+    if(editorCamera.y > levelDimensions[save.level - 1].h - editorCamera.h) editorCamera.y = levelDimensions[save.level - 1].h - editorCamera.h;
+}
+void mapEditorRender()
+{
+    SDL_SetRenderDrawColor(gRenderer, 0x27, 0xAF, 0xAF, 0xFF);
+    SDL_RenderClear(gRenderer);
+    for (int i = 0; i < editorTileCount; i++) {
+        editorTiles[i]->render(editorCamera);
+    }
+}
+void mapEditorClose()
+{
+    for (int i = 0; i < editorTileCount; i++) {
+        if (editorTiles[i]) delete editorTiles[i];
+    }
+    editorTiles.clear();
+}
