@@ -12,7 +12,7 @@ LTile::LTile(int x, int y, int tileType)
     mActivationCounter = 0;
     mType = tileType;
 }
-void LTile::collisionEvent()
+void LTile::collisionEvent(int tileNum)
 {
     switch (mType) {
         case TILE_WHITECRYSTAL:
@@ -38,20 +38,53 @@ void LTile::collisionEvent()
         case TILE_EXIT:
             nextLevel();
             break;
+        case TILE_KEY:
+            mType = TILE_EMPTY;
+            player->setKeys(player->getKeys() + 1);
+            for (int i = 0; i < 5; i++) {
+                if (!save.collectedKeys[i]) {
+                    save.collectedKeys[i] = tileNum;
+                    break;
+                }
+            }
+            break;
+        case TILE_LOCK_D:
+            mType = TILE_EMPTY;
+            player->setKeys(player->getKeys() - 1);
+            if (player->getKeys() < 0) {
+                mType = TILE_LOCK;
+                player->setKeys(0);
+                break;
+            }
+            for (int i = 0; i < 5; i++) {
+                if (!save.unlockedLocks[i]) {
+                    save.unlockedLocks[i] = tileNum;
+                    break;
+                }
+            }
+            break;
     }
 }
-void LTile::updateTimers(float timeStep)
+void LTile::updateTiles(float timeStep)
 {
-    if (mActivationTime == 0) return;
-    mActivationCounter += timeStep;
-    if (mActivationCounter < mActivationTime) return;
-    mActivationCounter = 0;
-    mActivationTime = 0;
-    switch (mType) {
-        case TILE_WHITECRYSTAL_D: mType = TILE_WHITECRYSTAL; break;
-        case TILE_REDCRYSTAL_D: mType = TILE_REDCRYSTAL; break;
-        case TILE_GREENCRYSTAL_D: mType = TILE_GREENCRYSTAL; break;
-        case TILE_BLUECRYSTAL_D: mType = TILE_BLUECRYSTAL; break;
+    if (mActivationTime != 0) {
+        mActivationCounter += timeStep;
+        if (mActivationCounter < mActivationTime) return;
+        mActivationCounter = 0;
+        mActivationTime = 0;
+        switch (mType) {
+            case TILE_WHITECRYSTAL_D: mType = TILE_WHITECRYSTAL; break;
+            case TILE_REDCRYSTAL_D: mType = TILE_REDCRYSTAL; break;
+            case TILE_GREENCRYSTAL_D: mType = TILE_GREENCRYSTAL; break;
+            case TILE_BLUECRYSTAL_D: mType = TILE_BLUECRYSTAL; break;
+        }
+    } else {
+        switch (mType) {
+            case TILE_GHOST: if (player->getForm() == FORM_WHITE) mType = TILE_GHOST_D; break;
+            case TILE_GHOST_D: if (player->getForm() != FORM_WHITE) mType = TILE_GHOST; break;
+            case TILE_LOCK: if (player->getKeys() > 0) mType = TILE_LOCK_D; break;
+            case TILE_LOCK_D: if (player->getKeys() == 0) mType = TILE_LOCK; break;
+        }
     }
 }
 void LTile::render(SDL_Rect& camera)

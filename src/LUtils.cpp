@@ -42,6 +42,15 @@ void (*close)();
 Save save;
 std::vector<Scene> backStack;
 
+void savePersistent()
+{
+    Uint32 windowFlags = SDL_GetWindowFlags(gWindow);
+    SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
+    SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
+    SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
+    SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
+    SDL_RWclose(writeFile);
+}
 void backCall()
 {
     transition(backStack.back());
@@ -66,12 +75,13 @@ bool init()
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
     resolutions[4] = {DM.w, DM.w * 9/16};
+    Uint32 windowFlags;
     SDL_RWops* readFile = SDL_RWFromFile("saves/persistent.bin", "rb");
-    SDL_RWread (readFile, &curRes, sizeof(int), 1);
-    printf("%d", curRes);
-    SDL_RWread (readFile, &maxLevel, sizeof(int), 1);
-    SDL_RWclose (readFile);
-    gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, SDL_WINDOW_SHOWN|SDL_WINDOW_BORDERLESS);
+    SDL_RWread(readFile, &curRes, sizeof(int), 1);
+    SDL_RWread(readFile, &windowFlags, sizeof(Uint32), 1);
+    SDL_RWread(readFile, &maxLevel, sizeof(int), 1);
+    SDL_RWclose(readFile);
+    gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, windowFlags);
     if (gWindow == NULL) {
         printf("Window couldn't create: %s\n", SDL_GetError());
         return false;

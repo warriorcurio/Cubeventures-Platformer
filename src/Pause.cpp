@@ -18,6 +18,9 @@ void pauseResumeCall()
 }
 void pauseSaveCall()
 {
+    save.x = player->getPosX();
+    save.y = player->getPosY();
+    save.keys = player->getKeys();
     char* slotFile = (char*)calloc(20, sizeof(char));
     sprintf(slotFile, "saves/save_%s.bin", save.slot.c_str());
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");

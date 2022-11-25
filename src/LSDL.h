@@ -49,9 +49,15 @@ enum Tiles {
     TILE_GREENCRYSTAL_D,
     TILE_BLUECRYSTAL,
     TILE_BLUECRYSTAL_D,
+    TILE_GHOST_D,
+    TILE_KEY,
+    TILE_LOCK_D,
+    TILE_EVENT,
     TILE_EXIT,
     TILE_EMPTY,
     TILE_GREEN,
+    TILE_GHOST,
+    TILE_LOCK,
     TILE_TOTAL
 };
 
@@ -78,7 +84,8 @@ enum Difficulty {
 
 struct Save {
     std::string name, slot;
-    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth;
+    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys;
+    int collectedKeys[5], unlockedLocks[5];
 };
 
 extern SDL_Window* gWindow;
@@ -91,6 +98,7 @@ extern Resolution resolutions[5];
 extern int curRes;
 extern int maxLevel;
 extern bool quit;
+extern void savePersistent();
 extern void backCall();
 extern void transition(Scene scene);
 extern bool checkCollision(SDL_Rect a, SDL_Rect b);

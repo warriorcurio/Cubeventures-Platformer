@@ -12,6 +12,7 @@ LTexture textloadSave;
 #define GEN_LOADSAVE_CALL(NUMBER)\
     void loadSave##NUMBER##Call()\
     {\
+        save.~Save();\
         SDL_RWops* readFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "rb");\
         SDL_RWread(readFile, &save, sizeof(Save), 1);\
         SDL_RWclose(readFile);\

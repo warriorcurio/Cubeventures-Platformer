@@ -14,8 +14,13 @@ LTexture textCreateSave;
     {\
         save.slot = #NUMBER;\
         save.maxJumps = save.level > 5 ? 2 : 1;\
-        save.x = 80;\
-        save.y = 80;\
+        save.keys = 0;\
+        for (int i = 0; i < 5; i++) {\
+            save.unlockedLocks[i] = 0;\
+        }\
+        save.x = 0;\
+        save.y = 1020;\
+        save.form = FORM_WHITE;\
         SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
         SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\
         SDL_RWclose(writeFile);\

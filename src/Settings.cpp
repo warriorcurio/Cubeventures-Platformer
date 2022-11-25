@@ -45,10 +45,7 @@ void settingsResolutionCall()
 }
 void settingsSaveExitCall()
 {
-    SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
-    SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
-    SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
-    SDL_RWclose(writeFile);
+    savePersistent();
     backCall();
 }
 

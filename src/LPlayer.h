@@ -16,8 +16,11 @@ class LPlayer
         void setCamera(SDL_Rect& camera);
         void checkItemCollisions(std::vector<LTile*>& tiles);
         void setForm(int form);
+        void setKeys(int keys);
+        void setPos(int x, int y);
         void render(SDL_Rect& camera);
         int getForm();
+        int getKeys();
         int getPosX();
         int getPosY();
     private:
@@ -29,7 +32,7 @@ class LPlayer
         SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<LTile*>& tiles);
         LTexture mTexture;
         SDL_Rect mCollisionBox;
-        int mForm;
+        int mForm, mKeys;
         bool mIsClimbing, mIsOnGround;
         int mPlayerVel, mVelX, mVelY;
         int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining, mMaxJumps;

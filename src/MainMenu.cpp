@@ -54,11 +54,17 @@ void mainMenuHandleEvent(SDL_Event* e)
         transition(SCENE_MAPEDITOR);
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_d && SDL_GetModState() & (KMOD_CTRL | KMOD_SHIFT)) {
         curRes = 4;
+        Uint32 windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
         maxLevel = 1;
         SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
         SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
+        SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
         SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
         SDL_RWclose(writeFile);
+        save.~Save();
+        remove("saves/save_ONE.bin");
+        remove("saves/save_TWO.bin");
+        remove("saves/save_THREE.bin");
     }
 }
 void mainMenuUpdate()

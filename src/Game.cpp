@@ -12,6 +12,18 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {4000, 1080}
 };
+SDL_Point levelStartPositions[LEVEL_TOTAL] = {
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020},
+    {0, 1020}
+};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -22,6 +34,8 @@ int tileCount;
 std::vector<LTile*> tiles;
 SDL_Rect tileClips[TILE_TOTAL];
 LTexture tileTexture;
+
+LTexture keyTexture;
 
 LPlayer* player;
 
@@ -74,6 +88,12 @@ bool setTiles()
         }
     }
     map.close();
+    for (int i = 0; i < 5; i++) {
+        if (save.collectedKeys[i]) tiles[save.collectedKeys[i]]->setType(TILE_EMPTY);
+    }
+    for (int i = 0; i < 5; i++) {
+        if (save.collectedKeys[i]) tiles[save.unlockedLocks[i]]->setType(TILE_EMPTY);
+    }
     return true;
 }
 
@@ -83,7 +103,24 @@ void nextLevel()
         if (tiles[i]) delete tiles[i];
     }
     tiles.clear();
-    save.level = save.level % LEVEL_TOTAL + 1;
+    save.level++;
+    save.x = levelStartPositions[save.level].x;
+    save.y = levelStartPositions[save.level].y;
+    save.keys = 0;
+    for (int i = 0; i < 5; i++) {
+        save.collectedKeys[i] = 0;
+        save.unlockedLocks[i] = 0;
+    }
+    if (save.level > maxLevel) {
+        maxLevel = save.level;
+        savePersistent();
+    }
+    char* slotFile = (char*)calloc(20, sizeof(char));
+    sprintf(slotFile, "saves/save_%s.bin", save.slot.c_str());
+    SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
+    SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
+    SDL_RWclose(writeFile);
+    player->setPos(save.x, save.y);
     timeTicks = SDL_GetTicks();
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();
@@ -91,9 +128,10 @@ void nextLevel()
 
 bool gameLoadMedia()
 {
+    keyTexture.loadFromFile("res/key.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
-    tileTexture.loadFromFile("res/tiles.png");
+    tileTexture.loadFromFile("res/tilesDEBUG.png");
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();
     return true;
@@ -113,7 +151,7 @@ void gameUpdate()
     timeStep = (SDL_GetTicks() - timeTicks) / 1000.f;
     player->move(tiles, timeStep);
     for (int i = 0; i < tileCount; i++) {
-        tiles[i]->updateTimers(timeStep);
+        tiles[i]->updateTiles(timeStep);
     }
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
@@ -123,13 +161,16 @@ void gameRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 69, 69, 69, 0xFF);
     SDL_RenderClear(gRenderer);
-    for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
-        if (gameButtons[i]) gameButtons[i]->render();
-    }
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->render(camera);
     }
     player->render(camera);
+    for (int i = 0; i < player->getKeys(); i++) {
+        keyTexture.render(i * keyTexture.getWidth(), 0);
+    }
+    for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
+        if (gameButtons[i]) gameButtons[i]->render();
+    }
 }
 void gameClose()
 {
@@ -141,4 +182,6 @@ void gameClose()
     }
     tiles.clear();
     delete player;
+    tileTexture.free();
+    keyTexture.free();
 }

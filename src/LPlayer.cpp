@@ -10,9 +10,10 @@ LPlayer::LPlayer(int x, int y)
     mPlayerVel = -1;
     mVelX = 0;
     mVelY = 0;
-    mJumpsRemaining = 1;
+    mJumpsRemaining = 0;
     mMaxJumps = save.maxJumps;
     setForm(save.form);
+    setKeys(save.keys);
     mIsClimbing = false;
     mIsOnGround = false;
 }
@@ -106,7 +107,7 @@ void LPlayer::checkItemCollisions(std::vector<LTile*>& tiles)
     {
         if(tiles[i]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[i]->getBox()))
         {
-            tiles[i]->collisionEvent();
+            tiles[i]->collisionEvent(i);
         }
     }
 }
@@ -150,13 +151,26 @@ void LPlayer::setForm(int form)
     }
     mVelX = mPlayerVel * modifiedVel;
 }
+void LPlayer::setKeys(int keys)
+{
+    mKeys = keys;
+}
+void LPlayer::setPos(int x, int y)
+{
+    mCollisionBox.x = x;
+    mCollisionBox.y = y;
+}
 void LPlayer::render(SDL_Rect& camera)
 {
     mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y);
 }
 int LPlayer::getForm()
 {
-    return (int)mForm;
+    return mForm;
+}
+int LPlayer::getKeys()
+{
+    return mKeys;
 }
 int LPlayer::getPosX()
 {
