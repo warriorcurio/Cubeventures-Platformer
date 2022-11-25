@@ -6,6 +6,8 @@ int curRes = 4;
 SDL_Color settingsButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string settingsButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
+LTexture settingsBG;
+
 LButton* settingsButtons[SETTINGS_BUTTON_TOTAL];
 
 void settingsWindowEditCall()
@@ -51,6 +53,7 @@ void settingsSaveExitCall()
 
 bool settingsLoadMedia()
 {
+    settingsBG.loadFromFile("res/saveslots.png");
     settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &settingsSaveExitCall);
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
@@ -82,6 +85,7 @@ void settingsRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
+    settingsBG.render(0, 0);
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
         if (settingsButtons[i]) settingsButtons[i]->render();
     }
@@ -91,4 +95,5 @@ void settingsClose()
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
         if (settingsButtons[i]) delete settingsButtons[i];
     }
+    settingsBG.free();
 }

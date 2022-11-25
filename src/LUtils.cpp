@@ -12,17 +12,17 @@ typedef void (*voidProcedure)();
 typedef bool (*boolProcedure)();
 typedef void (*handleEventProcedure)(SDL_Event*);
 
-voidProcedure voidScenes[SCENE_TOTAL * 3] = {
-    &mainMenuUpdate, &mainMenuRender, &mainMenuClose,
-    &settingsUpdate, &settingsRender, &settingsClose,
-    &levelSelectUpdate, &levelSelectRender, &levelSelectClose,
-    &createSaveUpdate, &createSaveRender, &createSaveClose,
-    &difficultySelectUpdate, &difficultySelectRender, &difficultySelectClose,
-    &loadSaveUpdate, &loadSaveRender, &loadSaveClose,
-    &nameSaveUpdate, &nameSaveRender, &nameSaveClose,
-    &gameUpdate, &gameRender, &gameClose,
-    &pauseUpdate, &pauseRender, &pauseClose,
-    &mapEditorUpdate, &mapEditorRender, &mapEditorClose
+voidProcedure voidScenes[SCENE_TOTAL][3] = {
+    {&mainMenuUpdate, &mainMenuRender, &mainMenuClose},
+    {&settingsUpdate, &settingsRender, &settingsClose},
+    {&levelSelectUpdate, &levelSelectRender, &levelSelectClose},
+    {&createSaveUpdate, &createSaveRender, &createSaveClose},
+    {&difficultySelectUpdate, &difficultySelectRender, &difficultySelectClose},
+    {&loadSaveUpdate, &loadSaveRender, &loadSaveClose},
+    {&nameSaveUpdate, &nameSaveRender, &nameSaveClose},
+    {&gameUpdate, &gameRender, &gameClose},
+    {&pauseUpdate, &pauseRender, &pauseClose},
+    {&mapEditorUpdate, &mapEditorRender, &mapEditorClose},
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
@@ -62,9 +62,9 @@ void transition(Scene scene)
     if (scene != SCENE_PAUSE) close();
     loadMedia = boolScenes[scene];
     handleEvent = eventScenes[scene];
-    update = voidScenes[scene * 3];
-    render = voidScenes[1 + scene * 3];
-    close = voidScenes[2 + scene * 3];
+    update = voidScenes[scene][0];
+    render = voidScenes[scene][1];
+    close = voidScenes[scene][2];
 }
 bool init()
 {

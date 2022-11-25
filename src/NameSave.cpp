@@ -9,6 +9,7 @@ LButton* nameSaveButtons[NAMESAVE_BUTTON_TOTAL];
 
 LTexture nameSaveBG;
 LTexture textNameSave;
+LTexture textEnter;
 LTexture textInputName;
 
 bool nameSaveLoadMedia()
@@ -16,7 +17,8 @@ bool nameSaveLoadMedia()
     inputName = "";
     SDL_StartTextInput();
     nameSaveBG.loadFromFile("res/saveslots.png");
-    textNameSave.loadFromRenderedText("Name Your Save", nameSaveButtonTextColour, "res/04b.TTF", 40);
+    textNameSave.loadFromRenderedText("Type Your Name", nameSaveButtonTextColour, "res/04b.TTF", 40);
+    textEnter.loadFromRenderedText("Press ENTER To Submit", nameSaveButtonTextColour, "res/04b.TTF", 40);
     nameSaveButtons[NAMESAVE_BUTTON_BACK]  = new LButton(10, 1020, 40, nameSaveButtonBackgroundColours, "Back", nameSaveButtonTextColour, &backCall);
     return true;
 }
@@ -52,6 +54,7 @@ void nameSaveRender()
     SDL_RenderClear(gRenderer);
     nameSaveBG.render(0, 0);
     textNameSave.render((LOGICAL_SCREEN_WIDTH - textNameSave.getWidth()) / 2, 325);
+    textEnter.render((LOGICAL_SCREEN_WIDTH - textEnter.getWidth()) / 2, 715);
     textInputName.render((LOGICAL_SCREEN_WIDTH - textInputName.getWidth()) / 2, (LOGICAL_SCREEN_HEIGHT - textInputName.getHeight()) / 2);
     for (int i = 0; i < NAMESAVE_BUTTON_TOTAL; i++) {
         if (nameSaveButtons[i]) nameSaveButtons[i]->render();

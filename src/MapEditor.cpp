@@ -16,7 +16,7 @@ Resolution editorLevelDimensions[LEVEL_TOTAL] = {
 SDL_Rect editorCamera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
 int editorTileCount;
-int dragType;
+int dragType, copyType;
 std::vector<LTile*> editorTiles;
 
 bool editorSetTiles()
@@ -63,7 +63,7 @@ bool editorSetTiles()
 
 bool mapEditorLoadMedia()
 {
-    dragType = -1;
+    dragType = -1, copyType = -1;
     tileTexture.loadFromFile("res/tilesDEBUG.png");
     editorTileCount = (editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (editorLevelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     editorSetTiles();
@@ -97,7 +97,7 @@ void mapEditorHandleEvent(SDL_Event* e)
             case SDLK_d: editorCamera.x += 40; break;
         }
     }
-    if (e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONUP) return;
+    if (e->type != SDL_MOUSEMOTION && e->type != SDL_MOUSEBUTTONUP && e->type != SDL_KEYUP) return;
         int x, y;
         SDL_GetMouseState(&x, &y);
         float sX, sY;
@@ -107,14 +107,18 @@ void mapEditorHandleEvent(SDL_Event* e)
         int rowNum = (sY - (int)sY % LTile::TILE_HEIGHT) / LTile::TILE_HEIGHT;
         int colNum = (sX - (int)sX % LTile::TILE_WIDTH) / LTile::TILE_WIDTH;
         int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + colNum;
-    if (e->type == SDL_MOUSEBUTTONUP && e->button.clicks == 1 && dragType == -1) {
+    if (e->type == SDL_MOUSEBUTTONUP && !(SDL_GetModState() & KMOD_CTRL) && dragType == -1) {
         if (e->button.button == SDL_BUTTON_LEFT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() + 1) % TILE_TOTAL);
         if (e->button.button == SDL_BUTTON_RIGHT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL);
     } else if (e->type == SDL_MOUSEMOTION && dragType != -1) {
         editorTiles[tileNum]->setType(dragType);
-    } else if (e->type == SDL_MOUSEBUTTONUP && e->button.clicks == 2 && e->button.button == SDL_BUTTON_LEFT) {
-        if (dragType == -1) dragType = (editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL;
+    } else if (e->type == SDL_MOUSEBUTTONUP && SDL_GetModState() & KMOD_CTRL && e->button.clicks == 2 && e->button.button == SDL_BUTTON_LEFT) {
+        if (dragType == -1) dragType = editorTiles[tileNum]->getType();
         else dragType = -1;
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL) {
+        copyType = editorTiles[tileNum]->getType();
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
+        editorTiles[tileNum]->setType(copyType);
     }
 }
 void mapEditorUpdate()
