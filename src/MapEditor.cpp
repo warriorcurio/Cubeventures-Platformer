@@ -85,6 +85,8 @@ void mapEditorHandleEvent(SDL_Event* e)
         }
         map.close();
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_RIGHTBRACKET) {
+        editorCamera.x = 0;
+        editorCamera.y = 0;
         save.level = save.level % LEVEL_TOTAL + 1;
         mapEditorClose();
         mapEditorLoadMedia();

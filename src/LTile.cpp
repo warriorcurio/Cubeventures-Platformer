@@ -35,6 +35,11 @@ void LTile::collisionEvent(int tileNum)
             mActivationTime = 2.f;
             player->setForm(FORM_BLUE);
             break;
+        case TILE_JUMPCRYSTAL:
+            mType = TILE_JUMPCRYSTAL_D;
+            mActivationTime = 2.5f;
+            player->setJumps(save.maxJumps);
+            break;
         case TILE_EXIT:
             nextLevel();
             break;
@@ -77,6 +82,7 @@ void LTile::updateTiles(float timeStep)
             case TILE_REDCRYSTAL_D: mType = TILE_REDCRYSTAL; break;
             case TILE_GREENCRYSTAL_D: mType = TILE_GREENCRYSTAL; break;
             case TILE_BLUECRYSTAL_D: mType = TILE_BLUECRYSTAL; break;
+            case TILE_JUMPCRYSTAL_D: mType = TILE_JUMPCRYSTAL; break;
         }
     } else {
         switch (mType) {

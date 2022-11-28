@@ -37,6 +37,10 @@ LTexture tileTexture;
 
 LTexture keyTexture;
 
+LTexture bgTexture;
+LTexture bgPTexture;
+float parallaxOffset;
+
 LPlayer* player;
 
 LButton* gameButtons[GAME_BUTTON_TOTAL];
@@ -128,6 +132,8 @@ void nextLevel()
 
 bool gameLoadMedia()
 {
+    bgTexture.loadFromFile("res/bgONE.png");
+    bgPTexture.loadFromFile("res/bgONE_P.png");
     keyTexture.loadFromFile("res/key.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
@@ -156,11 +162,15 @@ void gameUpdate()
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
     player->checkItemCollisions(tiles);
+    if (parallaxOffset < -bgPTexture.getWidth()) parallaxOffset += bgPTexture.getWidth();
 }
 void gameRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 69, 69, 69, 0xFF);
     SDL_RenderClear(gRenderer);
+    bgTexture.render(0, 0);
+    bgPTexture.render((int)parallaxOffset, 0);
+    bgPTexture.render((int)parallaxOffset + bgPTexture.getWidth(), 0);
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->render(camera);
     }

@@ -1,11 +1,27 @@
 #include "LPlayer.h"
+#include "Game.h"
 
 float coyoteTime = 0.1f;
 float coyoteCounter;
 
+SDL_Rect frameClips[11] = {
+    {0, 0, 20, 20},
+    {20, 0, 20, 20},
+    {40, 0, 20, 20},
+    {0, 20, 20, 20},
+    {20, 20, 20, 20},
+    {40, 20, 20, 20},
+    {20, 20, 20, 20},
+    {0, 20, 20, 20},
+    {40, 0, 20, 20},
+    {20, 0, 20, 20},
+    {0, 0, 20, 20}
+};
+
 LPlayer::LPlayer(int x, int y)
 {
     mTexture.loadFromFile("res/player.png");
+    mFrame = 0;
     mCollisionBox = {x, y, PLAYER_WIDTH, PLAYER_HEIGHT};
     mPlayerVel = -1;
     mVelX = 0;
@@ -88,10 +104,10 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         }
     }
     if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
-
 }
 void LPlayer::setCamera(SDL_Rect& camera)
 {
+    SDL_Rect tempCamera = camera;
     camera.x = ((int)mCollisionBox.x + PLAYER_WIDTH / 2) - LOGICAL_SCREEN_WIDTH / 2;
     camera.y = ((int)mCollisionBox.y + PLAYER_HEIGHT / 2) - LOGICAL_SCREEN_HEIGHT / 2;
     camera.w = LOGICAL_SCREEN_WIDTH;
@@ -100,6 +116,7 @@ void LPlayer::setCamera(SDL_Rect& camera)
     if(camera.y < 0) camera.y = 0;
     if(camera.x > levelDimensions[save.level - 1].w - camera.w) camera.x = levelDimensions[save.level - 1].w - camera.w;
     if(camera.y > levelDimensions[save.level - 1].h - camera.h) camera.y = levelDimensions[save.level - 1].h - camera.h;
+    parallaxOffset -= (camera.x - tempCamera.x) / 3;
 }
 void LPlayer::checkItemCollisions(std::vector<LTile*>& tiles)
 {
@@ -151,6 +168,10 @@ void LPlayer::setForm(int form)
     }
     mVelX = mPlayerVel * modifiedVel;
 }
+void LPlayer::setJumps(int jumps)
+{
+    mJumpsRemaining = jumps;
+}
 void LPlayer::setKeys(int keys)
 {
     mKeys = keys;
@@ -162,11 +183,16 @@ void LPlayer::setPos(int x, int y)
 }
 void LPlayer::render(SDL_Rect& camera)
 {
-    mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y);
+    mFrame = (mFrame + 1) % 43;
+    mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &frameClips[mFrame / 4]);
 }
 int LPlayer::getForm()
 {
     return mForm;
+}
+int LPlayer::getJumps()
+{
+    return mJumpsRemaining;
 }
 int LPlayer::getKeys()
 {
