@@ -23,6 +23,7 @@ enum Scene {
     SCENE_GAME,
     SCENE_PAUSE,
     SCENE_MAPEDITOR,
+    SCENE_KEYBINDSETTINGS,
     SCENE_TOTAL
 };
 
@@ -92,6 +93,15 @@ struct Save {
     int collectedKeys[5], unlockedLocks[5];
 };
 
+enum Keybinds {
+    KEYBINDS_UP,
+    KEYBINDS_LEFT,
+    KEYBINDS_DOWN,
+    KEYBINDS_RIGHT,
+    KEYBINDS_JUMP,
+    KEYBINDS_TOTAL
+};
+
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern Save save;
@@ -101,6 +111,7 @@ extern SDL_Rect tileClips[TILE_TOTAL];
 extern Resolution resolutions[5];
 extern int curRes;
 extern int maxLevel;
+extern int keybinds[KEYBINDS_TOTAL];
 extern bool quit;
 extern void savePersistent();
 extern void backCall();

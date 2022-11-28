@@ -9,6 +9,7 @@
 #include "Game.h"
 #include "Pause.h"
 #include "MapEditor.h"
+#include "KeybindSettings.h"
 
 void backCall();
 void transition(Scene scene);

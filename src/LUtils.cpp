@@ -23,14 +23,15 @@ voidProcedure voidScenes[SCENE_TOTAL][3] = {
     {&gameUpdate, &gameRender, &gameClose},
     {&pauseUpdate, &pauseRender, &pauseClose},
     {&mapEditorUpdate, &mapEditorRender, &mapEditorClose},
+    {&keybindSettingsUpdate, &keybindSettingsRender, &keybindSettingsClose}
 };
 
 boolProcedure boolScenes[SCENE_TOTAL] = {
-    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia, &gameLoadMedia, &pauseLoadMedia, &mapEditorLoadMedia
+    &mainMenuLoadMedia, &settingsLoadMedia, &levelSelectLoadMedia, &createSaveLoadMedia, &difficultySelectLoadMedia, &loadSaveLoadMedia, &nameSaveLoadMedia, &gameLoadMedia, &pauseLoadMedia, &mapEditorLoadMedia, &keybindSettingsLoadMedia
 };
 
 handleEventProcedure eventScenes[SCENE_TOTAL] = {
-    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent, &gameHandleEvent, &pauseHandleEvent, &mapEditorHandleEvent
+    &mainMenuHandleEvent, &settingsHandleEvent, &levelSelectHandleEvent, &createSaveHandleEvent, &difficultySelectHandleEvent, &loadSaveHandleEvent, &nameSaveHandleEvent, &gameHandleEvent, &pauseHandleEvent, &mapEditorHandleEvent, &keybindSettingsHandleEvent
 };
 
 bool (*loadMedia)();

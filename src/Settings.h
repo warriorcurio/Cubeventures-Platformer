@@ -6,12 +6,14 @@ enum SettingsButtons {
     SETTINGS_BUTTON_BACK,
     SETTINGS_BUTTON_RESOLUTION,
     SETTINGS_BUTTON_WINDOWEDIT,
+    SETTINGS_BUTTON_KEYBINDS,
     SETTINGS_BUTTON_TOTAL
 };
 
 void settingsWindowEditCall();
 void settingsResolutionCall();
 void settingsSaveExitCall();
+void settingsKeybindsCall();
 
 bool settingsLoadMedia();
 void settingsHandleEvent(SDL_Event* e);

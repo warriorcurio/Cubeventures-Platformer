@@ -50,6 +50,10 @@ void settingsSaveExitCall()
     savePersistent();
     backCall();
 }
+void settingsKeybindsCall()
+{
+    transition(SCENE_KEYBINDSETTINGS);
+}
 
 bool settingsLoadMedia()
 {
@@ -69,6 +73,7 @@ bool settingsLoadMedia()
     }
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
+    settingsButtons[SETTINGS_BUTTON_KEYBINDS] = new LButton(0, 0, 40, settingsButtonBackgroundColours, "Keybinds", settingsButtonTextColour, &settingsKeybindsCall);
     return true;
 }
 void settingsHandleEvent(SDL_Event* e)
