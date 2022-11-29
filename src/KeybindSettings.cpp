@@ -16,7 +16,6 @@ LButton* keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_TOTAL];
     {\
         if (curKeybind == -1) curKeybind = KEYBINDS_##KEYBIND;\
         else curKeybind = -1;\
-        printf("%d", curKeybind);\
         return;\
     }
 

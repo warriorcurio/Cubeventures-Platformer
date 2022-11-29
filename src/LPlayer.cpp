@@ -40,32 +40,25 @@ LPlayer::~LPlayer()
 void LPlayer::handleEvent(SDL_Event* e)
 {
     if (e->type == SDL_KEYDOWN && e->key.repeat == 0) {
+        if (e->key.keysym.sym == keybinds[KEYBINDS_UP] && mIsClimbing) mVelY -= mPlayerVel;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_LEFT]) mVelX -= mPlayerVel;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_DOWN] && mIsClimbing) mVelY += mPlayerVel;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_RIGHT]) mVelX += mPlayerVel;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mJumpsRemaining > 0) {
+            mVelY = -mJumpVelMax;
+            mJumpsRemaining--;
+        }
         switch (e->key.keysym.sym) {
-            case SDLK_w: 
-                if (mIsClimbing) {
-                    mVelY -= mPlayerVel;
-                } else if (mJumpsRemaining > 0) {
-                    mVelY = -mJumpVelMax; mJumpsRemaining--;
-                } break;
-            case SDLK_s: if (mIsClimbing) mVelY += mPlayerVel; break;
-            case SDLK_a: mVelX -= mPlayerVel; break;
-            case SDLK_d: mVelX += mPlayerVel; break;
             case SDLK_p:
                 setForm((mForm + 1) % FORMS_TOTAL);
                 break;
         }
     } else if(e->type == SDL_KEYUP && e->key.repeat == 0) {
-        switch(e->key.keysym.sym) {
-            case SDLK_w: if (mIsClimbing) {
-                    mVelY = 0;
-                } else if (mVelY < -mJumpVelMin) {
-                    mVelY = -mJumpVelMin;
-                }
-                break;
-            case SDLK_s: if (mIsClimbing) mVelY = 0; break;
-            case SDLK_a: mVelX += mPlayerVel; break;
-            case SDLK_d: mVelX -= mPlayerVel; break;
-        }
+        if (e->key.keysym.sym == keybinds[KEYBINDS_UP] && mIsClimbing) mVelY = 0;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_LEFT]) mVelX += mPlayerVel;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_DOWN] && mIsClimbing) mVelY = 0;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_RIGHT]) mVelX -= mPlayerVel;
+        if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mVelY < -mJumpVelMin) mVelY = -mJumpVelMin;
     }
 }
 void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)

@@ -49,6 +49,7 @@ void savePersistent()
     SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
     SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
     SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
+    SDL_RWwrite(writeFile, &keybinds, sizeof(keybinds), 1);
     SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
     SDL_RWclose(writeFile);
 }
@@ -80,6 +81,7 @@ bool init()
     SDL_RWops* readFile = SDL_RWFromFile("saves/persistent.bin", "rb");
     SDL_RWread(readFile, &curRes, sizeof(int), 1);
     SDL_RWread(readFile, &windowFlags, sizeof(Uint32), 1);
+    SDL_RWread(readFile, &keybinds, sizeof(keybinds), 1);
     SDL_RWread(readFile, &maxLevel, sizeof(int), 1);
     SDL_RWclose(readFile);
     gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, windowFlags);

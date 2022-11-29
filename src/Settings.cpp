@@ -52,6 +52,7 @@ void settingsSaveExitCall()
 }
 void settingsKeybindsCall()
 {
+    backStack.push_back(SCENE_SETTINGS);
     transition(SCENE_KEYBINDSETTINGS);
 }
 
