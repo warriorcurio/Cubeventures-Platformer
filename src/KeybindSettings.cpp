@@ -98,4 +98,6 @@ void keybindSettingsClose()
         if (keybindSettingsButtons[i]) delete keybindSettingsButtons[i];
     }
     keybindSettingsBG.free();
+    curKeybind = -1;
+    savePersistent();
 }

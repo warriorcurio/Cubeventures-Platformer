@@ -55,7 +55,11 @@ void mainMenuHandleEvent(SDL_Event* e)
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_d && SDL_GetModState() & (KMOD_CTRL | KMOD_SHIFT)) {
         curRes = 4;
         Uint32 windowFlags = SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS;
-        int keybinds[KEYBINDS_TOTAL] = {SDLK_w, SDLK_a, SDLK_s, SDLK_d, SDLK_SPACE};
+        keybinds[KEYBINDS_UP] = SDLK_w;
+        keybinds[KEYBINDS_LEFT] = SDLK_a;
+        keybinds[KEYBINDS_DOWN] = SDLK_s;
+        keybinds[KEYBINDS_RIGHT] = SDLK_d;
+        keybinds[KEYBINDS_JUMP] = SDLK_SPACE;
         maxLevel = 1;
         SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
         SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);

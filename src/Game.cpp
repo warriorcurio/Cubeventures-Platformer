@@ -2,7 +2,7 @@
 
 Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
-    {4000, 1080},
+    {1920, 4000},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -42,8 +42,6 @@ LTexture bgPTexture;
 float parallaxOffset;
 
 LPlayer* player;
-
-LButton* gameButtons[GAME_BUTTON_TOTAL];
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
@@ -107,6 +105,7 @@ void nextLevel()
         if (tiles[i]) delete tiles[i];
     }
     tiles.clear();
+    parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
     save.level++;
     save.x = levelStartPositions[save.level].x;
     save.y = levelStartPositions[save.level].y;
@@ -134,6 +133,7 @@ bool gameLoadMedia()
 {
     bgTexture.loadFromFile("res/bgONE.png");
     bgPTexture.loadFromFile("res/bgONE_P.png");
+    parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
     keyTexture.loadFromFile("res/key.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
@@ -146,9 +146,6 @@ void gameHandleEvent(SDL_Event* e)
 {
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
         transition(SCENE_PAUSE);
-    }
-    for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
-        if (gameButtons[i]) gameButtons[i]->handleEvent(e);
     }
     player->handleEvent(e);
 }
@@ -178,15 +175,9 @@ void gameRender()
     for (int i = 0; i < player->getKeys(); i++) {
         keyTexture.render(i * keyTexture.getWidth(), 0);
     }
-    for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
-        if (gameButtons[i]) gameButtons[i]->render();
-    }
 }
 void gameClose()
 {
-    for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
-        if (gameButtons[i]) delete gameButtons[i];
-    }
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i]) delete tiles[i];
     }

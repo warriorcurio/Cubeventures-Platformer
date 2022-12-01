@@ -12,7 +12,6 @@ enum SettingsButtons {
 
 void settingsWindowEditCall();
 void settingsResolutionCall();
-void settingsSaveExitCall();
 void settingsKeybindsCall();
 
 bool settingsLoadMedia();

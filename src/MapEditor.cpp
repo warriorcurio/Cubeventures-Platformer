@@ -2,7 +2,7 @@
 
 Resolution editorLevelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
-    {4000, 1080},
+    {1920, 4000},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},

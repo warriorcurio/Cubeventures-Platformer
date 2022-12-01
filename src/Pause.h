@@ -1,5 +1,6 @@
 #include "LSDL.h"
 #include "LTexture.h"
+#include "LButton.h"
 
 enum PauseButtons {
     PAUSE_BUTTON_RESUME,

@@ -25,7 +25,7 @@ void settingsWindowEditCall()
         windowEditLabel = "Fullscreen";
     }
     delete settingsButtons[SETTINGS_BUTTON_WINDOWEDIT];
-    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
+    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 40, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
 }
 void settingsResolutionCall()
@@ -45,11 +45,6 @@ void settingsResolutionCall()
     settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
 }
-void settingsSaveExitCall()
-{
-    savePersistent();
-    backCall();
-}
 void settingsKeybindsCall()
 {
     backStack.push_back(SCENE_SETTINGS);
@@ -59,7 +54,7 @@ void settingsKeybindsCall()
 bool settingsLoadMedia()
 {
     settingsBG.loadFromFile("res/saveslots.png");
-    settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &settingsSaveExitCall);
+    settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &backCall);
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
@@ -72,9 +67,10 @@ bool settingsLoadMedia()
     } else {
         windowEditLabel = "Bordered";
     }
-    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 36, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
+    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 40, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
     settingsButtons[SETTINGS_BUTTON_KEYBINDS] = new LButton(0, 0, 40, settingsButtonBackgroundColours, "Keybinds", settingsButtonTextColour, &settingsKeybindsCall);
+    settingsButtons[SETTINGS_BUTTON_KEYBINDS]->setPos(300 + (440 - settingsButtons[SETTINGS_BUTTON_KEYBINDS]->getW()) / 2, 515);
     return true;
 }
 void settingsHandleEvent(SDL_Event* e)
@@ -102,4 +98,5 @@ void settingsClose()
         if (settingsButtons[i]) delete settingsButtons[i];
     }
     settingsBG.free();
+    savePersistent();
 }

@@ -29,7 +29,7 @@ void nameSaveHandleEvent(SDL_Event* e)
     }
     if (e->type == SDL_KEYDOWN) {
         if(e->key.keysym.sym == SDLK_RETURN && inputName != "") {
-            save.name = inputName;
+            save.name = inputName.c_str();
             backStack.push_back(SCENE_NAMESAVE);
             transition(SCENE_CREATESAVE);
         } else if (e->key.keysym.sym == SDLK_BACKSPACE && inputName != "") {
