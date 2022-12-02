@@ -68,6 +68,13 @@ void LTile::collisionEvent(int tileNum)
                 }
             }
             break;
+        case TILE_SPIKE:
+            player->setHealth(player->getHealth() - 1);
+            player->setPos(player->getSafePos().x, player->getSafePos().y);
+            if (player->getHealth() == 0) {
+                transition(SCENE_MAINMENU);
+            }
+            break;
     }
 }
 void LTile::updateTiles(float timeStep)

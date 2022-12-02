@@ -1,27 +1,34 @@
 #include "LPlayer.h"
 #include "Game.h"
 
-float coyoteTime = 0.1f;
-float coyoteCounter;
+float coyoteTimeSeconds = 0.1f;
+float coyoteTimeTimerSeconds;
 
-SDL_Rect frameClips[11] = {
-    {0, 0, 20, 20},
-    {20, 0, 20, 20},
-    {40, 0, 20, 20},
-    {0, 20, 20, 20},
+float safePositionTimeSeconds = 3.f;
+float safePositionTimeTimerSeconds;
+float invulnerabilityTimeSeconds = 1.f;
+float invulnerabilityTimeTimerSeconds;
+
+SDL_Rect defaultAnimFrameClips[11] = {
+    { 0,  0, 20, 20},
+    {20,  0, 20, 20},
+    {40,  0, 20, 20},
+    { 0, 20, 20, 20},
     {20, 20, 20, 20},
     {40, 20, 20, 20},
     {20, 20, 20, 20},
-    {0, 20, 20, 20},
-    {40, 0, 20, 20},
-    {20, 0, 20, 20},
-    {0, 0, 20, 20}
+    { 0, 20, 20, 20},
+    {40,  0, 20, 20},
+    {20,  0, 20, 20},
+    { 0,  0, 20, 20}
 };
 
 LPlayer::LPlayer(int x, int y)
 {
     mTexture.loadFromFile("res/player.png");
     mFrame = 0;
+    mHealth = save.curHealth;
+    mSafePos = {x, y};
     mCollisionBox = {x, y, PLAYER_WIDTH, PLAYER_HEIGHT};
     mPlayerVel = -1;
     mVelX = 0;
@@ -63,6 +70,7 @@ void LPlayer::handleEvent(SDL_Event* e)
 }
 void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
 {
+    safePositionTimeTimerSeconds += timeStep;
     SDL_Rect tempBox = mCollisionBox;
     mCollisionBox.x += mVelX * timeStep;
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
@@ -70,6 +78,9 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
     if (!mIsClimbing && mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) {
         mIsClimbing = true;
         mVelY = 0;
+        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+        if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_UP])]) mVelY -= mPlayerVel;
+        if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_DOWN])]) mVelY += mPlayerVel;
     } else if (!(mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) ){
         mIsClimbing = false;
         mVelY += mGravity * timeStep;
@@ -88,10 +99,14 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         mVelY = 0;
         mIsOnGround = true;
         mJumpsRemaining = mMaxJumps;
+        if (safePositionTimeTimerSeconds >= safePositionTimeSeconds) {
+            mSafePos = {mCollisionBox.x, mCollisionBox.y};
+            safePositionTimeTimerSeconds = 0;
+        }
     } else if (mIsOnGround) {
-        coyoteCounter += timeStep;
-        if (coyoteCounter >= coyoteTime) {
-            coyoteCounter = 0;
+        coyoteTimeTimerSeconds += timeStep;
+        if (coyoteTimeTimerSeconds >= coyoteTimeSeconds) {
+            coyoteTimeTimerSeconds = 0;
             mIsOnGround = false;
             if (mJumpsRemaining == mMaxJumps) mJumpsRemaining--;
         }
@@ -161,6 +176,10 @@ void LPlayer::setForm(int form)
     }
     mVelX = mPlayerVel * modifiedVel;
 }
+void LPlayer::setHealth(int health)
+{
+    mHealth = health;
+}
 void LPlayer::setJumps(int jumps)
 {
     mJumpsRemaining = jumps;
@@ -173,15 +192,24 @@ void LPlayer::setPos(int x, int y)
 {
     mCollisionBox.x = x;
     mCollisionBox.y = y;
+    safePositionTimeTimerSeconds = 0.f;
 }
 void LPlayer::render(SDL_Rect& camera)
 {
     mFrame = (mFrame + 1) % 43;
-    mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &frameClips[mFrame / 4]);
+    mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &defaultAnimFrameClips[mFrame / 4]);
 }
 int LPlayer::getForm()
 {
     return mForm;
+}
+int LPlayer::getHealth()
+{
+    return mHealth;
+}
+SDL_Point LPlayer::getSafePos()
+{
+    return mSafePos;
 }
 int LPlayer::getJumps()
 {

@@ -57,6 +57,7 @@ enum Tiles {
     TILE_LOCK_D,
     TILE_EVENT,
     TILE_EXIT,
+    TILE_SPIKE,
     TILE_EMPTY,
     TILE_GHOST,
     TILE_LOCK,
