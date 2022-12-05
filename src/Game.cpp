@@ -36,6 +36,8 @@ SDL_Rect tileClips[TILE_TOTAL];
 LTexture tileTexture;
 
 LTexture keyTexture;
+SDL_Rect heartClips[3] = {{0, 0, 80, 80}, {0, 80, 80, 80}, {0, 160, 80, 80}};
+LTexture heartTexture;
 
 LTexture bgTexture;
 LTexture bgPTexture;
@@ -99,14 +101,14 @@ bool setTiles()
     return true;
 }
 
-void nextLevel()
+void setLevel(int level)
 {
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i]) delete tiles[i];
     }
     tiles.clear();
     parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
-    save.level++;
+    save.level = level;
     save.x = levelStartPositions[save.level].x;
     save.y = levelStartPositions[save.level].y;
     save.keys = 0;
@@ -135,6 +137,7 @@ bool gameLoadMedia()
     bgPTexture.loadFromFile("res/bgONE_P.png");
     parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
     keyTexture.loadFromFile("res/key.png");
+    heartTexture.loadFromFile("res/hearts.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
     tileTexture.loadFromFile("res/tilesDEBUG.png");
@@ -172,8 +175,13 @@ void gameRender()
         tiles[i]->render(camera);
     }
     player->render(camera);
+    for (int i = 0; i < save.maxHealth; i++) {
+        heartTexture.render(80 * i, 0, &heartClips[0]);
+        if (i < player->getHealth() && save.difficulty != 0) heartTexture.render(80 * i, 0, &heartClips[1]);
+        if (i < player->getHealth() && save.difficulty == 0) heartTexture.render(80 * i, 0, &heartClips[2]);
+    }
     for (int i = 0; i < player->getKeys(); i++) {
-        keyTexture.render(i * keyTexture.getWidth(), 0);
+        keyTexture.render(i * keyTexture.getWidth(), 80);
     }
 }
 void gameClose()

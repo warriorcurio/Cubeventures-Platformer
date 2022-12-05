@@ -102,6 +102,7 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         if (safePositionTimeTimerSeconds >= safePositionTimeSeconds) {
             mSafePos = {mCollisionBox.x, mCollisionBox.y};
             safePositionTimeTimerSeconds = 0;
+            if (save.difficulty == 0 && mHealth < save.maxHealth) mHealth++;
         }
     } else if (mIsOnGround) {
         coyoteTimeTimerSeconds += timeStep;

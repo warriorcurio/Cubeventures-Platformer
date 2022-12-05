@@ -41,7 +41,7 @@ void LTile::collisionEvent(int tileNum)
             player->setJumps(save.maxJumps);
             break;
         case TILE_EXIT:
-            nextLevel();
+            setLevel(save.level + 1);
             break;
         case TILE_KEY:
             mType = TILE_EMPTY;
@@ -72,7 +72,8 @@ void LTile::collisionEvent(int tileNum)
             player->setHealth(player->getHealth() - 1);
             player->setPos(player->getSafePos().x, player->getSafePos().y);
             if (player->getHealth() == 0) {
-                transition(SCENE_MAINMENU);
+                setLevel(save.level);
+                player->setHealth(save.maxHealth);
             }
             break;
     }

@@ -5,7 +5,7 @@
 #include "LPlayer.h"
 #include "LTile.h"
 
-void nextLevel();
+void setLevel(int level);
 
 bool gameLoadMedia();
 void gameHandleEvent(SDL_Event* e);
