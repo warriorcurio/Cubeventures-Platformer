@@ -20,6 +20,7 @@ class LPlayer
         void setJumps(int jumps);
         void setKeys(int keys);
         void setPos(int x, int y);
+        void setInvulnerable(bool isInvulnerable);
         void render(SDL_Rect& camera);
         int getForm();
         int getHealth();
@@ -28,6 +29,7 @@ class LPlayer
         int getKeys();
         int getPosX();
         int getPosY();
+        bool getInvulnerable();
     private:
         bool touchesTile(std::vector<LTile*>& tiles);
         bool touchesGround(std::vector<LTile*>& tiles);
@@ -39,9 +41,8 @@ class LPlayer
         SDL_Rect mCollisionBox;
         SDL_Point mSafePos;
         int mFrame;
-        int mHealth;
-        int mForm, mKeys;
-        bool mIsClimbing, mIsOnGround;
+        int mHealth, mForm, mKeys;
+        bool mIsClimbing, mIsInvulnerable, mIsOnGround;
         int mPlayerVel, mVelX, mVelY;
         int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining, mMaxJumps;
 };

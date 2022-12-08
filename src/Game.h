@@ -14,4 +14,6 @@ void gameRender();
 void gameClose();
 
 extern Uint32 timeTicks;
+extern const float safePositionTimeSeconds;
+extern float safePositionTimeTimerSeconds;
 #endif

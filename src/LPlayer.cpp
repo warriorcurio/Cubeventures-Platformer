@@ -1,12 +1,11 @@
 #include "LPlayer.h"
 #include "Game.h"
 
-float coyoteTimeSeconds = 0.1f;
+const float coyoteTimeSeconds = 0.1f;
+const float safePositionTimeSeconds = 5.f;
+const float invulnerabilityTimeSeconds = 1.f;
 float coyoteTimeTimerSeconds;
-
-float safePositionTimeSeconds = 3.f;
 float safePositionTimeTimerSeconds;
-float invulnerabilityTimeSeconds = 1.f;
 float invulnerabilityTimeTimerSeconds;
 
 SDL_Rect defaultAnimFrameClips[11] = {
@@ -38,6 +37,7 @@ LPlayer::LPlayer(int x, int y)
     setForm(save.form);
     setKeys(save.keys);
     mIsClimbing = false;
+    mIsInvulnerable = false;
     mIsOnGround = false;
 }
 LPlayer::~LPlayer()
@@ -70,8 +70,12 @@ void LPlayer::handleEvent(SDL_Event* e)
 }
 void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
 {
-    safePositionTimeTimerSeconds += timeStep;
     SDL_Rect tempBox = mCollisionBox;
+    if (mIsInvulnerable) invulnerabilityTimeTimerSeconds += timeStep;
+    if (invulnerabilityTimeTimerSeconds > invulnerabilityTimeSeconds) {
+        mIsInvulnerable = false;
+        invulnerabilityTimeTimerSeconds = 0;
+    }
     mCollisionBox.x += mVelX * timeStep;
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
     else if(mCollisionBox.x > levelDimensions[save.level - 1].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level - 1].w - PLAYER_WIDTH;
@@ -99,6 +103,7 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         mVelY = 0;
         mIsOnGround = true;
         mJumpsRemaining = mMaxJumps;
+        safePositionTimeTimerSeconds += timeStep;
         if (safePositionTimeTimerSeconds >= safePositionTimeSeconds) {
             mSafePos = {mCollisionBox.x, mCollisionBox.y};
             safePositionTimeTimerSeconds = 0;
@@ -195,10 +200,14 @@ void LPlayer::setPos(int x, int y)
     mCollisionBox.y = y;
     safePositionTimeTimerSeconds = 0.f;
 }
+void LPlayer::setInvulnerable(bool isInvulnerable)
+{
+    mIsInvulnerable = isInvulnerable;
+}
 void LPlayer::render(SDL_Rect& camera)
 {
-    mFrame = (mFrame + 1) % 43;
-    mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &defaultAnimFrameClips[mFrame / 4]);
+    if (!mIsInvulnerable) mFrame = (mFrame + 1) % 43;
+    if (!mIsInvulnerable || rand() % 3 == 0) mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &defaultAnimFrameClips[mFrame / 4]);
 }
 int LPlayer::getForm()
 {
@@ -227,6 +236,10 @@ int LPlayer::getPosX()
 int LPlayer::getPosY()
 {
     return (int)mCollisionBox.y;
+}
+bool LPlayer::getInvulnerable()
+{
+    return mIsInvulnerable;
 }
 bool LPlayer::touchesTile(std::vector<LTile*>& tiles)
 {

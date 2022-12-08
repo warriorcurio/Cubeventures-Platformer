@@ -69,12 +69,15 @@ void LTile::collisionEvent(int tileNum)
             }
             break;
         case TILE_SPIKE:
+            if (player->getInvulnerable()) return;
             player->setHealth(player->getHealth() - 1);
             player->setPos(player->getSafePos().x, player->getSafePos().y);
             if (player->getHealth() == 0) {
+                save.deaths++;
+                save.curHealth = save.maxHealth;
                 setLevel(save.level);
                 player->setHealth(save.maxHealth);
-            }
+            } else player->setInvulnerable(true);
             break;
     }
 }

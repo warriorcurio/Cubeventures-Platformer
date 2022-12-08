@@ -90,7 +90,7 @@ enum Difficulty {
 
 struct Save {
     std::string name, slot;
-    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys;
+    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys, deaths, score;
     int collectedKeys[5], unlockedLocks[5];
 };
 
