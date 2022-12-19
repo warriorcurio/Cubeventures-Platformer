@@ -19,6 +19,9 @@ LTexture textCreateSave;
             save.unlockedLocks[i] = 0;\
             save.collectedKeys[i] = 0;\
         }\
+        for (int i = 0; i < 10; i++) {\
+            save.collectedMedals[i] = false;\
+        }\
         save.x = 0;\
         save.y = 1020;\
         save.form = FORM_WHITE;\

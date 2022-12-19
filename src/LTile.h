@@ -22,6 +22,7 @@ class LTile
         float mActivationTime, mActivationCounter;
 };
 
+extern bool isDead;
 extern LPlayer* player;
 extern LTexture tileTexture;
 #endif

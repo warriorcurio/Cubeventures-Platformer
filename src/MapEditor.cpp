@@ -121,6 +121,14 @@ void mapEditorHandleEvent(SDL_Event* e)
         copyType = editorTiles[tileNum]->getType();
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
         editorTiles[tileNum]->setType(copyType);
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
+        for (int i = 0; i < editorTileCount; i++) {
+            if (editorTiles[i]->getType() >= copyType) editorTiles[i]->setType(editorTiles[i]->getType() + 1);
+        }
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_j && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
+        for (int i = 0; i < editorTileCount; i++) {
+            if (editorTiles[i]->getType() >= copyType) editorTiles[i]->setType(editorTiles[i]->getType() - 1);
+        }
     }
 }
 void mapEditorUpdate()

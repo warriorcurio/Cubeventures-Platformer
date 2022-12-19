@@ -55,9 +55,9 @@ enum Tiles {
     TILE_GHOST_D,
     TILE_KEY,
     TILE_LOCK_D,
-    TILE_EVENT,
+    TILE_MEDAL,
     TILE_EXIT,
-    TILE_SPIKE,
+    TILE_SPIKEUP, TILE_SPIKERIGHT, TILE_SPIKEDOWN, TILE_SPIKELEFT,
     TILE_EMPTY,
     TILE_GHOST,
     TILE_LOCK,
@@ -92,6 +92,7 @@ struct Save {
     std::string name, slot;
     int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys, deaths, score;
     int collectedKeys[5], unlockedLocks[5];
+    bool collectedMedals[10];
 };
 
 enum Keybinds {

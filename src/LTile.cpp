@@ -41,6 +41,8 @@ void LTile::collisionEvent(int tileNum)
             player->setJumps(save.maxJumps);
             break;
         case TILE_EXIT:
+            save.score += 2000 + save.difficulty * 1000;
+            printf("%d", save.score);
             setLevel(save.level + 1);
             break;
         case TILE_KEY:
@@ -68,17 +70,23 @@ void LTile::collisionEvent(int tileNum)
                 }
             }
             break;
-        case TILE_SPIKE:
-            if (player->getInvulnerable()) return;
-            player->setHealth(player->getHealth() - 1);
-            player->setPos(player->getSafePos().x, player->getSafePos().y);
-            if (player->getHealth() == 0) {
-                save.deaths++;
-                save.curHealth = save.maxHealth;
-                setLevel(save.level);
-                player->setHealth(save.maxHealth);
-            } else player->setInvulnerable(true);
+        case TILE_MEDAL:
+            mType = TILE_EMPTY;
+            save.score += 1000;
+            save.collectedMedals[save.level] = true;
             break;
+    }
+    if (mType < TILE_EMPTY && mType > TILE_EXIT) {
+        if (player->getInvulnerable()) return;
+        player->setHealth(player->getHealth() - 1);
+        player->setPos(player->getSafePos().x, player->getSafePos().y);
+        if (player->getHealth() == 0) {
+            save.deaths++;
+            player->setHealth(save.maxHealth);
+            player->setKeys(0);
+            setLevel(save.level);
+            isDead = true;
+        } else player->setInvulnerable(true);
     }
 }
 void LTile::updateTiles(float timeStep)

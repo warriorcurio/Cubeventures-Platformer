@@ -18,10 +18,6 @@ void pauseResumeCall()
 }
 void pauseSaveCall()
 {
-    save.x = player->getPosX();
-    save.y = player->getPosY();
-    save.keys = player->getKeys();
-    save.curHealth = player->getHealth();
     char* slotFile = (char*)calloc(20, sizeof(char));
     sprintf(slotFile, "saves/save_%s.bin", save.slot.c_str());
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
@@ -54,6 +50,7 @@ bool pauseLoadMedia()
 }
 void pauseHandleEvent(SDL_Event* e)
 {
+    gameHandleEvent(e);
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
         pauseResumeCall();
     }
@@ -63,9 +60,7 @@ void pauseHandleEvent(SDL_Event* e)
 }
 void pauseUpdate()
 {
-    save.x = player->getPosX();
-    save.y = player->getPosY();
-    save.form = player->getForm();
+    
 }
 void pauseRender()
 {

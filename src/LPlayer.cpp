@@ -104,10 +104,12 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         mIsOnGround = true;
         mJumpsRemaining = mMaxJumps;
         safePositionTimeTimerSeconds += timeStep;
-        if (safePositionTimeTimerSeconds >= safePositionTimeSeconds) {
+        if (safePositionTimeTimerSeconds >= safePositionTimeSeconds && !mIsInvulnerable) {
             mSafePos = {mCollisionBox.x, mCollisionBox.y};
             safePositionTimeTimerSeconds = 0;
-            if (save.difficulty == 0 && mHealth < save.maxHealth) mHealth++;
+            if (save.difficulty == DIFFICULTY_EASY && mHealth < save.maxHealth) mHealth++;
+            save.x = mCollisionBox.x;
+            save.y = mCollisionBox.y;
         }
     } else if (mIsOnGround) {
         coyoteTimeTimerSeconds += timeStep;
@@ -181,10 +183,12 @@ void LPlayer::setForm(int form)
             break;
     }
     mVelX = mPlayerVel * modifiedVel;
+    save.form = mForm;
 }
 void LPlayer::setHealth(int health)
 {
     mHealth = health;
+    save.curHealth = mHealth;
 }
 void LPlayer::setJumps(int jumps)
 {
@@ -193,12 +197,15 @@ void LPlayer::setJumps(int jumps)
 void LPlayer::setKeys(int keys)
 {
     mKeys = keys;
+    save.keys = mKeys;
 }
 void LPlayer::setPos(int x, int y)
 {
     mCollisionBox.x = x;
     mCollisionBox.y = y;
     safePositionTimeTimerSeconds = 0.f;
+    save.x = mCollisionBox.x;
+    save.y = mCollisionBox.y;
 }
 void LPlayer::setInvulnerable(bool isInvulnerable)
 {
