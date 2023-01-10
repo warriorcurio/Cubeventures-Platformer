@@ -21,13 +21,14 @@ class LButton
         void setBGFromPath(std::string path);
         void setLabelFromPath(std::string path);
         void setClickable(bool isClickable);
+        void setSelected(bool isSelected);
         int getX();
         int getY();
         int getW();
         int getH();
     private:
         int mX, mY, mW, mH;
-        bool mClickable;
+        bool mClickable, mIsSelected;
         LTexture mTexture;
         LTexture mLabelTexture;
         ButtonFrames mCurFrame;

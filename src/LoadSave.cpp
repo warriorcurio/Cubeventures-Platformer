@@ -43,6 +43,9 @@ bool loadSaveLoadMedia()
 }
 void loadSaveHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) loadSaveButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, LOADSAVE_BUTTON_TOTAL);
+    if (curButton != -1) loadSaveButtons[curButton]->setSelected(true);
     for (int i = 0; i < LOADSAVE_BUTTON_TOTAL; i++) {
         if (loadSaveButtons[i]) loadSaveButtons[i]->handleEvent(e);
     }

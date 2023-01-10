@@ -108,10 +108,9 @@ void LTexture::setColour(Uint8 r, Uint8 g, Uint8 b)
 void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* centre, SDL_RendererFlip flip)
 {
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
-    if(clip != NULL)
-    {
-        SDL_Rect tempClip = {clip->x, clip->y, clip->x + clip->w > mWidth ? mWidth - clip->x:clip->w, clip->y + clip->h > mHeight?mHeight - clip->y:clip->h};
-        clip = &tempClip;
+    if (clip) {
+        clip->w = clip->x + clip->w > mWidth ? mWidth - clip->x : clip->w;
+        clip->h = clip->y + clip->h > mHeight ? mHeight - clip->y : clip->h;
         renderQuad.w = clip->w;
         renderQuad.h = clip->h;
     }

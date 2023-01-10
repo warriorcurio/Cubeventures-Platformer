@@ -64,6 +64,7 @@ enum Tiles {
     TILE_GRASS_TOPLEFT, TILE_GRASS_TOPMIDDLE, TILE_GRASS_TOPRIGHT, TILE_GRASS_MIDDLELEFT, TILE_GRASS_MIDDLE, TILE_GRASS_MIDDLERIGHT, TILE_GRASS_BOTTOMLEFT, TILE_GRASS_BOTTOMMIDDLE, TILE_GRASS_BOTTOMRIGHT,
     TILE_GRASS_INNER_BOTTOMRIGHT, TILE_GRASS_INNER_BOTTOMLEFT, TILE_GRASS_INNER_TOPLEFT, TILE_GRASS_INNER_TOPRIGHT,
     TILE_GRASS_DOUBLE_VERTICAL, TILE_GRASS_DOUBLE_HORIZONTAL, TILE_GRASS_TRIPLE_TOP, TILE_GRASS_TRIPLE_RIGHT, TILE_GRASS_TRIPLE_BOTTOM, TILE_GRASS_TRIPLE_LEFT, TILE_GRASS_QUADRUPLE,
+    TILE_STONE,
     TILE_TOTAL
 };
 
@@ -106,6 +107,8 @@ enum Keybinds {
 
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
+extern SDL_GameController* gController;
+extern int curButton;
 extern Save save;
 extern std::vector<Scene> backStack;
 extern Resolution levelDimensions[LEVEL_TOTAL];
@@ -115,6 +118,9 @@ extern int curRes;
 extern int maxLevel;
 extern int keybinds[KEYBINDS_TOTAL];
 extern bool quit;
+extern void menuHandleButtonSwitching(SDL_Event* e, int totalButtons);
+extern void changeControllerRGB();
+extern void setWindowIcon(int iconNum);
 extern void savePersistent();
 extern void backCall();
 extern void transition(Scene scene);
@@ -127,4 +133,5 @@ extern void (*close)();
 extern int tileCount;
 extern const int LOGICAL_SCREEN_WIDTH;
 extern const int LOGICAL_SCREEN_HEIGHT;
+extern const int JOYSTICK_DEAD_ZONE;
 #endif

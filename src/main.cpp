@@ -27,13 +27,18 @@ int main(int argc, char* args[])
     close();
     SDL_DestroyWindow(gWindow);
     SDL_DestroyRenderer(gRenderer);
+    SDL_GameControllerClose(gController);
     gWindow = NULL;
     gRenderer = NULL;
+    gController = NULL;
     return 0;
 }
 
 void runMainLoop()
 {
+    if (!gController && SDL_NumJoysticks() > 0) gController = SDL_GameControllerOpen(0);
+    else if (gController && SDL_NumJoysticks() == 0) gController = NULL;
+    else if (gController) changeControllerRGB();
     update();
     render();
     SDL_RenderPresent(gRenderer);

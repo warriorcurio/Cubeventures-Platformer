@@ -24,6 +24,9 @@ bool nameSaveLoadMedia()
 }
 void nameSaveHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) nameSaveButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, NAMESAVE_BUTTON_TOTAL);
+    if (curButton != -1) nameSaveButtons[curButton]->setSelected(true);
     for (int i = 0; i < NAMESAVE_BUTTON_TOTAL; i++) {
         if (nameSaveButtons[i]) nameSaveButtons[i]->handleEvent(e);
     }

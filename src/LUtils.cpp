@@ -3,8 +3,14 @@
 SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
+SDL_GameController* gController = NULL;
+int curButton = -1;
+
 const int LOGICAL_SCREEN_WIDTH = 1920;
 const int LOGICAL_SCREEN_HEIGHT = 1080;
+
+const int JOYSTICK_DEAD_ZONE = 8000;
+Uint8 controllerRGB[3] = {0xFF, 0x00, 0x00};
 
 int maxLevel;
 
@@ -43,6 +49,51 @@ void (*close)();
 Save save;
 std::vector<Scene> backStack;
 
+void menuHandleButtonSwitching(SDL_Event* e, int totalButtons)
+{
+    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_TAB) curButton = (curButton + 1) % totalButtons;
+    else if (e->type == SDL_JOYBUTTONUP) {
+        if (e->jbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP || e->jbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) curButton = (curButton - 1 + totalButtons) % totalButtons;
+        else if (e->jbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN || e->jbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) curButton = (curButton + 1) % totalButtons;
+    }
+}
+void changeControllerRGB()
+{
+    if (player) {
+        switch (player->getForm()) {
+            case FORM_WHITE:
+                SDL_GameControllerSetLED(gController, 0xFF * player->getHealth() / save.maxHealth, 0xFF * player->getHealth() / save.maxHealth, 0xFF * player->getHealth() / save.maxHealth);
+                break;
+            case FORM_RED:
+                SDL_GameControllerSetLED(gController, 0xFF * player->getHealth() / save.maxHealth, 0x00, 0x00);
+                break;
+           case FORM_GREEN:
+                SDL_GameControllerSetLED(gController, 0x00, 0xFF * player->getHealth() / save.maxHealth, 0x00);
+                break;
+            case FORM_BLUE:
+                SDL_GameControllerSetLED(gController, 0x00, 0x00, 0xFF * player->getHealth() / save.maxHealth);
+                break;
+        }
+    } else {
+        SDL_GameControllerSetLED(gController, controllerRGB[0], controllerRGB[1], controllerRGB[2]);
+        if(controllerRGB[2] == 0xFF) {
+            controllerRGB[1] == 0 ? controllerRGB[0]++ : controllerRGB[1]--;
+            if (controllerRGB[0] == 0xFF) controllerRGB[2]--;
+        }
+        else if(controllerRGB[1] == 0xFF) controllerRGB[0] == 0 ? controllerRGB[2]++ : controllerRGB[0]--;
+        else if(controllerRGB[0] == 0xFF) controllerRGB[2] == 0 ? controllerRGB[1]++ : controllerRGB[2]--;
+    }
+}
+void setWindowIcon(int iconNum)
+{
+    SDL_Surface* icons = IMG_Load("res/icons.png");
+    SDL_Surface* icon = SDL_CreateRGBSurfaceWithFormat(icons->flags, 28, 28, icons->format->BitsPerPixel, SDL_PIXELFORMAT_RGBA32);
+    SDL_Rect iconRect = {iconNum * 28, 0, 28, 28};
+    SDL_BlitSurface(icons, &iconRect, icon, NULL);
+    SDL_SetWindowIcon(gWindow, icon);
+    SDL_FreeSurface(icons);
+    SDL_FreeSurface(icon);
+}
 void savePersistent()
 {
     Uint32 windowFlags = SDL_GetWindowFlags(gWindow);
@@ -60,6 +111,7 @@ void backCall()
 }
 void transition(Scene scene)
 {
+    curButton = -1;
     if (!boolScenes[scene]()) return;
     if (scene != SCENE_PAUSE) close();
     loadMedia = boolScenes[scene];
@@ -70,9 +122,14 @@ void transition(Scene scene)
 }
 bool init()
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
         printf("SDL couldn't init: %s\n", SDL_GetError());
         return false;
+    }
+    if (SDL_NumJoysticks() > 0) {
+        gController = SDL_GameControllerOpen(0);
+        if (gController == NULL) printf("Failed to open controller.");
+        else printf("Controller Connected!\n");
     }
     SDL_DisplayMode DM;
     SDL_GetCurrentDisplayMode(0, &DM);
@@ -97,7 +154,7 @@ bool init()
     SDL_RenderSetLogicalSize(gRenderer, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
     int imgFlags = IMG_INIT_PNG|IMG_INIT_JPG;
     if (!(IMG_Init(imgFlags) & imgFlags)) {
-        printf("SDL_image couldn't init: %s\n", IMG_GetError());
+        printf("SDL_image couldn't initialise: %s\n", IMG_GetError());
         return false;
     }
     if (TTF_Init() == -1) {

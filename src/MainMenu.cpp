@@ -35,6 +35,7 @@ void mainMenuExitCall()
 
 bool mainMenuLoadMedia()
 {
+    setWindowIcon(0);
     if (!background.loadFromFile("res/bg.png")) return false;
     if (!logo.loadFromFile("res/logo.png")) return false;
     mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new LButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
@@ -46,6 +47,9 @@ bool mainMenuLoadMedia()
 }
 void mainMenuHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) mainMenuButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, MAINMENU_BUTTON_TOTAL);
+    if (curButton != -1) mainMenuButtons[curButton]->setSelected(true);
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->handleEvent(e);
     }

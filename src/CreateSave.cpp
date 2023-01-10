@@ -56,6 +56,9 @@ bool createSaveLoadMedia()
 }
 void createSaveHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) createSaveButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, CREATESAVE_BUTTON_TOTAL);
+    if (curButton != -1) createSaveButtons[curButton]->setSelected(true);
     for (int i = 0; i < CREATESAVE_BUTTON_TOTAL; i++) {
         if (createSaveButtons[i]) createSaveButtons[i]->handleEvent(e);
     }

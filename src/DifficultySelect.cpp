@@ -47,6 +47,9 @@ bool difficultySelectLoadMedia()
 }
 void difficultySelectHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) difficultySelectButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, DIFFICULTYSELECT_BUTTON_TOTAL);
+    if (curButton != -1) difficultySelectButtons[curButton]->setSelected(true);
     for (int i = 0; i < DIFFICULTYSELECT_BUTTON_TOTAL; i++) {
         if (difficultySelectButtons[i]) difficultySelectButtons[i]->handleEvent(e);
     }

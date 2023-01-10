@@ -75,6 +75,9 @@ bool settingsLoadMedia()
 }
 void settingsHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) settingsButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, SETTINGS_BUTTON_TOTAL);
+    if (curButton != -1) settingsButtons[curButton]->setSelected(true);
     for (int i = 0; i < SETTINGS_BUTTON_TOTAL; i++) {
         if (settingsButtons[i]) settingsButtons[i]->handleEvent(e);
     }

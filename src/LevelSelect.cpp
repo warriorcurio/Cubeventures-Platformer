@@ -52,6 +52,9 @@ bool levelSelectLoadMedia()
 }
 void levelSelectHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) levelSelectButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, LEVELSELECT_BUTTON_TOTAL);
+    if (curButton != -1) levelSelectButtons[curButton]->setSelected(true);
     for (int i = 0; i < LEVELSELECT_BUTTON_TOTAL; i++) {
         if (levelSelectButtons[i]) levelSelectButtons[i]->handleEvent(e);
     }

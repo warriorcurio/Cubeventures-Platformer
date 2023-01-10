@@ -46,6 +46,28 @@ LPlayer::~LPlayer()
 }
 void LPlayer::handleEvent(SDL_Event* e)
 {
+    if (e->type == SDL_JOYAXISMOTION && e->jaxis.which == 0) {
+        if (e->jaxis.axis == 0) {
+            if (e->jaxis.value > JOYSTICK_DEAD_ZONE) mVelX = mPlayerVel;
+            else if (e->jaxis.value < -JOYSTICK_DEAD_ZONE) mVelX = -mPlayerVel;
+            else mVelX = 0;
+        } else if (e->jaxis.axis == 1 && mIsClimbing) {
+            if (e->jaxis.value > JOYSTICK_DEAD_ZONE) mVelY = mPlayerVel;
+            else if (e->jaxis.value < -JOYSTICK_DEAD_ZONE) mVelY = -mPlayerVel;
+            else mVelY = 0;
+        }
+    } else if (e->type == SDL_JOYBUTTONDOWN) {
+        if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A && !mIsClimbing && mJumpsRemaining > 0) {
+            mVelY = -mJumpVelMax;
+            mJumpsRemaining--;
+            SDL_GameControllerRumble(gController, 0x00FF, 0x00FF, 50);
+        } 
+    } else if (e->type == SDL_JOYBUTTONUP) {
+        if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A && !mIsClimbing && mVelY < -mJumpVelMin) {
+            mVelY = -mJumpVelMin;
+        }
+    }
+    if (gController) return;
     if (e->type == SDL_KEYDOWN && e->key.repeat == 0) {
         if (e->key.keysym.sym == keybinds[KEYBINDS_UP] && mIsClimbing) mVelY -= mPlayerVel;
         if (e->key.keysym.sym == keybinds[KEYBINDS_LEFT]) mVelX -= mPlayerVel;
@@ -60,7 +82,7 @@ void LPlayer::handleEvent(SDL_Event* e)
                 setForm((mForm + 1) % FORMS_TOTAL);
                 break;
         }
-    } else if(e->type == SDL_KEYUP && e->key.repeat == 0) {
+    } else if (e->type == SDL_KEYUP && e->key.repeat == 0) {
         if (e->key.keysym.sym == keybinds[KEYBINDS_UP] && mIsClimbing) mVelY = 0;
         if (e->key.keysym.sym == keybinds[KEYBINDS_LEFT]) mVelX += mPlayerVel;
         if (e->key.keysym.sym == keybinds[KEYBINDS_DOWN] && mIsClimbing) mVelY = 0;
@@ -83,8 +105,8 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
         mIsClimbing = true;
         mVelY = 0;
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-        if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_UP])]) mVelY -= mPlayerVel;
-        if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_DOWN])]) mVelY += mPlayerVel;
+        if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_UP])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) < -JOYSTICK_DEAD_ZONE) mVelY -= mPlayerVel;
+        if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_DOWN])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) > JOYSTICK_DEAD_ZONE) mVelY += mPlayerVel;
     } else if (!(mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) ){
         mIsClimbing = false;
         mVelY += mGravity * timeStep;

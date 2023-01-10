@@ -64,6 +64,9 @@ bool keybindSettingsLoadMedia()
 }
 void keybindSettingsHandleEvent(SDL_Event* e)
 {
+    if (curButton != -1) keybindSettingsButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, KEYBINDSETTINGS_BUTTON_TOTAL);
+    if (curButton != -1) keybindSettingsButtons[curButton]->setSelected(true);
     for (int i = 0; i < KEYBINDSETTINGS_BUTTON_TOTAL; i++) {
         if (keybindSettingsButtons[i]) keybindSettingsButtons[i]->handleEvent(e);
     }

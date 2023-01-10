@@ -12,6 +12,7 @@ LButton::LButton(int x, int y, int fontSize, std::string bgColours[3], std::stri
         mH = h;
     }
     mClickable = true;
+    mIsSelected = false;
     mCurFrame = BUTTON_MOUSE_OUT;
     char svg[300];
     sprintf(svg, "<svg width='%d' height='%d'><rect y='0' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#3F3F3F' /></svg>", mW, mH*4, mW, mH, bgColours[0].c_str(), mH, mW, mH, bgColours[1].c_str(), mH*2, mW, mH, bgColours[2].c_str(), mH*3, mW, mH);
@@ -25,27 +26,33 @@ LButton::~LButton()
 }
 void LButton::handleEvent(SDL_Event* e)
 {
+    if (mIsSelected && (e->type == SDL_JOYBUTTONDOWN || e->type == SDL_KEYDOWN)) {
+        if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A || e->key.keysym.sym == SDLK_SPACE) {
+            mCurFrame = BUTTON_MOUSE_DOWN;
+        }
+    } else if (mIsSelected && ((e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_A) || (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_SPACE))) {
+        mCurFrame = BUTTON_MOUSE_OVER;
+        mCallback();
+    }
     if (!(e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) || !mClickable) {
         return;
     }
+    curButton = -1;
     int x, y;
     SDL_GetMouseState(&x, &y);
     float sX, sY;
     SDL_RenderWindowToLogical(gRenderer, x, y, &sX, &sY);
-    bool inside = true;
-    (
+    bool inside = !(
         sX < mX ||
         sX > mX + mW ||
         sY < mY ||
         sY > mY + mH
-    )?inside = false:true;
-    if(!inside)
-    {
+    );
+    if (!inside) {
         mCurFrame = BUTTON_MOUSE_OUT;
         return;
     }
-    switch(e->type)
-    {
+    switch (e->type) {
         case SDL_MOUSEMOTION:
             if (mCurFrame == BUTTON_MOUSE_DOWN) break;
             mCurFrame = BUTTON_MOUSE_OVER;
@@ -89,6 +96,12 @@ void LButton::setLabelFromPath(std::string path)
 void LButton::setClickable(bool isClickable)
 {
     mClickable = isClickable;
+}
+void LButton::setSelected(bool isSelected)
+{
+    mIsSelected = isSelected;
+    if (isSelected) mCurFrame = BUTTON_MOUSE_OVER;
+    else mCurFrame = BUTTON_MOUSE_OUT;
 }
 int LButton::getX()
 {

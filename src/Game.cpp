@@ -40,7 +40,6 @@ LTexture heartTexture;
 SDL_Rect heartClips[3] = {{0, 0, 80, 80}, {0, 80, 80, 80}, {0, 160, 80, 80}};
 LTexture heartTwinkleTexture;
 SDL_Rect heartTwinkleClips[6] = {{0, 0, 9, 9}, {9, 0, 9, 9}, {18, 0, 9, 9}, {0, 9, 9, 9}, {9, 9, 9, 9}, {18, 9, 9, 9}};
-int heartTwinkleNum = -1;
 std::vector<int> heartTwinkleFrames;
 std::vector<SDL_Point> heartTwinklePositions;
 
@@ -119,6 +118,7 @@ bool setTiles()
 
 void setLevel(int level)
 {
+    setWindowIcon(level);
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i]) delete tiles[i];
     }
@@ -156,6 +156,7 @@ void gameDeathQuitCall()
 
 bool gameLoadMedia()
 {
+    setWindowIcon(save.level);
     gameOverTexture.loadFromRenderedText("You Died!", gameButtonTextColour, "res/04b.TTF", 100);
     gameButtons[GAME_BUTTON_DEATHRETRY] = new LButton(0, 0, 80, gameButtonBackgroundColours, "Retry", gameButtonTextColour, &gameDeathRetryCall);
     gameButtons[GAME_BUTTON_DEATHRETRY]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHRETRY]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_DEATHRETRY]->getH()) / 2);
@@ -190,15 +191,17 @@ void gameHandleEvent(SDL_Event* e)
 void gameUpdate()
 {
     if (rand() % 20 == 0 && save.difficulty == DIFFICULTY_EASY && player->getHealth() < save.maxHealth) {
-        heartTwinkleNum = player->getHealth();
         heartTwinkleFrames.push_back(0);
-        heartTwinklePositions.push_back({heartTwinkleNum * 80 + (rand() % 31 + 20), rand() % 41 + 15});
+        heartTwinklePositions.push_back({player->getHealth() * 80 + (rand() % 31 + 20), rand() % 41 + 15});
+    } else {
+        for (int i = 0; i < (int)heartTwinkleFrames.size(); i++) {
+            heartTwinkleFrames[i]++;
+        }
     }
-    if (!heartTwinkleFrames.empty() && heartTwinkleFrames[0] == 60) {
+    if (!heartTwinkleFrames.empty() && heartTwinkleFrames[0] >= 60) {
         heartTwinkleFrames.erase(heartTwinkleFrames.begin());
         heartTwinklePositions.erase(heartTwinklePositions.begin());
     }
-    heartTwinkleNum = -1;
     timeStep = (SDL_GetTicks() - timeTicks) / 1000.f;
     if (isDead) {
         timeTicks = SDL_GetTicks();
@@ -238,10 +241,6 @@ void gameRender()
     for (int i = 0; i < player->getKeys(); i++) {
         keyTexture.render(i * keyTexture.getWidth(), 80);
     }
-    for (int i = 0; i < (int)heartTwinkleFrames.size(); i++) {
-        heartTwinkleTexture.render(heartTwinklePositions[i].x, heartTwinklePositions[i].y, &heartTwinkleClips[heartTwinkleFrames[i] / 10]);
-        heartTwinkleFrames[i]++;
-    }
     if (isDead) {
         SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xAF);
@@ -262,9 +261,12 @@ void gameClose()
     }
     tiles.clear();
     delete player;
+    player = NULL;
     tileTexture.free();
     keyTexture.free();
     heartTexture.free();
     heartTwinkleTexture.free();
+    heartTwinkleFrames.clear();
+    heartTwinklePositions.clear();
     gameOverTexture.free();
 }

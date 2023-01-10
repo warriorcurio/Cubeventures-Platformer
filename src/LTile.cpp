@@ -19,31 +19,36 @@ void LTile::collisionEvent(int tileNum)
             mType = TILE_WHITECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_WHITE);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_REDCRYSTAL:
             mType = TILE_REDCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_RED);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_GREENCRYSTAL:
             mType = TILE_GREENCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_GREEN);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_BLUECRYSTAL:
             mType = TILE_BLUECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_BLUE);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_JUMPCRYSTAL:
             mType = TILE_JUMPCRYSTAL_D;
             mActivationTime = 2.5f;
             player->setJumps(save.maxJumps);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 2, 0xFFFF / 2, 150);
             break;
         case TILE_EXIT:
             save.score += 2000 + save.difficulty * 1000;
-            printf("%d", save.score);
             setLevel(save.level + 1);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 1000);
             break;
         case TILE_KEY:
             mType = TILE_EMPTY;
@@ -54,6 +59,7 @@ void LTile::collisionEvent(int tileNum)
                     break;
                 }
             }
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF, 50);
             break;
         case TILE_LOCK_D:
             mType = TILE_EMPTY;
@@ -69,11 +75,13 @@ void LTile::collisionEvent(int tileNum)
                     break;
                 }
             }
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 3, 50);
             break;
         case TILE_MEDAL:
             mType = TILE_EMPTY;
             save.score += 1000;
             save.collectedMedals[save.level] = true;
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF, 0xFFFF / 6, 250);
             break;
     }
     if (mType < TILE_EMPTY && mType > TILE_EXIT) {
@@ -94,6 +102,7 @@ void LTile::updateTiles(float timeStep)
     if (mActivationTime != 0) {
         mActivationCounter += timeStep;
         if (mActivationCounter < mActivationTime) return;
+        if (gController) SDL_GameControllerRumble(gController, 0xFFFF * 3/4, 0xFFFF / 6, 150);
         mActivationCounter = 0;
         mActivationTime = 0;
         switch (mType) {

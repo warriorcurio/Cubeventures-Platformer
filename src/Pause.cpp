@@ -51,6 +51,9 @@ bool pauseLoadMedia()
 void pauseHandleEvent(SDL_Event* e)
 {
     gameHandleEvent(e);
+    if (curButton != -1) pauseButtons[curButton]->setSelected(false);
+    menuHandleButtonSwitching(e, PAUSE_BUTTON_TOTAL);
+    if (curButton != -1) pauseButtons[curButton]->setSelected(true);
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
         pauseResumeCall();
     }
@@ -60,7 +63,7 @@ void pauseHandleEvent(SDL_Event* e)
 }
 void pauseUpdate()
 {
-    
+
 }
 void pauseRender()
 {
