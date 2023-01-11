@@ -54,10 +54,10 @@ void loadSaveUpdate()
 {
     std::string saveFileNames[3] = {"saves/save_ONE.bin", "saves/save_TWO.bin", "saves/save_THREE.bin"};
     for (int i = LOADSAVE_BUTTON_ONE; i <= LOADSAVE_BUTTON_THREE; i++) {
-        loadSaveButtons[i]->setClickable(std::filesystem::exists(saveFileNames[i - 1].c_str()));
+        loadSaveButtons[i]->setClickable(std::filesystem::exists(saveFileNames[i].c_str()));
     }
     for (int i = LOADSAVE_BUTTON_DELONE; i <= LOADSAVE_BUTTON_DELTHREE; i++) {
-        if (std::filesystem::exists(saveFileNames[i - 4].c_str())) {
+        if (std::filesystem::exists(saveFileNames[i - 3].c_str())) {
             loadSaveButtons[i]->setPos(loadSaveButtons[i - 3]->getX() + (loadSaveButtons[i - 3]->getW() - loadSaveButtons[i]->getW()) / 2, loadSaveButtons[i - 3]->getY() + loadSaveButtons[i - 3]->getH() + 1);
         } else {
             loadSaveButtons[i]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);

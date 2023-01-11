@@ -26,17 +26,14 @@ LButton::~LButton()
 }
 void LButton::handleEvent(SDL_Event* e)
 {
-    if (mIsSelected && (e->type == SDL_JOYBUTTONDOWN || e->type == SDL_KEYDOWN)) {
-        if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A || e->key.keysym.sym == SDLK_SPACE) {
-            mCurFrame = BUTTON_MOUSE_DOWN;
-        }
+    if (!mClickable) return;
+    if (mIsSelected && ((e->type == SDL_JOYBUTTONDOWN && e->jbutton.button == SDL_CONTROLLER_BUTTON_A) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_SPACE))) {
+        mCurFrame = BUTTON_MOUSE_DOWN;
     } else if (mIsSelected && ((e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_A) || (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_SPACE))) {
         mCurFrame = BUTTON_MOUSE_OVER;
         mCallback();
     }
-    if (!(e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP) || !mClickable) {
-        return;
-    }
+    if (!(e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP)) return;
     curButton = -1;
     int x, y;
     SDL_GetMouseState(&x, &y);
@@ -99,6 +96,7 @@ void LButton::setClickable(bool isClickable)
 }
 void LButton::setSelected(bool isSelected)
 {
+    if (!mClickable) return;
     mIsSelected = isSelected;
     if (isSelected) mCurFrame = BUTTON_MOUSE_OVER;
     else mCurFrame = BUTTON_MOUSE_OUT;

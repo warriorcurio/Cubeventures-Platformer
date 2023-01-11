@@ -184,7 +184,7 @@ void gameHandleEvent(SDL_Event* e)
         }
         return;
     }
-    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
+    if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         transition(SCENE_PAUSE);
     }
 }
