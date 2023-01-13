@@ -5,6 +5,7 @@
 #include "LPlayer.h"
 #include "LButton.h"
 #include "LTile.h"
+#include "LProjectile.h"
 
 enum GameButtons {
     GAME_BUTTON_DEATHRETRY,

@@ -12,7 +12,7 @@ LTexture textLevelSelect;
     void levelSelect##NUMBER##Call()\
     {\
         backStack.push_back(SCENE_LEVELSELECT);\
-        save.level = (int)LEVELSELECT_BUTTON_##NUMBER;\
+        save.level = (int)LEVELSELECT_BUTTON_##NUMBER + 1;\
         save.x = 0;\
         save.y = 0;\
         transition(SCENE_DIFFICULTYSELECT);\

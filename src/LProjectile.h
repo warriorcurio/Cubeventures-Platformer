@@ -7,12 +7,9 @@
 class LProjectile
 {
     public:
-        LProjectile(int x, int y);
+        LProjectile(int x, int y, int w, int h, int velX, int velY);
         ~LProjectile();
-        void handleEvent(SDL_Event* e);
         void move(std::vector<LTile*>& tiles, float timeStep);
-        void setCamera(SDL_Rect& camera);
-        void checkItemCollisions(std::vector<LTile*>& tiles);
         void setPos(int x, int y);
         void render(SDL_Rect& camera);
         int getPosX();
@@ -26,9 +23,9 @@ class LProjectile
         SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<LTile*>& tiles);
         LTexture mTexture;
         SDL_Rect mCollisionBox;
-        SDL_Point mSafePos;
-        int mFrame;
-        int mPlayerVel, mVelX, mVelY;
-        int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining, mMaxJumps;
+        int mFrame, mAnimationSpeed, mW, mH;
+        int mVelX, mVelY, mGravity;
+        float mBounceFactor;
+        bool mDecelerates;
 };
 #endif
