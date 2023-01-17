@@ -25,6 +25,7 @@ class LPlayer
         int getForm();
         int getHealth();
         SDL_Point getSafePos();
+        SDL_Rect getBox();
         int getJumps();
         int getKeys();
         int getPosX();

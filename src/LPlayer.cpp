@@ -250,6 +250,10 @@ SDL_Point LPlayer::getSafePos()
 {
     return mSafePos;
 }
+SDL_Rect LPlayer::getBox()
+{
+    return mCollisionBox;
+}
 int LPlayer::getJumps()
 {
     return mJumpsRemaining;

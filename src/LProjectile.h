@@ -25,7 +25,6 @@ class LProjectile
         SDL_Rect mCollisionBox;
         int mFrame, mAnimationSpeed, mW, mH;
         int mVelX, mVelY, mGravity;
-        float mBounceFactor;
-        bool mDecelerates;
+        bool mDestroyOnPlayerCollision, mDestroyOnTileCollision;
 };
 #endif

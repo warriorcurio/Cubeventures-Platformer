@@ -56,7 +56,7 @@ std::string gameButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 LButton* gameButtons[GAME_BUTTON_TOTAL];
 
 LPlayer* player;
-LProjectile* PROJ;
+std::vector<LProjectile*> projectiles;
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
@@ -171,7 +171,7 @@ bool gameLoadMedia()
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
-    PROJ = new LProjectile(400, 400, 25, 25, 500, 600);
+    projectiles.push_back(new LProjectile(400, 400, 25, 25, 300, -300));
     tileTexture.loadFromFile("res/tilesDEBUG.png");
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();
@@ -210,7 +210,9 @@ void gameUpdate()
         return;
     }
     player->move(tiles, timeStep);
-    PROJ->move(tiles, timeStep);
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        if (projectiles[i]) projectiles[i]->move(tiles, timeStep);
+    }
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->updateTiles(timeStep);
     }
@@ -230,7 +232,9 @@ void gameRender()
         tiles[i]->render(camera);
     }
     player->render(camera);
-    PROJ->render(camera);
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        if (projectiles[i]) projectiles[i]->render(camera);
+    }
     for (int i = 0; i < save.maxHealth; i++) {
         heartTexture.render(80 * i, 0, &heartClips[0]);
         if (i < player->getHealth() && save.difficulty != DIFFICULTY_EASY) heartTexture.render(80 * i, 0, &heartClips[1]);
@@ -269,6 +273,9 @@ void gameClose()
     tiles.clear();
     delete player;
     player = NULL;
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        delete projectiles[i];
+    }
     tileTexture.free();
     keyTexture.free();
     heartTexture.free();

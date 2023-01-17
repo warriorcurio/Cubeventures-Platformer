@@ -45,7 +45,7 @@ bool levelSelectLoadMedia()
     levelSelectButtons[LEVELSELECT_BUTTON_EIGHT] = new LButton( 885, 595, 90, levelSelectButtonBackgroundColours,  "8", levelSelectButtonTextColour, &levelSelectEIGHTCall, 150, 150);
     levelSelectButtons[LEVELSELECT_BUTTON_NINE]  = new LButton(1085, 595, 90, levelSelectButtonBackgroundColours,  "9", levelSelectButtonTextColour, &levelSelectNINECall,  150, 150);
     levelSelectButtons[LEVELSELECT_BUTTON_TEN]   = new LButton(1285, 595, 90, levelSelectButtonBackgroundColours, "10", levelSelectButtonTextColour, &levelSelectTENCall,   150, 150);
-    for (int i = maxLevel + 1; i < LEVELSELECT_BUTTON_TOTAL; i++) {
+    for (int i = maxLevel; i < LEVELSELECT_BUTTON_BACK; i++) {
         levelSelectButtons[i]->setClickable(false);
     }
     return true;

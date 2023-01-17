@@ -12,10 +12,11 @@ LProjectile::LProjectile(int x, int y, int w, int h, int velX, int velY)
     mCollisionBox = {x, y, w, h};
     mW = w;
     mH = h;
-    mBounceFactor = 0.5;
     mVelX = velX;
     mVelY = velY;
     mGravity = 1000;
+    mDestroyOnPlayerCollision = false;
+    mDestroyOnTileCollision = true;
     mAnimationSpeed = 10;
 }
 LProjectile::~LProjectile()
@@ -24,30 +25,38 @@ LProjectile::~LProjectile()
 }
 void LProjectile::move(std::vector<LTile*>& tiles, float timeStep)
 {
+    if (mVelX == 0 && mVelY == 0) return;
     SDL_Rect tempBox = mCollisionBox;
     mCollisionBox.x += mVelX * timeStep;
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
     else if(mCollisionBox.x > levelDimensions[save.level - 1].w - mW) mCollisionBox.x = levelDimensions[save.level - 1].w - mW;
-    mVelY += mGravity * timeStep;
+    if (!touchesGround(tiles)) mVelY += mGravity * timeStep;
     mCollisionBox.y += mVelY * timeStep;
     if (mVelY > 6 * mGravity) mVelY = 6 * mGravity;
     if(mCollisionBox.y < 0) mCollisionBox.y = 0;
     else if(mCollisionBox.y > levelDimensions[save.level - 1].h - mH) mCollisionBox.y = levelDimensions[save.level - 1].h - mH;
     if (touchesTile(tiles)) {
+        if (mDestroyOnTileCollision) {
+            mVelX = 0;
+            mVelY = 0;
+            mCollisionBox.x = -mCollisionBox.w;
+            mCollisionBox.y = -mCollisionBox.h;
+            return;
+        }
         SDL_Point point = getNearestCollision(mVelX, 0, tempBox, tiles);
         mCollisionBox.x = point.x;
         point = getNearestCollision(0, mVelY, tempBox, tiles);
-        mCollisionBox.y = point.y;  
+        mCollisionBox.y = point.y;
     }
-    
-    if (touchesGround(tiles) || (touchesCeiling(tiles) && mVelY < 0)) {
-        if (touchesGround(tiles) && mVelY < 150 && mVelY >= 0) {
-            mVelY = 0;
-            mVelX *= 0.8;
-        }
-        mVelY = -mVelY * mBounceFactor;
+    if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) {
+        mVelX = 0;
+        mVelY = 0;
+        mCollisionBox.x = -mCollisionBox.w;
+        mCollisionBox.y = -mCollisionBox.h;
+        if (player->getHealth() < save.maxHealth) player->setHealth(player->getHealth() + 1);
     }
-    if (touchesWallLeft(tiles) || touchesWallRight(tiles)) mVelX = -mVelX * mBounceFactor;
+    if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
+    if (touchesGround(tiles)) mVelX *= 0.8;
 }
 void LProjectile::setPos(int x, int y)
 {
