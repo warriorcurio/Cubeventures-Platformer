@@ -22,8 +22,8 @@ LTexture textCreateSave;
         for (int i = 0; i < 10; i++) {\
             save.collectedMedals[i] = false;\
         }\
-        save.x = 0;\
-        save.y = 1020;\
+        save.x = levelStartPositions[save.level - 1].x;\
+        save.y = levelStartPositions[save.level - 1].y;\
         save.form = FORM_WHITE;\
         SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
         SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\

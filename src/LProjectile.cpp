@@ -5,23 +5,19 @@ SDL_Rect tempclips[1] = {
     { 0,  0, 25, 25}
 };
 
-LProjectile::LProjectile(int x, int y, int w, int h, int velX, int velY)
+LProjectile::LProjectile(int x, int y, int w, int h, int velX, int velY, int gravity, int type)
 {
-    mTexture.loadFromFile("res/heartItem.png");
     mFrame = 0;
     mCollisionBox = {x, y, w, h};
     mW = w;
     mH = h;
     mVelX = velX;
     mVelY = velY;
-    mGravity = 1000;
-    mDestroyOnPlayerCollision = false;
-    mDestroyOnTileCollision = true;
+    mGravity = gravity;
+    mType = type;
+    mDestroyOnPlayerCollision = true;
+    mDestroyOnTileCollision = false;
     mAnimationSpeed = 10;
-}
-LProjectile::~LProjectile()
-{
-    mTexture.free();
 }
 void LProjectile::move(std::vector<LTile*>& tiles, float timeStep)
 {
@@ -37,6 +33,7 @@ void LProjectile::move(std::vector<LTile*>& tiles, float timeStep)
     else if(mCollisionBox.y > levelDimensions[save.level - 1].h - mH) mCollisionBox.y = levelDimensions[save.level - 1].h - mH;
     if (touchesTile(tiles)) {
         if (mDestroyOnTileCollision) {
+            projectileEvent(tiles);
             mVelX = 0;
             mVelY = 0;
             mCollisionBox.x = -mCollisionBox.w;
@@ -49,11 +46,12 @@ void LProjectile::move(std::vector<LTile*>& tiles, float timeStep)
         mCollisionBox.y = point.y;
     }
     if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) {
+        projectileEvent(tiles);
         mVelX = 0;
         mVelY = 0;
         mCollisionBox.x = -mCollisionBox.w;
         mCollisionBox.y = -mCollisionBox.h;
-        if (player->getHealth() < save.maxHealth) player->setHealth(player->getHealth() + 1);
+        return;
     }
     if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
     if (touchesGround(tiles)) mVelX *= 0.8;
@@ -68,7 +66,7 @@ void LProjectile::setPos(int x, int y)
 void LProjectile::render(SDL_Rect& camera)
 {
     mFrame = (mFrame + 1) % mAnimationSpeed;
-    mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &tempclips[mFrame / 10]);
+    projectileTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &tempclips[mFrame / 10]);
 }
 int LProjectile::getPosX()
 {
@@ -77,6 +75,21 @@ int LProjectile::getPosX()
 int LProjectile::getPosY()
 {
     return (int)mCollisionBox.y;
+}
+void LProjectile::projectileEvent(std::vector<LTile*>& tiles)
+{
+    switch (mType) {
+        case PROJECTILE_HEART:
+            if (player->getHealth() < save.maxHealth) player->setHealth(player->getHealth() + 1);
+            break;
+        case PROJECTILE_SHIELD:
+            break;
+        case PROJECTILE_DART:
+            player->setHealth(player->getHealth() - 1);
+            break;
+        case PROJECTILE_OPENER:
+            break;
+    }
 }
 bool LProjectile::touchesTile(std::vector<LTile*>& tiles)
 {

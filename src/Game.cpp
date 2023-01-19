@@ -2,7 +2,7 @@
 
 Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
-    {1920, 4000},
+    {6000, 8000},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -14,7 +14,7 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
 };
 SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {0, 1020},
-    {0, 1020},
+    {0, 0},
     {0, 1020},
     {0, 1020},
     {0, 1020},
@@ -57,6 +57,7 @@ LButton* gameButtons[GAME_BUTTON_TOTAL];
 
 LPlayer* player;
 std::vector<LProjectile*> projectiles;
+LTexture projectileTexture;
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
@@ -171,7 +172,8 @@ bool gameLoadMedia()
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
-    projectiles.push_back(new LProjectile(400, 400, 25, 25, 300, -300));
+    projectileTexture.loadFromFile("res/heartItem.png");
+    projectiles.push_back(new LProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_DART));
     tileTexture.loadFromFile("res/tilesDEBUG.png");
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();
@@ -185,6 +187,9 @@ void gameHandleEvent(SDL_Event* e)
             if (gameButtons[i]) gameButtons[i]->handleEvent(e);
         }
         return;
+    }
+    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h) {
+        projectiles.push_back(new LProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_HEART));
     }
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         transition(SCENE_PAUSE);
@@ -282,5 +287,6 @@ void gameClose()
     heartTwinkleTexture.free();
     heartTwinkleFrames.clear();
     heartTwinklePositions.clear();
+    projectileTexture.free();
     gameOverTexture.free();
 }

@@ -7,24 +7,26 @@
 class LProjectile
 {
     public:
-        LProjectile(int x, int y, int w, int h, int velX, int velY);
-        ~LProjectile();
+        LProjectile(int x, int y, int w, int h, int velX, int velY, int gravity, int type);
         void move(std::vector<LTile*>& tiles, float timeStep);
         void setPos(int x, int y);
         void render(SDL_Rect& camera);
         int getPosX();
         int getPosY();
     private:
+        void projectileEvent(std::vector<LTile*>& tiles);
         bool touchesTile(std::vector<LTile*>& tiles);
         bool touchesGround(std::vector<LTile*>& tiles);
         bool touchesCeiling(std::vector<LTile*>& tiles);
         bool touchesWallRight(std::vector<LTile*>& tiles);
         bool touchesWallLeft(std::vector<LTile*>& tiles);
         SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<LTile*>& tiles);
-        LTexture mTexture;
         SDL_Rect mCollisionBox;
+        int mType;
         int mFrame, mAnimationSpeed, mW, mH;
         int mVelX, mVelY, mGravity;
         bool mDestroyOnPlayerCollision, mDestroyOnTileCollision;
 };
+
+extern LTexture projectileTexture;
 #endif

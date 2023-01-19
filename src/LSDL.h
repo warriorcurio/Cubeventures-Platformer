@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <fstream>
 #include <filesystem>
+#include <algorithm>
 
 enum Scene {
     SCENE_MAINMENU,
@@ -105,6 +106,14 @@ enum Keybinds {
     KEYBINDS_TOTAL
 };
 
+enum ProjectileTypes {
+    PROJECTILE_HEART,
+    PROJECTILE_SHIELD,
+    PROJECTILE_DART,
+    PROJECTILE_OPENER,
+    PROJECTILE_TOTAL
+};
+
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern SDL_GameController* gController;
@@ -112,6 +121,7 @@ extern int curButton;
 extern Save save;
 extern std::vector<Scene> backStack;
 extern Resolution levelDimensions[LEVEL_TOTAL];
+extern SDL_Point levelStartPositions[LEVEL_TOTAL];
 extern SDL_Rect tileClips[TILE_TOTAL];
 extern Resolution resolutions[5];
 extern int curRes;
