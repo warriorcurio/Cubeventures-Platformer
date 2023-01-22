@@ -23,7 +23,7 @@ class LProjectile
         SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<LTile*>& tiles);
         SDL_Rect mCollisionBox;
         int mType;
-        int mFrame, mAnimationSpeed, mW, mH;
+        int mFrame, mAnimationSpeed;
         int mVelX, mVelY, mGravity;
         bool mDestroyOnPlayerCollision, mDestroyOnTileCollision;
 };
