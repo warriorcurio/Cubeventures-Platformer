@@ -172,8 +172,8 @@ bool gameLoadMedia()
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
     timeTicks = SDL_GetTicks();
     player = new LPlayer(save.x, save.y);
-    projectileTexture.loadFromFile("res/heartItem.png");
-    projectiles.push_back(new LProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_DART));
+    projectileTexture.loadFromFile("res/items.png");
+    projectiles.push_back(new LProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_DAMAGEBALL));
     tileTexture.loadFromFile("res/tilesDEBUG.png");
     tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
     setTiles();

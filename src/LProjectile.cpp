@@ -64,7 +64,7 @@ void LProjectile::setPos(int x, int y)
 void LProjectile::render(SDL_Rect& camera)
 {
     mFrame = (mFrame + 1) % mAnimationSpeed;
-    projectileTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &tempclips[mFrame / 10]);
+    projectileTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &tempclips[mFrame / mAnimationSpeed]);
 }
 int LProjectile::getPosX()
 {
@@ -82,7 +82,7 @@ void LProjectile::projectileEvent(std::vector<LTile*>& tiles)
             break;
         case PROJECTILE_SHIELD:
             break;
-        case PROJECTILE_DART:
+        case PROJECTILE_DAMAGEBALL:
             player->setHealth(player->getHealth() - 1);
             break;
         case PROJECTILE_OPENER:
