@@ -5,12 +5,12 @@ std::string nameSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F
 
 std::string inputName;
 
-LButton* nameSaveButtons[NAMESAVE_BUTTON_TOTAL];
+CButton* nameSaveButtons[NAMESAVE_BUTTON_TOTAL];
 
-LTexture nameSaveBG;
-LTexture textNameSave;
-LTexture textEnter;
-LTexture textInputName;
+CTexture nameSaveBG;
+CTexture textNameSave;
+CTexture textEnter;
+CTexture textInputName;
 
 bool nameSaveLoadMedia()
 {
@@ -19,7 +19,7 @@ bool nameSaveLoadMedia()
     nameSaveBG.loadFromFile("res/saveslots.png");
     textNameSave.loadFromRenderedText("Type Your Name", nameSaveButtonTextColour, "res/04b.TTF", 40);
     textEnter.loadFromRenderedText("Press ENTER To Submit", nameSaveButtonTextColour, "res/04b.TTF", 40);
-    nameSaveButtons[NAMESAVE_BUTTON_BACK]  = new LButton(10, 1020, 40, nameSaveButtonBackgroundColours, "Back", nameSaveButtonTextColour, &backCall);
+    nameSaveButtons[NAMESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, nameSaveButtonBackgroundColours, "Back", nameSaveButtonTextColour, &backCall);
     return true;
 }
 void nameSaveHandleEvent(SDL_Event* e)

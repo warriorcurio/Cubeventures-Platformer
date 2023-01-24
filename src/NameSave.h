@@ -1,6 +1,6 @@
 #include "LSDL.h"
-#include "LTexture.h"
-#include "LButton.h"
+#include "CTexture.h"
+#include "CButton.h"
 
 enum NameSaveButtons {
     NAMESAVE_BUTTON_BACK,

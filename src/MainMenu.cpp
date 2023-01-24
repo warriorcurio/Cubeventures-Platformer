@@ -3,9 +3,9 @@
 SDL_Color mainMenuButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string mainMenuButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
-LButton* mainMenuButtons[MAINMENU_BUTTON_TOTAL];
+CButton* mainMenuButtons[MAINMENU_BUTTON_TOTAL];
 
-LTexture background, logo;
+CTexture background, logo;
 
 void mainMenuNewGameCall()
 {
@@ -38,11 +38,11 @@ bool mainMenuLoadMedia()
     setWindowIcon(0);
     if (!background.loadFromFile("res/bg.png")) return false;
     if (!logo.loadFromFile("res/logo.png")) return false;
-    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new LButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
-    mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new LButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);
-    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new LButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &mainMenuLevelSelectCall);
-    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new LButton(75, 740, 40, mainMenuButtonBackgroundColours, "Settings", mainMenuButtonTextColour, &mainMenuSettingsCall);
-    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new LButton(75, 820, 40, mainMenuButtonBackgroundColours, "Exit", mainMenuButtonTextColour, &mainMenuExitCall);
+    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new CButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new CButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new CButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &mainMenuLevelSelectCall);
+    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new CButton(75, 740, 40, mainMenuButtonBackgroundColours, "Settings", mainMenuButtonTextColour, &mainMenuSettingsCall);
+    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new CButton(75, 820, 40, mainMenuButtonBackgroundColours, "Exit", mainMenuButtonTextColour, &mainMenuExitCall);
     return true;
 }
 void mainMenuHandleEvent(SDL_Event* e)

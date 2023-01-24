@@ -1,11 +1,11 @@
 #ifndef GAME_H
 #define GAME_H
 #include "LSDL.h"
-#include "LTexture.h"
-#include "LPlayer.h"
-#include "LButton.h"
-#include "LTile.h"
-#include "LProjectile.h"
+#include "CTexture.h"
+#include "CPlayer.h"
+#include "CButton.h"
+#include "CTile.h"
+#include "CProjectile.h"
 
 enum GameButtons {
     GAME_BUTTON_DEATHRETRY,

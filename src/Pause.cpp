@@ -4,7 +4,7 @@
 SDL_Color pauseButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string pauseButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
-LButton* pauseButtons[PAUSE_BUTTON_TOTAL];
+CButton* pauseButtons[PAUSE_BUTTON_TOTAL];
 
 void pauseResumeCall()
 {
@@ -38,13 +38,13 @@ void pauseQuitCall()
 
 bool pauseLoadMedia()
 {
-    pauseButtons[PAUSE_BUTTON_RESUME]  = new LButton(0, 0, 40, pauseButtonBackgroundColours, "Resume", pauseButtonTextColour, &pauseResumeCall);
+    pauseButtons[PAUSE_BUTTON_RESUME]  = new CButton(0, 0, 40, pauseButtonBackgroundColours, "Resume", pauseButtonTextColour, &pauseResumeCall);
     pauseButtons[PAUSE_BUTTON_RESUME]->setPos((LOGICAL_SCREEN_WIDTH - pauseButtons[PAUSE_BUTTON_RESUME]->getW()) / 2, 400);
-    pauseButtons[PAUSE_BUTTON_SAVE] = new LButton(0, 0, 40, pauseButtonBackgroundColours, "Save", pauseButtonTextColour, &pauseSaveCall);
+    pauseButtons[PAUSE_BUTTON_SAVE] = new CButton(0, 0, 40, pauseButtonBackgroundColours, "Save", pauseButtonTextColour, &pauseSaveCall);
     pauseButtons[PAUSE_BUTTON_SAVE]->setPos((LOGICAL_SCREEN_WIDTH - pauseButtons[PAUSE_BUTTON_SAVE]->getW()) / 2, 475);
-    pauseButtons[PAUSE_BUTTON_SETTINGS] = new LButton(0, 0, 40, pauseButtonBackgroundColours, "Settings", pauseButtonTextColour, &pauseSettingsCall);
+    pauseButtons[PAUSE_BUTTON_SETTINGS] = new CButton(0, 0, 40, pauseButtonBackgroundColours, "Settings", pauseButtonTextColour, &pauseSettingsCall);
     pauseButtons[PAUSE_BUTTON_SETTINGS]->setPos((LOGICAL_SCREEN_WIDTH - pauseButtons[PAUSE_BUTTON_SETTINGS]->getW()) / 2, 550);
-    pauseButtons[PAUSE_BUTTON_QUIT] = new LButton(0, 0, 40, pauseButtonBackgroundColours, "Quit", pauseButtonTextColour, &pauseQuitCall);
+    pauseButtons[PAUSE_BUTTON_QUIT] = new CButton(0, 0, 40, pauseButtonBackgroundColours, "Quit", pauseButtonTextColour, &pauseQuitCall);
     pauseButtons[PAUSE_BUTTON_QUIT]->setPos((LOGICAL_SCREEN_WIDTH - pauseButtons[PAUSE_BUTTON_QUIT]->getW()) / 2, 625);
     return true;
 }

@@ -1,8 +1,8 @@
-#include "LTile.h"
-#include "LPlayer.h"
+#include "CTile.h"
+#include "CPlayer.h"
 #include "Game.h"
 
-LTile::LTile(int x, int y, int tileType)
+CTile::CTile(int x, int y, int tileType)
 {
     mCollisionBox.x = x;
     mCollisionBox.y = y;
@@ -12,7 +12,7 @@ LTile::LTile(int x, int y, int tileType)
     mActivationCounter = 0;
     mType = tileType;
 }
-void LTile::collisionEvent(int tileNum)
+void CTile::collisionEvent(int tileNum)
 {
     switch (mType) {
         case TILE_WHITECRYSTAL:
@@ -86,7 +86,8 @@ void LTile::collisionEvent(int tileNum)
     }
     if (mType < TILE_EMPTY && mType > TILE_EXIT) {
         if (player->getInvulnerable()) return;
-        player->setHealth(player->getHealth() - 1);
+        if (player->getShield() > 0) player->setShield(player->getShield() - 1);
+        else player->setHealth(player->getHealth() - 1);
         player->setPos(player->getSafePos().x, player->getSafePos().y);
         if (player->getHealth() == 0) {
             save.deaths++;
@@ -97,7 +98,7 @@ void LTile::collisionEvent(int tileNum)
         } else player->setInvulnerable(true);
     }
 }
-void LTile::updateTiles(float timeStep)
+void CTile::updateTiles(float timeStep)
 {
     if (mActivationTime != 0) {
         mActivationCounter += timeStep;
@@ -121,22 +122,22 @@ void LTile::updateTiles(float timeStep)
         }
     }
 }
-void LTile::render(SDL_Rect& camera)
+void CTile::render(SDL_Rect& camera)
 {
     if(checkCollision(camera, mCollisionBox))
     {
         tileTexture.render(mCollisionBox.x - camera.x, mCollisionBox.y - camera.y, &tileClips[mType]);
     }
 }
-void LTile::setType(int type)
+void CTile::setType(int type)
 {
     mType = type;
 }
-int LTile::getType()
+int CTile::getType()
 {
     return mType;
 }
-SDL_Rect LTile::getBox()
+SDL_Rect CTile::getBox()
 {
     return mCollisionBox;
 }

@@ -1,18 +1,18 @@
-#include "LTexture.h"
+#include "CTexture.h"
 
 TTF_Font* font= NULL;
 
-LTexture::LTexture()
+CTexture::CTexture()
 {
     mTexture = NULL;
     mWidth = 0;
     mHeight = 0;
 }
-LTexture::~LTexture()
+CTexture::~CTexture()
 {
     free();
 }
-bool LTexture::loadFromFile(std::string path)
+bool CTexture::loadFromFile(std::string path)
 {
     free();
     SDL_Texture* newTexture = NULL;
@@ -39,7 +39,7 @@ bool LTexture::loadFromFile(std::string path)
     mTexture = newTexture;
     return mTexture != NULL;
 }
-bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, std::string path, int size)
+bool CTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor, std::string path, int size)
 {
     free();
     font = TTF_OpenFont(path.c_str(), size);
@@ -64,7 +64,7 @@ bool LTexture::loadFromRenderedText(std::string textureText, SDL_Color textColor
     }
     return mTexture != NULL;
 }
-bool LTexture::loadFromSVG(std::string svg)
+bool CTexture::loadFromSVG(std::string svg)
 {
     free();
     SDL_RWops* rw = SDL_RWFromConstMem(svg.c_str(), svg.size());
@@ -91,7 +91,7 @@ bool LTexture::loadFromSVG(std::string svg)
     mTexture = newTexture;
     return mTexture != NULL;
 }
-void LTexture::free()
+void CTexture::free()
 {
     if(mTexture != NULL)
     {
@@ -101,11 +101,11 @@ void LTexture::free()
         mHeight = 0;
     }
 }
-void LTexture::setColour(Uint8 r, Uint8 g, Uint8 b)
+void CTexture::setColour(Uint8 r, Uint8 g, Uint8 b)
 {
     SDL_SetTextureColorMod(mTexture, r, g, b);
 }
-void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* centre, SDL_RendererFlip flip)
+void CTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* centre, SDL_RendererFlip flip)
 {
     SDL_Rect renderQuad = {x, y, mWidth, mHeight};
     if (clip) {
@@ -116,11 +116,11 @@ void LTexture::render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* cen
     }
     SDL_RenderCopyEx(gRenderer, mTexture, clip, &renderQuad, angle, centre, flip);
 }
-int LTexture::getWidth()
+int CTexture::getWidth()
 {
     return mWidth;
 }
-int LTexture::getHeight()
+int CTexture::getHeight()
 {
     return mHeight;
 }

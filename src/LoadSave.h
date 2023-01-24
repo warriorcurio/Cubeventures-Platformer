@@ -1,6 +1,6 @@
 #include "LSDL.h"
-#include "LTexture.h"
-#include "LButton.h"
+#include "CTexture.h"
+#include "CButton.h"
 
 enum LoadSaveButtons {
     LOADSAVE_BUTTON_ONE,

@@ -6,9 +6,9 @@ int curRes = 4;
 SDL_Color settingsButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string settingsButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
-LTexture settingsBG;
+CTexture settingsBG;
 
-LButton* settingsButtons[SETTINGS_BUTTON_TOTAL];
+CButton* settingsButtons[SETTINGS_BUTTON_TOTAL];
 
 void settingsWindowEditCall()
 {
@@ -25,7 +25,7 @@ void settingsWindowEditCall()
         windowEditLabel = "Fullscreen";
     }
     delete settingsButtons[SETTINGS_BUTTON_WINDOWEDIT];
-    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 40, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
+    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new CButton(0, 0, 40, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
 }
 void settingsResolutionCall()
@@ -42,7 +42,7 @@ void settingsResolutionCall()
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
     delete settingsButtons[SETTINGS_BUTTON_RESOLUTION];
-    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
+    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new CButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
 }
 void settingsKeybindsCall()
@@ -54,10 +54,10 @@ void settingsKeybindsCall()
 bool settingsLoadMedia()
 {
     settingsBG.loadFromFile("res/saveslots.png");
-    settingsButtons[SETTINGS_BUTTON_BACK] = new LButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &backCall);
+    settingsButtons[SETTINGS_BUTTON_BACK] = new CButton(10, 1020, 40, settingsButtonBackgroundColours, "Back", settingsButtonTextColour, &backCall);
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
-    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new LButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
+    settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new CButton(0, 0, 40, settingsButtonBackgroundColours, res, settingsButtonTextColour, &settingsResolutionCall);
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2);
     std::string windowEditLabel;
     if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
@@ -67,9 +67,9 @@ bool settingsLoadMedia()
     } else {
         windowEditLabel = "Bordered";
     }
-    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new LButton(0, 0, 40, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
+    settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new CButton(0, 0, 40, settingsButtonBackgroundColours, windowEditLabel.c_str(), settingsButtonTextColour, &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
-    settingsButtons[SETTINGS_BUTTON_KEYBINDS] = new LButton(0, 0, 40, settingsButtonBackgroundColours, "Keybinds", settingsButtonTextColour, &settingsKeybindsCall);
+    settingsButtons[SETTINGS_BUTTON_KEYBINDS] = new CButton(0, 0, 40, settingsButtonBackgroundColours, "Keybinds", settingsButtonTextColour, &settingsKeybindsCall);
     settingsButtons[SETTINGS_BUTTON_KEYBINDS]->setPos(300 + (440 - settingsButtons[SETTINGS_BUTTON_KEYBINDS]->getW()) / 2, 515);
     return true;
 }

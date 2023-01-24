@@ -11,7 +11,6 @@
 #include <iomanip>
 #include <fstream>
 #include <filesystem>
-#include <algorithm>
 
 enum Scene {
     SCENE_MAINMENU,

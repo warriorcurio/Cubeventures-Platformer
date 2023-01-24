@@ -1,4 +1,4 @@
-#include "LPlayer.h"
+#include "CPlayer.h"
 #include "Game.h"
 
 const float coyoteTimeSeconds = 0.1f;
@@ -22,7 +22,7 @@ SDL_Rect defaultAnimFrameClips[11] = {
     { 0,  0, 20, 20}
 };
 
-LPlayer::LPlayer(int x, int y)
+CPlayer::CPlayer(int x, int y)
 {
     mTexture.loadFromFile("res/player.png");
     mFrame = 0;
@@ -40,11 +40,11 @@ LPlayer::LPlayer(int x, int y)
     mIsInvulnerable = false;
     mIsOnGround = false;
 }
-LPlayer::~LPlayer()
+CPlayer::~CPlayer()
 {
     mTexture.free();
 }
-void LPlayer::handleEvent(SDL_Event* e)
+void CPlayer::handleEvent(SDL_Event* e)
 {
     if (e->type == SDL_JOYAXISMOTION && e->jaxis.which == 0) {
         if (e->jaxis.axis == 0) {
@@ -90,7 +90,7 @@ void LPlayer::handleEvent(SDL_Event* e)
         if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mVelY < -mJumpVelMin) mVelY = -mJumpVelMin;
     }
 }
-void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
+void CPlayer::move(std::vector<CTile*>& tiles, float timeStep)
 {
     SDL_Rect tempBox = mCollisionBox;
     if (mIsInvulnerable) invulnerabilityTimeTimerSeconds += timeStep;
@@ -143,7 +143,7 @@ void LPlayer::move(std::vector<LTile*>& tiles, float timeStep)
     }
     if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
 }
-void LPlayer::setCamera(SDL_Rect& camera)
+void CPlayer::setCamera(SDL_Rect& camera)
 {
     SDL_Rect tempCamera = camera;
     camera.x = ((int)mCollisionBox.x + PLAYER_WIDTH / 2) - LOGICAL_SCREEN_WIDTH / 2;
@@ -156,7 +156,7 @@ void LPlayer::setCamera(SDL_Rect& camera)
     if(camera.y > levelDimensions[save.level - 1].h - camera.h) camera.y = levelDimensions[save.level - 1].h - camera.h;
     parallaxOffset -= (camera.x - tempCamera.x) / 3;
 }
-void LPlayer::checkItemCollisions(std::vector<LTile*>& tiles)
+void CPlayer::checkItemCollisions(std::vector<CTile*>& tiles)
 {
     for(int i = 0; i < tileCount; i++)
     {
@@ -166,7 +166,7 @@ void LPlayer::checkItemCollisions(std::vector<LTile*>& tiles)
         }
     }
 }
-void LPlayer::setForm(int form)
+void CPlayer::setForm(int form)
 {
     int modifiedVel = 0;
     if (mVelX == mPlayerVel || mVelX == -mPlayerVel) {
@@ -207,21 +207,25 @@ void LPlayer::setForm(int form)
     mVelX = mPlayerVel * modifiedVel;
     save.form = mForm;
 }
-void LPlayer::setHealth(int health)
+void CPlayer::setHealth(int health)
 {
     mHealth = health;
     save.curHealth = mHealth;
 }
-void LPlayer::setJumps(int jumps)
+void CPlayer::setShield(int shield)
+{
+    mShield = shield;
+}
+void CPlayer::setJumps(int jumps)
 {
     mJumpsRemaining = jumps;
 }
-void LPlayer::setKeys(int keys)
+void CPlayer::setKeys(int keys)
 {
     mKeys = keys;
     save.keys = mKeys;
 }
-void LPlayer::setPos(int x, int y)
+void CPlayer::setPos(int x, int y)
 {
     mCollisionBox.x = x;
     mCollisionBox.y = y;
@@ -229,56 +233,60 @@ void LPlayer::setPos(int x, int y)
     save.x = mCollisionBox.x;
     save.y = mCollisionBox.y;
 }
-void LPlayer::setInvulnerable(bool isInvulnerable)
+void CPlayer::setInvulnerable(bool isInvulnerable)
 {
     mIsInvulnerable = isInvulnerable;
 }
-void LPlayer::render(SDL_Rect& camera)
+void CPlayer::render(SDL_Rect& camera)
 {
     if (!mIsInvulnerable) mFrame = (mFrame + 1) % 43;
     if (!mIsInvulnerable || rand() % 3 == 0) mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &defaultAnimFrameClips[mFrame / 4]);
 }
-int LPlayer::getForm()
+int CPlayer::getForm()
 {
     return mForm;
 }
-int LPlayer::getHealth()
+int CPlayer::getHealth()
 {
     return mHealth;
 }
-SDL_Point LPlayer::getSafePos()
+int CPlayer::getShield()
+{
+    return mShield;
+}
+SDL_Point CPlayer::getSafePos()
 {
     return mSafePos;
 }
-SDL_Rect LPlayer::getBox()
+SDL_Rect CPlayer::getBox()
 {
     return mCollisionBox;
 }
-int LPlayer::getJumps()
+int CPlayer::getJumps()
 {
     return mJumpsRemaining;
 }
-int LPlayer::getKeys()
+int CPlayer::getKeys()
 {
     return mKeys;
 }
-int LPlayer::getPosX()
+int CPlayer::getPosX()
 {
     return (int)mCollisionBox.x;
 }
-int LPlayer::getPosY()
+int CPlayer::getPosY()
 {
     return (int)mCollisionBox.y;
 }
-bool LPlayer::getInvulnerable()
+bool CPlayer::getInvulnerable()
 {
     return mIsInvulnerable;
 }
-bool LPlayer::touchesTile(std::vector<LTile*>& tiles)
+bool CPlayer::touchesTile(std::vector<CTile*>& tiles)
 {
-    int topLeftTile = ((int)(mCollisionBox.y / LTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + (int)(mCollisionBox.x / LTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH);
+        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
         if (curTile < 0 || curTile + 2 >= tileCount) continue;
         if(tiles[curTile]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile]->getBox())) return true;
         if(tiles[curTile + 1]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) return true;
@@ -286,68 +294,65 @@ bool LPlayer::touchesTile(std::vector<LTile*>& tiles)
     }
     return false;
 }
-bool LPlayer::touchesGround(std::vector<LTile*>& tiles)
+bool CPlayer::touchesGround(std::vector<CTile*>& tiles)
 {
     if (mCollisionBox.y == levelDimensions[save.level - 1].h - mCollisionBox.h) return true; 
     SDL_Rect groundBox = {mCollisionBox.x, mCollisionBox.y + mCollisionBox.h, mCollisionBox.w, 1};
-    int bottomLeftTile = ((int)(mCollisionBox.y / LTile::TILE_HEIGHT) + 1) * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + (int)(mCollisionBox.x / LTile::TILE_WIDTH) - 1;
+    int bottomLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) + 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = bottomLeftTile; i < bottomLeftTile + 3; i++) {
         if (i >= tileCount) continue;
         if(tiles[i]->getType() > TILE_EMPTY && checkCollision(groundBox, tiles[i]->getBox())) return true;
     }
     return false;
 }
-bool LPlayer::touchesCeiling(std::vector<LTile*>& tiles)
+bool CPlayer::touchesCeiling(std::vector<CTile*>& tiles)
 {
     if (mCollisionBox.y == 0) return true; 
     SDL_Rect ceilingBox = {mCollisionBox.x, mCollisionBox.y - 1, mCollisionBox.w, 1};
-    int topLeftTile = ((int)(mCollisionBox.y / LTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + (int)(mCollisionBox.x / LTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = topLeftTile; i < topLeftTile + 3; i++) {
         if (i < 0) continue;
         if(tiles[i]->getType() > TILE_EMPTY && checkCollision(ceilingBox, tiles[i]->getBox())) return true;
     }
     return false;
 }
-bool LPlayer::touchesWallRight(std::vector<LTile*>& tiles)
+bool CPlayer::touchesWallRight(std::vector<CTile*>& tiles)
 {
     if (mCollisionBox.x == levelDimensions[save.level - 1].w - mCollisionBox.w) return true; 
     SDL_Rect rightBox = {mCollisionBox.x + mCollisionBox.w, mCollisionBox.y, 1, mCollisionBox.h};
-    int topRightTile = ((int)(mCollisionBox.y / LTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + (int)(mCollisionBox.x / LTile::TILE_WIDTH) + 1;
+    int topRightTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) + 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topRightTile + i * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH);
+        int curTile = topRightTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
         if (curTile < 0 || curTile >= tileCount) continue;
         if(tiles[curTile]->getType() > TILE_EMPTY && checkCollision(rightBox, tiles[curTile]->getBox())) return true;
     }
     return false;
 }
-bool LPlayer::touchesWallLeft(std::vector<LTile*>& tiles)
+bool CPlayer::touchesWallLeft(std::vector<CTile*>& tiles)
 {
     if (mCollisionBox.x == 0) return true; 
     SDL_Rect leftBox = {mCollisionBox.x - 1, mCollisionBox.y, 1, mCollisionBox.h};
-    int topLeftTile = ((int)(mCollisionBox.y / LTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + (int)(mCollisionBox.x / LTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH);
+        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
         if (curTile < 0 || curTile >= tileCount) continue;
         if(tiles[curTile]->getType() > TILE_EMPTY && checkCollision(leftBox, tiles[curTile]->getBox())) return true;
     }
     return false;
 }
-SDL_Point LPlayer::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<LTile*>& tiles)
+SDL_Point CPlayer::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<CTile*>& tiles)
 {
     SDL_Point point = {mCollisionBox.x, mCollisionBox.y};
-    for(int i = 0; i < tileCount; i++)
-    {
-        if(tiles[i]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[i]->getBox()))
-        {
-            if(xVel > 0 && oldBox.y > tiles[i]->getBox().y - oldBox.h && oldBox.y < tiles[i]->getBox().y + tiles[i]->getBox().h) {
-                point.x = tiles[i]->getBox().x - oldBox.w;
-            } else if(xVel < 0 && oldBox.y > tiles[i]->getBox().y - oldBox.h && oldBox.y < tiles[i]->getBox().y + tiles[i]->getBox().h) {
-                point.x = tiles[i]->getBox().x + tiles[i]->getBox().w;
-            }
-            if(yVel > 0 && oldBox.x > tiles[i]->getBox().x - oldBox.w && oldBox.x < tiles[i]->getBox().x + tiles[i]->getBox().w) {
-                point.y = tiles[i]->getBox().y - oldBox.h;
-            } else if(yVel < 0 && oldBox.x > tiles[i]->getBox().x - oldBox.w && oldBox.x < tiles[i]->getBox().x + tiles[i]->getBox().w) {
-                point.y = tiles[i]->getBox().y + tiles[i]->getBox().h;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    for (int i = 0; i < 3; i++) {
+        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        for (int j = curTile; j < curTile + 3; j++) {
+            if (j < 0 || j > tileCount) continue;
+            if (tiles[j]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[j]->getBox())) {
+                if(xVel > 0 && oldBox.y > tiles[j]->getBox().y - oldBox.h && oldBox.y < tiles[j]->getBox().y + tiles[j]->getBox().h) point.x = tiles[j]->getBox().x - oldBox.w;
+                else if(xVel < 0 && oldBox.y > tiles[j]->getBox().y - oldBox.h && oldBox.y < tiles[j]->getBox().y + tiles[j]->getBox().h) point.x = tiles[j]->getBox().x + tiles[j]->getBox().w;
+                if(yVel > 0 && oldBox.x > tiles[j]->getBox().x - oldBox.w && oldBox.x < tiles[j]->getBox().x + tiles[j]->getBox().w) point.y = tiles[j]->getBox().y - oldBox.h;
+                else if(yVel < 0 && oldBox.x > tiles[j]->getBox().x - oldBox.w && oldBox.x < tiles[j]->getBox().x + tiles[j]->getBox().w) point.y = tiles[j]->getBox().y + tiles[j]->getBox().h;
             }
         }
     }

@@ -1,6 +1,6 @@
 #include "LSDL.h"
-#include "LTexture.h"
-#include "LTile.h"
+#include "CTexture.h"
+#include "CTile.h"
 
 bool mapEditorLoadMedia();
 void mapEditorHandleEvent(SDL_Event* e);

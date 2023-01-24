@@ -14,7 +14,7 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
 };
 SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {0, 1020},
-    {0, 0},
+    {0,   80},
     {0, 1020},
     {0, 1020},
     {0, 1020},
@@ -31,33 +31,33 @@ float timeStep;
 Uint32 timeTicks;
 
 int tileCount;
-std::vector<LTile*> tiles;
+std::vector<CTile*> tiles;
 SDL_Rect tileClips[TILE_TOTAL];
-LTexture tileTexture;
+CTexture tileTexture;
 
-LTexture keyTexture;
-LTexture heartTexture;
-SDL_Rect heartClips[3] = {{0, 0, 80, 80}, {0, 80, 80, 80}, {0, 160, 80, 80}};
-LTexture heartTwinkleTexture;
+CTexture keyTexture;
+CTexture heartTexture;
+SDL_Rect heartClips[4] = {{0, 0, 80, 80}, {0, 80, 80, 80}, {0, 160, 80, 80}, {0, 240, 80, 80}};
+CTexture heartTwinkleTexture;
 SDL_Rect heartTwinkleClips[6] = {{0, 0, 9, 9}, {9, 0, 9, 9}, {18, 0, 9, 9}, {0, 9, 9, 9}, {9, 9, 9, 9}, {18, 9, 9, 9}};
 std::vector<int> heartTwinkleFrames;
 std::vector<SDL_Point> heartTwinklePositions;
 
 bool isDead;
-LTexture gameOverTexture;
+CTexture gameOverTexture;
 
-LTexture bgTexture;
-LTexture bgPTexture;
+CTexture bgTexture;
+CTexture bgPTexture;
 float parallaxOffset;
 
 SDL_Color gameButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string gameButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
-LButton* gameButtons[GAME_BUTTON_TOTAL];
+CButton* gameButtons[GAME_BUTTON_TOTAL];
 
-LPlayer* player;
-std::vector<LProjectile*> projectiles;
-LTexture projectileTexture;
+CPlayer* player;
+std::vector<CProjectile*> projectiles;
+CTexture projectileTexture;
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
@@ -88,24 +88,24 @@ bool setTiles()
             tileType = TILE_EMPTY;
         }
         if(tileType >= 0 && tileType < TILE_TOTAL) {
-            tiles.push_back(new LTile(x, y, tileType));
+            tiles.push_back(new CTile(x, y, tileType));
         } else {
             printf("Error loading map: Invalid tile type at %d\n", i);
             return false;
         }
-        x += LTile::TILE_WIDTH;
+        x += CTile::TILE_WIDTH;
         if(x >= levelDimensions[save.level - 1].w) {
             x = 0;
-            y += LTile::TILE_HEIGHT;
+            y += CTile::TILE_HEIGHT;
         }
     }
     x = 0, y = 0;
     for (int i = 0; i < TILE_TOTAL; i++) {
-        tileClips[i] = {x, y, LTile::TILE_WIDTH, LTile::TILE_HEIGHT};
-        x += LTile::TILE_WIDTH;
+        tileClips[i] = {x, y, CTile::TILE_WIDTH, CTile::TILE_HEIGHT};
+        x += CTile::TILE_WIDTH;
         if(x >= tileTexture.getWidth()) {
             x = 0;
-            y += LTile::TILE_HEIGHT;
+            y += CTile::TILE_HEIGHT;
         }
     }
     map.close();
@@ -127,7 +127,7 @@ void setLevel(int level)
     tiles.clear();
     parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
     save.level = level;
-    player->setPos(levelStartPositions[save.level].x, levelStartPositions[save.level].y);
+    player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
     for (int i = 0; i < 5; i++) {
         save.collectedKeys[i] = 0;
         save.unlockedLocks[i] = 0;
@@ -142,7 +142,7 @@ void setLevel(int level)
     SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
     SDL_RWclose(writeFile);
     timeTicks = SDL_GetTicks();
-    tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
+    tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
     setTiles();
 }
 
@@ -160,9 +160,9 @@ bool gameLoadMedia()
 {
     setWindowIcon(save.level);
     gameOverTexture.loadFromRenderedText("You Died!", gameButtonTextColour, "res/04b.TTF", 100);
-    gameButtons[GAME_BUTTON_DEATHRETRY] = new LButton(0, 0, 80, gameButtonBackgroundColours, "Retry", gameButtonTextColour, &gameDeathRetryCall);
+    gameButtons[GAME_BUTTON_DEATHRETRY] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Retry", gameButtonTextColour, &gameDeathRetryCall);
     gameButtons[GAME_BUTTON_DEATHRETRY]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHRETRY]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_DEATHRETRY]->getH()) / 2);
-    gameButtons[GAME_BUTTON_DEATHQUIT] = new LButton(0, 0, 80, gameButtonBackgroundColours, "Quit", gameButtonTextColour, &gameDeathQuitCall);
+    gameButtons[GAME_BUTTON_DEATHQUIT] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Quit", gameButtonTextColour, &gameDeathQuitCall);
     gameButtons[GAME_BUTTON_DEATHQUIT]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHQUIT]->getW()) / 2, gameButtons[GAME_BUTTON_DEATHRETRY]->getY() + 120);
     bgTexture.loadFromFile("res/bgONE.png");
     bgPTexture.loadFromFile("res/bgONE_P.png");
@@ -171,11 +171,13 @@ bool gameLoadMedia()
     heartTexture.loadFromFile("res/hearts.png");
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
     timeTicks = SDL_GetTicks();
-    player = new LPlayer(save.x, save.y);
+    player = new CPlayer(save.x, save.y);
     projectileTexture.loadFromFile("res/items.png");
-    projectiles.push_back(new LProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_DAMAGEBALL));
+    projectiles.push_back(new CProjectile(400, 300, 25, 25, 300, -300, 1000, PROJECTILE_DAMAGEBALL));
+    projectiles.push_back(new CProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_OPENER));
+    projectiles.push_back(new CProjectile(400, 500, 25, 25, 300, -300, 1000, PROJECTILE_SHIELD));
     tileTexture.loadFromFile("res/tilesDEBUG.png");
-    tileCount = (levelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
+    tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
     setTiles();
     return true;
 }
@@ -189,7 +191,9 @@ void gameHandleEvent(SDL_Event* e)
         return;
     }
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h) {
-        projectiles.push_back(new LProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_HEART));
+        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_HEART));
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_j) {
+        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_SHIELD));
     }
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         transition(SCENE_PAUSE);
@@ -250,6 +254,9 @@ void gameRender()
             regenClip.y = heartClips[2].y + 80 - regenClip.h;
             heartTexture.render(80 * i, 80 - regenClip.h, &regenClip);
         }
+    }
+    for (int i = 0; i < player->getShield(); i++) {
+        heartTexture.render(80 * (save.maxHealth + i), 0, &heartClips[3]);
     }
     if (!heartTwinklePositions.empty()) for (int i = 0; i < (int)heartTwinkleFrames.size(); i++) {
         heartTwinkleTexture.render(heartTwinklePositions[i].x, heartTwinklePositions[i].y, &heartTwinkleClips[heartTwinkleFrames[i] / 10]);

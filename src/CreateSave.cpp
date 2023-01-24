@@ -4,10 +4,10 @@ SDL_Color createSaveButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string createSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 std::string createSaveButtonDelBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};
 
-LButton* createSaveButtons[CREATESAVE_BUTTON_TOTAL];
+CButton* createSaveButtons[CREATESAVE_BUTTON_TOTAL];
 
-LTexture saveBG;
-LTexture textCreateSave;
+CTexture saveBG;
+CTexture textCreateSave;
 
 #define GEN_CREATESAVE_CALL(NUMBER)\
     void createSave##NUMBER##Call()\
@@ -42,13 +42,13 @@ bool createSaveLoadMedia()
 {
     saveBG.loadFromFile("res/saveslots.png");
     textCreateSave.loadFromRenderedText("Create Save", createSaveButtonTextColour, "res/04b.TTF", 40);
-    createSaveButtons[CREATESAVE_BUTTON_BACK]  = new LButton(10, 1020, 40, createSaveButtonBackgroundColours, "Back", createSaveButtonTextColour, &backCall);
-    createSaveButtons[CREATESAVE_BUTTON_ONE] = new LButton(402, 390, 60, createSaveButtonBackgroundColours, "1", createSaveButtonTextColour, &createSaveONECall, 300, 300);
-    createSaveButtons[CREATESAVE_BUTTON_TWO] = new LButton(810, 390, 60, createSaveButtonBackgroundColours, "2", createSaveButtonTextColour, &createSaveTWOCall, 300, 300);
-    createSaveButtons[CREATESAVE_BUTTON_THREE] = new LButton(1218, 390, 60, createSaveButtonBackgroundColours, "3", createSaveButtonTextColour, &createSaveTHREECall, 300, 300);
-    createSaveButtons[CREATESAVE_BUTTON_DELONE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelONECall);
-    createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTWOCall);
-    createSaveButtons[CREATESAVE_BUTTON_DELTHREE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTHREECall);
+    createSaveButtons[CREATESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, createSaveButtonBackgroundColours, "Back", createSaveButtonTextColour, &backCall);
+    createSaveButtons[CREATESAVE_BUTTON_ONE] = new CButton(402, 390, 60, createSaveButtonBackgroundColours, "1", createSaveButtonTextColour, &createSaveONECall, 300, 300);
+    createSaveButtons[CREATESAVE_BUTTON_TWO] = new CButton(810, 390, 60, createSaveButtonBackgroundColours, "2", createSaveButtonTextColour, &createSaveTWOCall, 300, 300);
+    createSaveButtons[CREATESAVE_BUTTON_THREE] = new CButton(1218, 390, 60, createSaveButtonBackgroundColours, "3", createSaveButtonTextColour, &createSaveTHREECall, 300, 300);
+    createSaveButtons[CREATESAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelONECall);
+    createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTWOCall);
+    createSaveButtons[CREATESAVE_BUTTON_DELTHREE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTHREECall);
     for (int i = CREATESAVE_BUTTON_DELONE; i <= CREATESAVE_BUTTON_DELTHREE; i++) {
         createSaveButtons[i]->setLabelFromPath("res/trash.png");
     }

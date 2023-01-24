@@ -1,7 +1,7 @@
-#ifndef LBUTTON_H
-#define LBUTTON_H
+#ifndef CBUTTON_H
+#define CBUTTON_H
 #include "LSDL.h"
-#include "LTexture.h"
+#include "CTexture.h"
 
 enum ButtonFrames
 {
@@ -10,11 +10,11 @@ enum ButtonFrames
     BUTTON_MOUSE_DOWN
 };
 
-class LButton
+class CButton
 {
     public:
-        LButton(int x, int y, int  fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w = 0, int h = 0);
-        ~LButton();
+        CButton(int x, int y, int  fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w = 0, int h = 0);
+        ~CButton();
         void handleEvent(SDL_Event* e);
         void render();
         void setPos(int x, int y);
@@ -29,8 +29,8 @@ class LButton
     private:
         int mX, mY, mW, mH;
         bool mClickable, mIsSelected;
-        LTexture mTexture;
-        LTexture mLabelTexture;
+        CTexture mTexture;
+        CTexture mLabelTexture;
         ButtonFrames mCurFrame;
         void (*mCallback)();
 };

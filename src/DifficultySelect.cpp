@@ -3,10 +3,10 @@
 SDL_Color difficultySelectButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string difficultySelectButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 
-LButton* difficultySelectButtons[DIFFICULTYSELECT_BUTTON_TOTAL];
+CButton* difficultySelectButtons[DIFFICULTYSELECT_BUTTON_TOTAL];
 
-LTexture diffBG;
-LTexture textdifficultySelect;
+CTexture diffBG;
+CTexture textdifficultySelect;
 
 void difficultySelectGeneralCall()
 {
@@ -39,10 +39,10 @@ bool difficultySelectLoadMedia()
 {
     diffBG.loadFromFile("res/saveslots.png");
     textdifficultySelect.loadFromRenderedText("Difficulty Select", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_BACK]  = new LButton(10, 1020, 40, difficultySelectButtonBackgroundColours, "Back", difficultySelectButtonTextColour, &backCall);
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY] = new LButton(402, 390, 60, difficultySelectButtonBackgroundColours, "Easy", difficultySelectButtonTextColour, &difficultySelectEasyCall, 300, 300);
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_MEDIUM] = new LButton(810, 390, 60, difficultySelectButtonBackgroundColours, "Medium", difficultySelectButtonTextColour, &difficultySelectMediumCall, 300, 300);
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_HARD] = new LButton(1218, 390, 60, difficultySelectButtonBackgroundColours, "Hard", difficultySelectButtonTextColour, &difficultySelectHardCall, 300, 300);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_BACK]  = new CButton(10, 1020, 40, difficultySelectButtonBackgroundColours, "Back", difficultySelectButtonTextColour, &backCall);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY] = new CButton(402, 390, 60, difficultySelectButtonBackgroundColours, "Easy", difficultySelectButtonTextColour, &difficultySelectEasyCall, 300, 300);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_MEDIUM] = new CButton(810, 390, 60, difficultySelectButtonBackgroundColours, "Medium", difficultySelectButtonTextColour, &difficultySelectMediumCall, 300, 300);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_HARD] = new CButton(1218, 390, 60, difficultySelectButtonBackgroundColours, "Hard", difficultySelectButtonTextColour, &difficultySelectHardCall, 300, 300);
     return true;
 }
 void difficultySelectHandleEvent(SDL_Event* e)

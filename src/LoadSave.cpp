@@ -4,10 +4,10 @@ SDL_Color loadSaveButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string loadSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
 std::string loadSaveButtonDelBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};
 
-LButton* loadSaveButtons[LOADSAVE_BUTTON_TOTAL];
+CButton* loadSaveButtons[LOADSAVE_BUTTON_TOTAL];
 
-LTexture loadBG;
-LTexture textloadSave;
+CTexture loadBG;
+CTexture textloadSave;
 
 #define GEN_LOADSAVE_CALL(NUMBER)\
     void loadSave##NUMBER##Call()\
@@ -29,13 +29,13 @@ bool loadSaveLoadMedia()
 {
     loadBG.loadFromFile("res/saveslots.png");
     textloadSave.loadFromRenderedText("Load Save", loadSaveButtonTextColour, "res/04b.TTF", 40);
-    loadSaveButtons[LOADSAVE_BUTTON_BACK]  = new LButton(10, 1020, 40, loadSaveButtonBackgroundColours, "Back", loadSaveButtonTextColour, &backCall);
-    loadSaveButtons[LOADSAVE_BUTTON_ONE] = new LButton(402, 390, 60, loadSaveButtonBackgroundColours, "1", loadSaveButtonTextColour, &loadSaveONECall, 300, 300);
-    loadSaveButtons[LOADSAVE_BUTTON_TWO] = new LButton(810, 390, 60, loadSaveButtonBackgroundColours, "2", loadSaveButtonTextColour, &loadSaveTWOCall, 300, 300);
-    loadSaveButtons[LOADSAVE_BUTTON_THREE] = new LButton(1218, 390, 60, loadSaveButtonBackgroundColours, "3", loadSaveButtonTextColour, &loadSaveTHREECall, 300, 300);
-    loadSaveButtons[LOADSAVE_BUTTON_DELONE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelONECall);
-    loadSaveButtons[LOADSAVE_BUTTON_DELTWO] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelTWOCall);
-    loadSaveButtons[LOADSAVE_BUTTON_DELTHREE] = new LButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelTHREECall);
+    loadSaveButtons[LOADSAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, loadSaveButtonBackgroundColours, "Back", loadSaveButtonTextColour, &backCall);
+    loadSaveButtons[LOADSAVE_BUTTON_ONE] = new CButton(402, 390, 60, loadSaveButtonBackgroundColours, "1", loadSaveButtonTextColour, &loadSaveONECall, 300, 300);
+    loadSaveButtons[LOADSAVE_BUTTON_TWO] = new CButton(810, 390, 60, loadSaveButtonBackgroundColours, "2", loadSaveButtonTextColour, &loadSaveTWOCall, 300, 300);
+    loadSaveButtons[LOADSAVE_BUTTON_THREE] = new CButton(1218, 390, 60, loadSaveButtonBackgroundColours, "3", loadSaveButtonTextColour, &loadSaveTHREECall, 300, 300);
+    loadSaveButtons[LOADSAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelONECall);
+    loadSaveButtons[LOADSAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelTWOCall);
+    loadSaveButtons[LOADSAVE_BUTTON_DELTHREE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelTHREECall);
     for (int i = LOADSAVE_BUTTON_DELONE; i <= LOADSAVE_BUTTON_DELTHREE; i++) {
         loadSaveButtons[i]->setLabelFromPath("res/trash.png");
     }

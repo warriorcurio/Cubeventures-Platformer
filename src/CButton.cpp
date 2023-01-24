@@ -1,6 +1,6 @@
-#include "LButton.h"
+#include "CButton.h"
 
-LButton::LButton(int x, int y, int fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w, int h)
+CButton::CButton(int x, int y, int fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w, int h)
 {
     mX = x;
     mY = y;
@@ -19,12 +19,12 @@ LButton::LButton(int x, int y, int fontSize, std::string bgColours[3], std::stri
     mTexture.loadFromSVG(svg);
     mCallback = callback;
 }
-LButton::~LButton()
+CButton::~CButton()
 {
     mTexture.free();
     mLabelTexture.free();
 }
-void LButton::handleEvent(SDL_Event* e)
+void CButton::handleEvent(SDL_Event* e)
 {
     if (!mClickable) return;
     if (mIsSelected && ((e->type == SDL_JOYBUTTONDOWN && e->jbutton.button == SDL_CONTROLLER_BUTTON_A) || (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_SPACE))) {
@@ -64,7 +64,7 @@ void LButton::handleEvent(SDL_Event* e)
             break;
     }
 }
-void LButton::render()
+void CButton::render()
 {
     SDL_Rect clip;
     if (mClickable) {
@@ -75,45 +75,45 @@ void LButton::render()
     mTexture.render(mX, mY, &clip);
     mLabelTexture.render(mX + (mW - mLabelTexture.getWidth()) / 2, mY + (mH - mLabelTexture.getHeight()) / 2);
 }
-void LButton::setPos(int x, int y)
+void CButton::setPos(int x, int y)
 {
     mX = x;
     mY = y;
 }
-void LButton::setBGFromPath(std::string path)
+void CButton::setBGFromPath(std::string path)
 {
     mTexture.free();
     mTexture.loadFromFile(path.c_str());
 }
-void LButton::setLabelFromPath(std::string path)
+void CButton::setLabelFromPath(std::string path)
 {
     mLabelTexture.free();
     mLabelTexture.loadFromFile(path.c_str());
 }
-void LButton::setClickable(bool isClickable)
+void CButton::setClickable(bool isClickable)
 {
     mClickable = isClickable;
 }
-void LButton::setSelected(bool isSelected)
+void CButton::setSelected(bool isSelected)
 {
     if (!mClickable) return;
     mIsSelected = isSelected;
     if (isSelected) mCurFrame = BUTTON_MOUSE_OVER;
     else mCurFrame = BUTTON_MOUSE_OUT;
 }
-int LButton::getX()
+int CButton::getX()
 {
     return mX;
 }
-int LButton::getY()
+int CButton::getY()
 {
     return mY;
 }
-int LButton::getW()
+int CButton::getW()
 {
     return mW;
 }
-int LButton::getH()
+int CButton::getH()
 {
     return mH;
 }

@@ -17,7 +17,7 @@ SDL_Rect editorCamera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
 int editorTileCount;
 int dragType, copyType;
-std::vector<LTile*> editorTiles;
+std::vector<CTile*> editorTiles;
 
 bool editorSetTiles()
 {
@@ -37,24 +37,24 @@ bool editorSetTiles()
             return false;
         }
         if(tileType >= 0 && tileType < TILE_TOTAL) {
-            editorTiles.push_back(new LTile(x, y, tileType));
+            editorTiles.push_back(new CTile(x, y, tileType));
         } else {
             printf("Error loading map: Invalid tile type at %d\n", i);
             return false;
         }
-        x += LTile::TILE_WIDTH;
+        x += CTile::TILE_WIDTH;
         if(x >= editorLevelDimensions[save.level - 1].w) {
             x = 0;
-            y += LTile::TILE_HEIGHT;
+            y += CTile::TILE_HEIGHT;
         }
     }
     x = 0, y = 0;
     for (int i = 0; i < TILE_TOTAL; i++) {
-        tileClips[i] = {x, y, LTile::TILE_WIDTH, LTile::TILE_HEIGHT};
-        x += LTile::TILE_WIDTH;
+        tileClips[i] = {x, y, CTile::TILE_WIDTH, CTile::TILE_HEIGHT};
+        x += CTile::TILE_WIDTH;
         if(x >= tileTexture.getWidth()) {
             x = 0;
-            y += LTile::TILE_HEIGHT;
+            y += CTile::TILE_HEIGHT;
         }
     }
     map.close();
@@ -65,7 +65,7 @@ bool mapEditorLoadMedia()
 {
     dragType = -1, copyType = -1;
     tileTexture.loadFromFile("res/tilesDEBUG.png");
-    editorTileCount = (editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) * (editorLevelDimensions[save.level - 1].h / LTile::TILE_HEIGHT);
+    editorTileCount = (editorLevelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (editorLevelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
     editorSetTiles();
     return true;
 }
@@ -80,7 +80,7 @@ void mapEditorHandleEvent(SDL_Event* e)
         for (int i = 0; i < editorTileCount; i++) {
             if (editorTiles[i]->getType() < 10) map << 0;
             map << editorTiles[i]->getType();
-            if ((i + 1) % (editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) == 0 && i != editorTileCount - 1) map << "\n";
+            if ((i + 1) % (editorLevelDimensions[save.level - 1].w / CTile::TILE_WIDTH) == 0 && i != editorTileCount - 1) map << "\n";
             else if (i != editorTileCount - 1) map << " ";
         }
         map.close();
@@ -106,9 +106,9 @@ void mapEditorHandleEvent(SDL_Event* e)
         SDL_RenderWindowToLogical(gRenderer, x, y, &sX, &sY);
         sX += editorCamera.x;
         sY += editorCamera.y;
-        int rowNum = (sY - (int)sY % LTile::TILE_HEIGHT) / LTile::TILE_HEIGHT;
-        int colNum = (sX - (int)sX % LTile::TILE_WIDTH) / LTile::TILE_WIDTH;
-        int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / LTile::TILE_WIDTH) + colNum;
+        int rowNum = (sY - (int)sY % CTile::TILE_HEIGHT) / CTile::TILE_HEIGHT;
+        int colNum = (sX - (int)sX % CTile::TILE_WIDTH) / CTile::TILE_WIDTH;
+        int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + colNum;
     if (e->type == SDL_MOUSEBUTTONUP && !(SDL_GetModState() & KMOD_CTRL) && dragType == -1) {
         if (e->button.button == SDL_BUTTON_LEFT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() + 1) % TILE_TOTAL);
         if (e->button.button == SDL_BUTTON_RIGHT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL);

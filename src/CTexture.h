@@ -1,12 +1,12 @@
-#ifndef LTEXTURE_H
-#define LTEXTURE_H
+#ifndef CTEXTURE_H
+#define CTEXTURE_H
 #include "LSDL.h"
 
-class LTexture
+class CTexture
 {
     public:
-        LTexture();
-        ~LTexture();
+        CTexture();
+        ~CTexture();
         bool loadFromFile(std::string path);
         bool loadFromRenderedText(std::string textureText, SDL_Color textColor, std::string path, int size);
         bool loadFromSVG(std::string svg);
