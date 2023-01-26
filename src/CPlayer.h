@@ -18,6 +18,7 @@ class CPlayer
         void setForm(int form);
         void setHealth(int health);
         void setShield(int shield);
+        void setCharge(int charge);
         void setJumps(int jumps);
         void setKeys(int keys);
         void setPos(int x, int y);
@@ -26,6 +27,7 @@ class CPlayer
         int getForm();
         int getHealth();
         int getShield();
+        int getCharge();
         SDL_Point getSafePos();
         SDL_Rect getBox();
         int getJumps();
@@ -44,7 +46,7 @@ class CPlayer
         SDL_Rect mCollisionBox;
         SDL_Point mSafePos;
         int mFrame;
-        int mHealth, mShield, mForm, mKeys;
+        int mHealth, mShield, mForm, mKeys, mCharge;
         bool mIsClimbing, mIsInvulnerable, mIsOnGround;
         int mPlayerVel, mVelX, mVelY;
         int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining, mMaxJumps;

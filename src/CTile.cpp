@@ -16,24 +16,28 @@ void CTile::collisionEvent(int tileNum)
 {
     switch (mType) {
         case TILE_WHITECRYSTAL:
+            if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_WHITECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_WHITE);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_REDCRYSTAL:
+            if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_REDCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_RED);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_GREENCRYSTAL:
+            if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_GREENCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_GREEN);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_BLUECRYSTAL:
+            if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_BLUECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_BLUE);
@@ -85,7 +89,7 @@ void CTile::collisionEvent(int tileNum)
             break;
     }
     if (mType < TILE_EMPTY && mType > TILE_EXIT) {
-        if (player->getInvulnerable()) return;
+        if (player->getInvulnerable() || player->getForm() == FORM_RAINBOW) return;
         if (player->getShield() > 0) player->setShield(player->getShield() - 1);
         else player->setHealth(player->getHealth() - 1);
         player->setPos(player->getSafePos().x, player->getSafePos().y);
@@ -115,8 +119,10 @@ void CTile::updateTiles(float timeStep)
         }
     } else {
         switch (mType) {
-            case TILE_GHOST: if (player->getForm() == FORM_WHITE) mType = TILE_GHOST_D; break;
-            case TILE_GHOST_D: if (player->getForm() != FORM_WHITE) mType = TILE_GHOST; break;
+            case TILE_GHOST_T: if (player->getForm() == FORM_WHITE || player->getForm() == FORM_RAINBOW) mType = TILE_GHOST_T_D; break;
+            case TILE_GHOST_T_D: if (player->getForm() != FORM_WHITE && player->getForm() != FORM_RAINBOW) mType = TILE_GHOST_T; break;
+            case TILE_GHOST_F: if (player->getForm() != FORM_WHITE) mType = TILE_GHOST_F_D; break;
+            case TILE_GHOST_F_D: if (player->getForm() == FORM_WHITE) mType = TILE_GHOST_F; break;
             case TILE_LOCK: if (player->getKeys() > 0) mType = TILE_LOCK_D; break;
             case TILE_LOCK_D: if (player->getKeys() == 0) mType = TILE_LOCK; break;
         }
@@ -124,8 +130,7 @@ void CTile::updateTiles(float timeStep)
 }
 void CTile::render(SDL_Rect& camera)
 {
-    if(checkCollision(camera, mCollisionBox))
-    {
+    if (checkCollision(camera, mCollisionBox)) {
         tileTexture.render(mCollisionBox.x - camera.x, mCollisionBox.y - camera.y, &tileClips[mType]);
     }
 }

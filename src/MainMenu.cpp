@@ -36,7 +36,8 @@ void mainMenuExitCall()
 bool mainMenuLoadMedia()
 {
     setWindowIcon(0);
-    if (!background.loadFromFile("res/bg.png")) return false;
+    std::string bgNames[5] = {"res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
+    if (!background.loadFromFile(bgNames[(maxLevel - 1) / 2])) return false;
     if (!logo.loadFromFile("res/logo.png")) return false;
     mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new CButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
     mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new CButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);

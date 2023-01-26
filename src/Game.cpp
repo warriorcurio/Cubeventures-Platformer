@@ -174,7 +174,7 @@ bool gameLoadMedia()
     player = new CPlayer(save.x, save.y);
     projectileTexture.loadFromFile("res/items.png");
     projectiles.push_back(new CProjectile(400, 300, 25, 25, 300, -300, 1000, PROJECTILE_DAMAGEBALL));
-    projectiles.push_back(new CProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_OPENER));
+    projectiles.push_back(new CProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_BUTTON));
     projectiles.push_back(new CProjectile(400, 500, 25, 25, 300, -300, 1000, PROJECTILE_SHIELD));
     tileTexture.loadFromFile("res/tilesDEBUG.png");
     tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
@@ -194,6 +194,8 @@ void gameHandleEvent(SDL_Event* e)
         projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_HEART));
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_j) {
         projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_SHIELD));
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_k) {
+        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 0, 0, PROJECTILE_CHARGER));
     }
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         transition(SCENE_PAUSE);
@@ -288,6 +290,7 @@ void gameClose()
     for (int i = 0; i < (int)projectiles.size(); i++) {
         delete projectiles[i];
     }
+    projectiles.clear();
     tileTexture.free();
     keyTexture.free();
     heartTexture.free();
