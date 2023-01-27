@@ -58,7 +58,7 @@ enum Tiles {
     TILE_LOCK_D,
     TILE_MEDAL,
     TILE_EXIT,
-    TILE_SPIKEUP, TILE_SPIKERIGHT, TILE_SPIKEDOWN, TILE_SPIKELEFT,
+    TILE_SPIKEUP, TILE_SPIKERIGHT, TILE_SPIKEDOWN, TILE_SPIKELEFT, TILE_WATERUP, TILE_WATER,
     TILE_EMPTY,
     TILE_GHOST_T,
     TILE_GHOST_F,
@@ -129,6 +129,8 @@ extern SDL_Rect tileClips[TILE_TOTAL];
 extern Resolution resolutions[5];
 extern int curRes;
 extern int maxLevel;
+extern std::string bgNames[5];
+extern std::string bgParallaxNames[5];
 extern int keybinds[KEYBINDS_TOTAL];
 extern bool quit;
 extern void menuHandleButtonSwitching(SDL_Event* e, int totalButtons);

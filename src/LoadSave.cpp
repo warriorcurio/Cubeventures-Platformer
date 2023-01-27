@@ -6,7 +6,6 @@ std::string loadSaveButtonDelBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1
 
 CButton* loadSaveButtons[LOADSAVE_BUTTON_TOTAL];
 
-CTexture loadBG;
 CTexture textloadSave;
 
 #define GEN_LOADSAVE_CALL(NUMBER)\
@@ -27,7 +26,6 @@ GEN_LOADSAVE_CALL(THREE);
 
 bool loadSaveLoadMedia()
 {
-    loadBG.loadFromFile("res/saveslots.png");
     textloadSave.loadFromRenderedText("Load Save", loadSaveButtonTextColour, "res/04b.TTF", 40);
     loadSaveButtons[LOADSAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, loadSaveButtonBackgroundColours, "Back", loadSaveButtonTextColour, &backCall);
     loadSaveButtons[LOADSAVE_BUTTON_ONE] = new CButton(402, 390, 60, loadSaveButtonBackgroundColours, "1", loadSaveButtonTextColour, &loadSaveONECall, 300, 300);
@@ -68,7 +66,8 @@ void loadSaveRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    loadBG.render(0, 0);
+    menuBackground.render(0, 0);
+    menuOverlay.render(300, 300);
     textloadSave.render((LOGICAL_SCREEN_WIDTH - textloadSave.getWidth()) / 2, 325);
     for (int i = 0; i < LOADSAVE_BUTTON_TOTAL; i++) {
         if (loadSaveButtons[i]) loadSaveButtons[i]->render();
@@ -79,6 +78,5 @@ void loadSaveClose()
     for (int i = 0; i < LOADSAVE_BUTTON_TOTAL; i++) {
         if (loadSaveButtons[i]) delete loadSaveButtons[i];
     }
-    loadBG.free();
     textloadSave.free();
 }

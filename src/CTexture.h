@@ -19,4 +19,7 @@ class CTexture
         SDL_Texture* mTexture;
         int mWidth, mHeight;
 };
+
+extern CTexture menuBackground;
+extern CTexture menuOverlay;
 #endif

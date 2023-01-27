@@ -25,6 +25,8 @@ int main(int argc, char* args[])
         runMainLoop();
     }
     close();
+    menuBackground.free();
+    menuOverlay.free();
     SDL_DestroyWindow(gWindow);
     SDL_DestroyRenderer(gRenderer);
     SDL_GameControllerClose(gController);

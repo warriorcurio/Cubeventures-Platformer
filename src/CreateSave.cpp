@@ -6,7 +6,6 @@ std::string createSaveButtonDelBackgroundColours[3] = {"#FF0000", "#7F0000", "#7
 
 CButton* createSaveButtons[CREATESAVE_BUTTON_TOTAL];
 
-CTexture saveBG;
 CTexture textCreateSave;
 
 #define GEN_CREATESAVE_CALL(NUMBER)\
@@ -40,7 +39,6 @@ GEN_CREATESAVE_CALL(THREE);
 
 bool createSaveLoadMedia()
 {
-    saveBG.loadFromFile("res/saveslots.png");
     textCreateSave.loadFromRenderedText("Create Save", createSaveButtonTextColour, "res/04b.TTF", 40);
     createSaveButtons[CREATESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, createSaveButtonBackgroundColours, "Back", createSaveButtonTextColour, &backCall);
     createSaveButtons[CREATESAVE_BUTTON_ONE] = new CButton(402, 390, 60, createSaveButtonBackgroundColours, "1", createSaveButtonTextColour, &createSaveONECall, 300, 300);
@@ -81,7 +79,8 @@ void createSaveRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    saveBG.render(0, 0);
+    menuBackground.render(0, 0);
+    menuOverlay.render(300, 300);
     textCreateSave.render((LOGICAL_SCREEN_WIDTH - textCreateSave.getWidth()) / 2, 325);
     for (int i = 0; i < CREATESAVE_BUTTON_TOTAL; i++) {
         if (createSaveButtons[i]) createSaveButtons[i]->render();
@@ -92,6 +91,5 @@ void createSaveClose()
     for (int i = 0; i < CREATESAVE_BUTTON_TOTAL; i++) {
         if (createSaveButtons[i]) delete createSaveButtons[i];
     }
-    saveBG.free();
     textCreateSave.free();
 }

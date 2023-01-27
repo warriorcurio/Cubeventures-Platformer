@@ -2,8 +2,8 @@
 
 Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
-    {6000, 8000},
-    {4000, 1080},
+    {6000, 6000},
+    {10000, 1080},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -13,16 +13,16 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080}
 };
 SDL_Point levelStartPositions[LEVEL_TOTAL] = {
-    {0, 1020},
-    {0,   80},
-    {0, 1020},
-    {0, 1020},
-    {0, 1020},
-    {0, 1020},
-    {0, 1020},
-    {0, 1020},
-    {0, 1020},
-    {0, 1020}
+    { 0, 1020},
+    {80,  320},
+    { 0, 1020},
+    { 0, 1020},
+    { 0, 1020},
+    { 0, 1020},
+    { 0, 1020},
+    { 0, 1020},
+    { 0, 1020},
+    { 0, 1020}
 };
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
@@ -49,6 +49,8 @@ CTexture gameOverTexture;
 CTexture bgTexture;
 CTexture bgPTexture;
 float parallaxOffset;
+std::string bgNames[5] = {"res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
+std::string bgParallaxNames[5] = {"res/bgONE_P.png", "res/bgTWO_P.png", "res/bgTHREE_P.png", "res/bgFOUR_P.png", "res/bgFIVE_P.png"};
 
 SDL_Color gameButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string gameButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
@@ -121,11 +123,13 @@ bool setTiles()
 void setLevel(int level)
 {
     setWindowIcon(level);
+    bgTexture.loadFromFile(bgNames[(level - 1) / 2]);
+    bgPTexture.loadFromFile(bgParallaxNames[(level - 1) / 2]);
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i]) delete tiles[i];
     }
     tiles.clear();
-    parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
+    parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     save.level = level;
     player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
     for (int i = 0; i < 5; i++) {
@@ -134,6 +138,7 @@ void setLevel(int level)
     }
     if (save.level > maxLevel) {
         maxLevel = save.level;
+        menuBackground.loadFromFile(bgNames[(maxLevel - 1) / 2]);
         savePersistent();
     }
     char* slotFile = (char*)calloc(20, sizeof(char));
@@ -164,9 +169,9 @@ bool gameLoadMedia()
     gameButtons[GAME_BUTTON_DEATHRETRY]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHRETRY]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_DEATHRETRY]->getH()) / 2);
     gameButtons[GAME_BUTTON_DEATHQUIT] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Quit", gameButtonTextColour, &gameDeathQuitCall);
     gameButtons[GAME_BUTTON_DEATHQUIT]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHQUIT]->getW()) / 2, gameButtons[GAME_BUTTON_DEATHRETRY]->getY() + 120);
-    bgTexture.loadFromFile("res/bgONE.png");
-    bgPTexture.loadFromFile("res/bgONE_P.png");
-    parallaxOffset = -1 * (rand() % bgPTexture.getWidth());
+    bgTexture.loadFromFile(bgNames[(save.level - 1) / 2]);
+    bgPTexture.loadFromFile(bgParallaxNames[(save.level - 1) / 2]);
+    parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     keyTexture.loadFromFile("res/key.png");
     heartTexture.loadFromFile("res/hearts.png");
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
@@ -230,7 +235,8 @@ void gameUpdate()
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
     player->checkItemCollisions(tiles);
-    if (parallaxOffset < -bgPTexture.getWidth()) parallaxOffset += bgPTexture.getWidth();
+    if (parallaxOffset < -LOGICAL_SCREEN_WIDTH) parallaxOffset += LOGICAL_SCREEN_WIDTH;
+    if (parallaxOffset > 0) parallaxOffset -= LOGICAL_SCREEN_WIDTH;
 }
 void gameRender()
 {
@@ -238,7 +244,7 @@ void gameRender()
     SDL_RenderClear(gRenderer);
     bgTexture.render(0, 0);
     bgPTexture.render((int)parallaxOffset, 0);
-    bgPTexture.render((int)parallaxOffset + bgPTexture.getWidth(), 0);
+    bgPTexture.render((int)parallaxOffset + LOGICAL_SCREEN_WIDTH, 0);
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->render(camera);
     }

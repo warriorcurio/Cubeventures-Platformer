@@ -11,8 +11,6 @@ std::string keybindNames[KEYBINDS_TOTAL] = {"UP", "LEFT", "DOWN", "RIGHT", "JUMP
 call keybindCalls[KEYBINDS_TOTAL] = {&keybindSettingsUPCall, &keybindSettingsLEFTCall, &keybindSettingsDOWNCall, &keybindSettingsRIGHTCall, &keybindSettingsJUMPCall};
 int curKeybind = -1;
 
-CTexture keybindSettingsBG;
-
 CButton* keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_TOTAL];
 
 #define GEN_KEYBINDSETTINGS_CALL(KEYBIND)\
@@ -44,7 +42,6 @@ GEN_KEYBINDSETTINGS_CALL(JUMP);
 
 bool keybindSettingsLoadMedia()
 {
-    keybindSettingsBG.loadFromFile("res/saveslots.png");
     keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_BACK] = new CButton(10, 1020, 40, keybindSettingsButtonBackgroundColours, "Back", keybindSettingsButtonTextColour, &backCall);
     char* curLabel = (char*)calloc(20, sizeof(char));
     sprintf(curLabel, "UP - %s", SDL_GetKeyName(keybinds[KEYBINDS_UP]));
@@ -90,7 +87,8 @@ void keybindSettingsRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    keybindSettingsBG.render(0, 0);
+    menuBackground.render(0, 0);
+    menuOverlay.render(300, 300);
     for (int i = 0; i < KEYBINDSETTINGS_BUTTON_TOTAL; i++) {
         if (keybindSettingsButtons[i]) keybindSettingsButtons[i]->render();
     }
@@ -100,7 +98,6 @@ void keybindSettingsClose()
     for (int i = 0; i < KEYBINDSETTINGS_BUTTON_TOTAL; i++) {
         if (keybindSettingsButtons[i]) delete keybindSettingsButtons[i];
     }
-    keybindSettingsBG.free();
     curKeybind = -1;
     savePersistent();
 }

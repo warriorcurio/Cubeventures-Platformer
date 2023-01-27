@@ -5,7 +5,7 @@ std::string mainMenuButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F
 
 CButton* mainMenuButtons[MAINMENU_BUTTON_TOTAL];
 
-CTexture background, logo;
+CTexture menuBackground, menuOverlay, logo, star;
 
 void mainMenuNewGameCall()
 {
@@ -36,9 +36,10 @@ void mainMenuExitCall()
 bool mainMenuLoadMedia()
 {
     setWindowIcon(0);
-    std::string bgNames[5] = {"res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
-    if (!background.loadFromFile(bgNames[(maxLevel - 1) / 2])) return false;
+    if (!menuBackground.loadFromFile(bgNames[(maxLevel - 1) / 2])) return false;
+    if (!menuOverlay.loadFromFile("res/menuOverlay.png")) return false;
     if (!logo.loadFromFile("res/logo.png")) return false;
+    if (!star.loadFromFile("res/star.png")) return false;
     mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new CButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
     mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new CButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);
     mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new CButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &mainMenuLevelSelectCall);
@@ -91,8 +92,11 @@ void mainMenuRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    background.render(0, 0);
+    menuBackground.render(0, 0);
     logo.render(75, 210);
+    for (int i = 2; i < maxLevel; i += 2) {
+        star.render(i * 40 - 72, 1008);
+    }
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->render();
     }
@@ -102,6 +106,5 @@ void mainMenuClose()
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) delete mainMenuButtons[i];
     }
-    background.free();
     logo.free();
 }

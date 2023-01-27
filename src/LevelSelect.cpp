@@ -5,7 +5,6 @@ std::string levelSelectButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003
 
 CButton* levelSelectButtons[LEVELSELECT_BUTTON_TOTAL];
 
-CTexture levelBG;
 CTexture textLevelSelect;
 
 #define GEN_LEVELSELECT_CALL(NUMBER)\
@@ -30,7 +29,6 @@ GEN_LEVELSELECT_CALL(TEN);
 
 bool levelSelectLoadMedia()
 {
-    levelBG.loadFromFile("res/saveslots.png");
     textLevelSelect.loadFromRenderedText("Level Select", levelSelectButtonTextColour, "res/04b.TTF", 40);
     levelSelectButtons[LEVELSELECT_BUTTON_BACK]  = new CButton(  10, 1020, 40, levelSelectButtonBackgroundColours, "Back", levelSelectButtonTextColour, &backCall);
     levelSelectButtons[LEVELSELECT_BUTTON_ONE]   = new CButton( 485, 335, 90, levelSelectButtonBackgroundColours,  " ", levelSelectButtonTextColour, &levelSelectONECall,   150, 150);
@@ -67,7 +65,8 @@ void levelSelectRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    levelBG.render(0, 0);
+    menuBackground.render(0, 0);
+    menuOverlay.render(300, 300);
     textLevelSelect.render((LOGICAL_SCREEN_WIDTH - textLevelSelect.getWidth()) / 2, (LOGICAL_SCREEN_HEIGHT - textLevelSelect.getHeight()) / 2);
     for (int i = 0; i < LEVELSELECT_BUTTON_TOTAL; i++) {
         if (levelSelectButtons[i]) levelSelectButtons[i]->render();
@@ -78,6 +77,5 @@ void levelSelectClose()
     for (int i = 0; i < LEVELSELECT_BUTTON_TOTAL; i++) {
         if (levelSelectButtons[i]) delete levelSelectButtons[i];
     }
-    levelBG.free();
     textLevelSelect.free();
 }

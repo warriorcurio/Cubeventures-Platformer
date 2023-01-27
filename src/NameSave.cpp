@@ -7,7 +7,6 @@ std::string inputName;
 
 CButton* nameSaveButtons[NAMESAVE_BUTTON_TOTAL];
 
-CTexture nameSaveBG;
 CTexture textNameSave;
 CTexture textEnter;
 CTexture textInputName;
@@ -16,7 +15,6 @@ bool nameSaveLoadMedia()
 {
     inputName = "";
     SDL_StartTextInput();
-    nameSaveBG.loadFromFile("res/saveslots.png");
     textNameSave.loadFromRenderedText("Type Your Name", nameSaveButtonTextColour, "res/04b.TTF", 40);
     textEnter.loadFromRenderedText("Press ENTER To Submit", nameSaveButtonTextColour, "res/04b.TTF", 40);
     nameSaveButtons[NAMESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, nameSaveButtonBackgroundColours, "Back", nameSaveButtonTextColour, &backCall);
@@ -55,7 +53,8 @@ void nameSaveRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    nameSaveBG.render(0, 0);
+    menuBackground.render(0, 0);
+    menuOverlay.render(300, 300);
     textNameSave.render((LOGICAL_SCREEN_WIDTH - textNameSave.getWidth()) / 2, 325);
     textEnter.render((LOGICAL_SCREEN_WIDTH - textEnter.getWidth()) / 2, 715);
     textInputName.render((LOGICAL_SCREEN_WIDTH - textInputName.getWidth()) / 2, (LOGICAL_SCREEN_HEIGHT - textInputName.getHeight()) / 2);
@@ -69,6 +68,5 @@ void nameSaveClose()
     for (int i = 0; i < NAMESAVE_BUTTON_TOTAL; i++) {
         if (nameSaveButtons[i]) delete nameSaveButtons[i];
     }
-    nameSaveBG.free();
     textNameSave.free();
 }

@@ -5,7 +5,6 @@ std::string difficultySelectButtonBackgroundColours[3] = {"#006F00", "#003F00", 
 
 CButton* difficultySelectButtons[DIFFICULTYSELECT_BUTTON_TOTAL];
 
-CTexture diffBG;
 CTexture textdifficultySelect;
 
 void difficultySelectGeneralCall()
@@ -37,7 +36,6 @@ void difficultySelectHardCall()
 
 bool difficultySelectLoadMedia()
 {
-    diffBG.loadFromFile("res/saveslots.png");
     textdifficultySelect.loadFromRenderedText("Difficulty Select", difficultySelectButtonTextColour, "res/04b.TTF", 40);
     difficultySelectButtons[DIFFICULTYSELECT_BUTTON_BACK]  = new CButton(10, 1020, 40, difficultySelectButtonBackgroundColours, "Back", difficultySelectButtonTextColour, &backCall);
     difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY] = new CButton(402, 390, 60, difficultySelectButtonBackgroundColours, "Easy", difficultySelectButtonTextColour, &difficultySelectEasyCall, 300, 300);
@@ -62,7 +60,8 @@ void difficultySelectRender()
 {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     SDL_RenderClear(gRenderer);
-    diffBG.render(0, 0);
+    menuBackground.render(0, 0);
+    menuOverlay.render(300, 300);
     textdifficultySelect.render((LOGICAL_SCREEN_WIDTH - textdifficultySelect.getWidth()) / 2, 325);
     for (int i = 0; i < DIFFICULTYSELECT_BUTTON_TOTAL; i++) {
         if (difficultySelectButtons[i]) difficultySelectButtons[i]->render();
@@ -73,6 +72,5 @@ void difficultySelectClose()
     for (int i = 0; i < DIFFICULTYSELECT_BUTTON_TOTAL; i++) {
         if (difficultySelectButtons[i]) delete difficultySelectButtons[i];
     }
-    diffBG.free();
     textdifficultySelect.free();
 }
