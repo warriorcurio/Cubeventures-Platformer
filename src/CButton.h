@@ -26,6 +26,7 @@ class CButton
         int getY();
         int getW();
         int getH();
+        ButtonFrames getFrame();
     private:
         int mX, mY, mW, mH;
         bool mClickable, mIsSelected;

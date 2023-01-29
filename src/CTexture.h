@@ -22,4 +22,5 @@ class CTexture
 
 extern CTexture menuBackground;
 extern CTexture menuOverlay;
+extern CTexture saveHearts;
 #endif

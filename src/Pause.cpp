@@ -19,7 +19,7 @@ void pauseResumeCall()
 void pauseSaveCall()
 {
     char* slotFile = (char*)calloc(20, sizeof(char));
-    sprintf(slotFile, "saves/save_%s.bin", save.slot.c_str());
+    sprintf(slotFile, "saves/save_%s.bin", save.slot);
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
     SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
     SDL_RWclose(writeFile);

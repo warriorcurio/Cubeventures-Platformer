@@ -24,6 +24,7 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     { 0, 1020},
     { 0, 1020}
 };
+int levelFinishTimes[LEVEL_TOTAL] = {80, 999, 999, 999, 999, 999, 999, 999, 999, 999};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -112,10 +113,8 @@ bool setTiles()
     }
     map.close();
     for (int i = 0; i < 5; i++) {
-        if (save.collectedKeys[i]) tiles[save.collectedKeys[i]]->setType(TILE_EMPTY);
-    }
-    for (int i = 0; i < 5; i++) {
-        if (save.collectedKeys[i]) tiles[save.unlockedLocks[i]]->setType(TILE_EMPTY);
+        if (save.collectedKeys[i] != -1) tiles[save.collectedKeys[i]]->setType(TILE_EMPTY);
+        if (save.unlockedLocks[i] != -1) tiles[save.unlockedLocks[i]]->setType(TILE_EMPTY);
     }
     return true;
 }
@@ -131,10 +130,12 @@ void setLevel(int level)
     tiles.clear();
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     save.level = level;
+    if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
+    save.chapterTime = 0;
     player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
     for (int i = 0; i < 5; i++) {
-        save.collectedKeys[i] = 0;
-        save.unlockedLocks[i] = 0;
+        save.collectedKeys[i] = -1;
+        save.unlockedLocks[i] = -1;
     }
     if (save.level > maxLevel) {
         maxLevel = save.level;
@@ -142,7 +143,7 @@ void setLevel(int level)
         savePersistent();
     }
     char* slotFile = (char*)calloc(20, sizeof(char));
-    sprintf(slotFile, "saves/save_%s.bin", save.slot.c_str());
+    sprintf(slotFile, "saves/save_%s.bin", save.slot);
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
     SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
     SDL_RWclose(writeFile);
@@ -232,6 +233,8 @@ void gameUpdate()
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->updateTiles(timeStep);
     }
+    save.chapterTime += timeStep;
+    save.totalTime += timeStep;
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
     player->checkItemCollisions(tiles);

@@ -50,7 +50,7 @@ void CTile::collisionEvent(int tileNum)
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 2, 0xFFFF / 2, 150);
             break;
         case TILE_EXIT:
-            save.score += 2000 + save.difficulty * 1000;
+            save.score += (save.difficulty + 1) * 100;
             setLevel(save.level + 1);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 1000);
             break;
@@ -58,7 +58,7 @@ void CTile::collisionEvent(int tileNum)
             mType = TILE_EMPTY;
             player->setKeys(player->getKeys() + 1);
             for (int i = 0; i < 5; i++) {
-                if (!save.collectedKeys[i]) {
+                if (save.collectedKeys[i] == -1) {
                     save.collectedKeys[i] = tileNum;
                     break;
                 }
@@ -74,7 +74,7 @@ void CTile::collisionEvent(int tileNum)
                 break;
             }
             for (int i = 0; i < 5; i++) {
-                if (!save.unlockedLocks[i]) {
+                if (save.unlockedLocks[i] != -1) {
                     save.unlockedLocks[i] = tileNum;
                     break;
                 }
@@ -83,7 +83,7 @@ void CTile::collisionEvent(int tileNum)
             break;
         case TILE_MEDAL:
             mType = TILE_EMPTY;
-            save.score += 1000;
+            save.score += 100;
             save.collectedMedals[save.level] = true;
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF, 0xFFFF / 6, 250);
             break;

@@ -117,3 +117,7 @@ int CButton::getH()
 {
     return mH;
 }
+ButtonFrames CButton::getFrame()
+{
+    return mCurFrame;
+}

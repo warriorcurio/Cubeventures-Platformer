@@ -6,6 +6,7 @@
 #include <SDL_ttf.h>
 #include <stdio.h>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include <iomanip>
@@ -93,8 +94,10 @@ enum Difficulty {
 };
 
 struct Save {
-    std::string name, slot;
+    char name[6];
     int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys, deaths, score;
+    char slot[5];
+    float totalTime, chapterTime;
     int collectedKeys[5], unlockedLocks[5];
     bool collectedMedals[10];
 };
@@ -123,6 +126,11 @@ extern SDL_GameController* gController;
 extern int curButton;
 extern Save save;
 extern std::vector<Scene> backStack;
+extern SDL_Rect saveHeartClips[3];
+extern std::string saveFileNames[3];
+extern std::string saveButtonPaths[10];
+extern std::string difficultyNames[3];
+extern Save saveSlots[3];
 extern Resolution levelDimensions[LEVEL_TOTAL];
 extern SDL_Point levelStartPositions[LEVEL_TOTAL];
 extern SDL_Rect tileClips[TILE_TOTAL];

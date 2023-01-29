@@ -36,10 +36,10 @@ void mainMenuExitCall()
 bool mainMenuLoadMedia()
 {
     setWindowIcon(0);
-    if (!menuBackground.loadFromFile(bgNames[(maxLevel - 1) / 2])) return false;
-    if (!menuOverlay.loadFromFile("res/menuOverlay.png")) return false;
-    if (!logo.loadFromFile("res/logo.png")) return false;
-    if (!star.loadFromFile("res/star.png")) return false;
+    menuBackground.loadFromFile(bgNames[(maxLevel - 1) / 2]);
+    menuOverlay.loadFromFile("res/menuOverlay.png");
+    logo.loadFromFile("res/logo.png");
+    star.loadFromFile("res/star.png");
     mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new CButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
     mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new CButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);
     mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new CButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &mainMenuLevelSelectCall);

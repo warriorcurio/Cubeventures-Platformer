@@ -35,7 +35,8 @@ bool levelSelectLoadMedia()
     levelSelectButtons[LEVELSELECT_BUTTON_ONE]->setBGFromPath("res/levelSelectONE.png");
     levelSelectButtons[LEVELSELECT_BUTTON_TWO]   = new CButton( 680, 335, 90, levelSelectButtonBackgroundColours,  " ", levelSelectButtonTextColour, &levelSelectTWOCall,   150, 150);
     levelSelectButtons[LEVELSELECT_BUTTON_TWO]->setBGFromPath("res/levelSelectTWO.png");
-    levelSelectButtons[LEVELSELECT_BUTTON_THREE] = new CButton( 885, 335, 90, levelSelectButtonBackgroundColours,  "3", levelSelectButtonTextColour, &levelSelectTHREECall, 150, 150);
+    levelSelectButtons[LEVELSELECT_BUTTON_THREE] = new CButton( 885, 335, 90, levelSelectButtonBackgroundColours,  " ", levelSelectButtonTextColour, &levelSelectTHREECall, 150, 150);
+    levelSelectButtons[LEVELSELECT_BUTTON_THREE]->setBGFromPath("res/levelSelectTHREE.png");
     levelSelectButtons[LEVELSELECT_BUTTON_FOUR]  = new CButton(1085, 335, 90, levelSelectButtonBackgroundColours,  "4", levelSelectButtonTextColour, &levelSelectFOURCall,  150, 150);
     levelSelectButtons[LEVELSELECT_BUTTON_FIVE]  = new CButton(1285, 335, 90, levelSelectButtonBackgroundColours,  "5", levelSelectButtonTextColour, &levelSelectFIVECall,  150, 150);
     levelSelectButtons[LEVELSELECT_BUTTON_SIX]   = new CButton( 485, 595, 90, levelSelectButtonBackgroundColours,  "6", levelSelectButtonTextColour, &levelSelectSIXCall,   150, 150);
