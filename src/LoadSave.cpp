@@ -20,7 +20,7 @@ CTexture textLoadScores[3], textLoadNumDeaths[3], textLoadTimes[3], textLoadNumK
     void loadSave##NUMBER##Call()\
     {\
         SDL_RWops* readFile = SDL_RWFromFile(saveFileNames[LOADSAVE_BUTTON_##NUMBER].c_str(), "rb");\
-        SDL_RWread(readFile, &(saveSlots[LOADSAVE_BUTTON_##NUMBER]), sizeof(Save), 1);\
+        SDL_RWread(readFile, &save, sizeof(Save), 1);\
         projectiles.clear();\
         int projectileIndex = 0;\
         projectiles.push_back(new CProjectile(0, 0, (ProjectileTypes)0, 0, 0));\

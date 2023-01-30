@@ -10,11 +10,13 @@ class CProjectile
         CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX = -1, int respawnY = -1); //Hearts, shields, chargers, energy balls
         CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, bool isOneTimeOnly); //Tile changing buttons
         CProjectile(int x, int y, int w, int h, int textX, int textY, const char* textToDisplay, SDL_Color textColour, int size); //Text displayers
+        ~CProjectile();
         void move(float timeStep);
         void setPos(int x, int y);
         void render(SDL_Rect& camera);
         int getPosX();
         int getPosY();
+        int getType();
         int getEditTileIndex();
         int getEditTileOriginal();
     private:
@@ -33,6 +35,9 @@ class CProjectile
         bool mDestroyOnPlayerCollision, mDestroyOnTileCollision;
         bool mActivateOnPlayerCollision, mActivateOnTileCollision;
         bool mDisplayText, mHasActivated;
+        char mTextToDisplay[50];
+        SDL_Color mTextColour;
+        int mTextSize;
         CTexture mTextTexture;
 };
 

@@ -52,13 +52,20 @@ CProjectile::CProjectile(int x, int y, int w, int h, int textX, int textY, const
     mHasActivated = false;
     mGravity = 0;
     mType = PROJECTILE_TEXTDISPLAYER;
-    mTextTexture.loadFromRenderedText(textToDisplay, textColour, "res/04b.TTF", size);
+    std::strcpy(mTextToDisplay, textToDisplay);
+    mTextColour = textColour;
+    mTextSize = size;
+    mTextTexture.loadFromRenderedText(mTextToDisplay, mTextColour, "res/04b.TTF", mTextSize);
     mDisplayText = false;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 1;
+}
+CProjectile::~CProjectile()
+{
+    mTextTexture.free();
 }
 void CProjectile::move(float timeStep)
 {
@@ -119,7 +126,7 @@ void CProjectile::render(SDL_Rect& camera)
     mFrame = (mFrame + 1) % (numFrames[mType] * mAnimationSpeed);
     SDL_Rect renderRect = {mType * 25, (int)(mFrame / mAnimationSpeed) * 25, 25, 25};
     projectileTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &renderRect);
-    if (mDisplayText) mTextTexture.render(mUtilityX, mUtilityY);
+    if (mDisplayText) mTextTexture.render(mUtilityX - camera.x, mUtilityY- camera.y);
 }
 int CProjectile::getPosX()
 {
@@ -128,6 +135,10 @@ int CProjectile::getPosX()
 int CProjectile::getPosY()
 {
     return (int)mCollisionBox.y;
+}
+int CProjectile::getType()
+{
+    return mType;
 }
 int CProjectile::getEditTileIndex()
 {

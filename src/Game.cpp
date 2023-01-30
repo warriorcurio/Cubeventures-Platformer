@@ -70,6 +70,25 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
     if(b.x + b.w <= a.x) return false;
     return true;
 }
+void setProjectiles()
+{
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        delete projectiles[i];
+    }
+    projectiles.clear();
+    switch (save.level) {
+        case 1:
+            const char* tutorialKeybindsText[5] = {"Up", "Left", "Down", "Right", "Jump"};
+            char* curText = (char*)calloc(50, sizeof(char));
+            for (int i = 0; i < KEYBINDS_TOTAL; i++) {
+                sprintf(curText, "%s - %s", tutorialKeybindsText[i], SDL_GetKeyName(keybinds[i]));
+                projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 840 + 20 * i, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            }
+            sprintf(curText, "Hold %s longer to jump higher!", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
+            projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            break;
+    }
+}
 bool setTiles()
 {
     int x = 0, y = 0;
@@ -130,7 +149,6 @@ void setLevel(int level)
     tiles.clear();
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     save.level = level;
-    projectiles.clear();
     if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
     save.chapterTime = 0;
     player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
@@ -151,6 +169,7 @@ void setLevel(int level)
     timeTicks = SDL_GetTicks();
     tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
     setTiles();
+    setProjectiles();
 }
 
 void gameDeathRetryCall()
@@ -184,13 +203,13 @@ bool gameLoadMedia()
     setTiles();
     projectileTexture.loadFromFile("res/projectiles.png");
     for (int i = 0; i < (int)projectiles.size(); i++) {
-        if (projectiles[i]->getEditTileIndex() != -1) tiles[projectiles[i]->getEditTileIndex()]->setType(projectiles[i]->getEditTileOriginal());
+        if (projectiles[i]->getType() == PROJECTILE_BUTTON_TILECHANGE) tiles[projectiles[i]->getEditTileIndex()]->setType(projectiles[i]->getEditTileOriginal());
     }
-    projectiles.push_back(new CProjectile(400, 300, PROJECTILE_DAMAGEBALL, 300, 0));
-    projectiles.push_back(new CProjectile(640, 300, PROJECTILE_DAMAGEBALL, 300, 0, 400));
-    projectiles.push_back(new CProjectile(80, 1015, 2500, TILE_WATERUP, false));
-    projectiles.push_back(new CProjectile(400, 500, PROJECTILE_SHIELD, 0, 0));
-    projectiles.push_back(new CProjectile(320, 760, 40, 240, 440, 760, "Junaid is so cute!!!!", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
+    setProjectiles();
+    // projectiles.push_back(new CProjectile(400, 300, PROJECTILE_DAMAGEBALL, 300, 0));
+    // projectiles.push_back(new CProjectile(640, 300, PROJECTILE_DAMAGEBALL, 300, 0, 400));
+    // projectiles.push_back(new CProjectile(80, 1015, 2500, TILE_WATERUP, false));
+    // projectiles.push_back(new CProjectile(400, 500, PROJECTILE_SHIELD, 0, 0));
     return true;
 }
 void gameHandleEvent(SDL_Event* e)
