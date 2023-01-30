@@ -25,4 +25,5 @@ class CTile
 extern bool isDead;
 extern CPlayer* player;
 extern CTexture tileTexture;
+extern std::vector<CTile*> tiles;
 #endif

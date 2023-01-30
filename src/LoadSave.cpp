@@ -1,4 +1,5 @@
 #include "LoadSave.h"
+#include "CProjectile.h"
 
 SDL_Color loadSaveButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
 std::string loadSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
@@ -18,7 +19,16 @@ CTexture textLoadScores[3], textLoadNumDeaths[3], textLoadTimes[3], textLoadNumK
 #define GEN_LOADSAVE_CALL(NUMBER)\
     void loadSave##NUMBER##Call()\
     {\
-        save = saveSlots[LOADSAVE_BUTTON_##NUMBER];\
+        SDL_RWops* readFile = SDL_RWFromFile(saveFileNames[LOADSAVE_BUTTON_##NUMBER].c_str(), "rb");\
+        SDL_RWread(readFile, &(saveSlots[LOADSAVE_BUTTON_##NUMBER]), sizeof(Save), 1);\
+        projectiles.clear();\
+        int projectileIndex = 0;\
+        projectiles.push_back(new CProjectile(0, 0, (ProjectileTypes)0, 0, 0));\
+        while (SDL_RWread(readFile, projectiles[projectileIndex], sizeof(CProjectile), 1) != 0) {\
+            projectileIndex++;\
+            projectiles.push_back(new CProjectile(0, 0, (ProjectileTypes)0, 0, 0));\
+        }\
+        SDL_RWclose(readFile);\
         transition(SCENE_GAME);\
     }\
     void loadSaveDel##NUMBER##Call()\

@@ -1,64 +1,113 @@
 #include "CProjectile.h"
 #include "Game.h"
 
-int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 1, 1};
+int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 1, 1, 1};
 
-CProjectile::CProjectile(int x, int y, int w, int h, int velX, int velY, int gravity, int type)
+CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX, int respawnY)
 {
     mFrame = 0;
-    mCollisionBox = {x, y, w, h};
+    mCollisionBox = {x, y, 25, 25};
     mVelX = velX;
     mVelY = velY;
-    mGravity = gravity;
+    if (respawnX == -1) mUtilityX = x;
+    else mUtilityX = respawnX;
+    if (respawnY == -1) mUtilityY = y;
+    else mUtilityY = respawnY;
+    mHasActivated = false;
+    if (type != PROJECTILE_CHARGER && type != PROJECTILE_DAMAGEBALL) mGravity = 1000;
+    else mGravity = 0;
     mType = type;
+    mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = true;
+    mActivateOnTileCollision = mType == PROJECTILE_DAMAGEBALL;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 10;
 }
-void CProjectile::move(std::vector<CTile*>& tiles, float timeStep)
+CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, bool isOneTimeOnly)
 {
-    if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) {
-        projectileEvent(tiles);
-        mVelX = 0;
-        mVelY = 0;
-        mCollisionBox.x = -mCollisionBox.w;
-        mCollisionBox.y = -mCollisionBox.h;
-        return;
-    }
-    if (mVelX == 0 && mVelY == 0) return;
+    mFrame = 0;
+    mCollisionBox = {x, y, 25, 25};
+    mVelX = 0;
+    mVelY = 0;
+    mEditTileIndex = editTileIndex;
+    mEditTileOriginal = tiles[editTileIndex]->getType();
+    mEditTileNew = editTileNew;
+    mHasActivated = false;
+    mGravity = 0;
+    mType = PROJECTILE_BUTTON_TILECHANGE;
+    mActivateOnPlayerCollision = true;
+    mDestroyOnPlayerCollision = isOneTimeOnly;
+    mActivateOnTileCollision = false;
+    mDestroyOnTileCollision = false;
+    mAnimationSpeed = 1;
+}
+CProjectile::CProjectile(int x, int y, int w, int h, int textX, int textY, const char* textToDisplay, SDL_Color textColour, int size)
+{
+    mFrame = 0;
+    mCollisionBox = {x, y, w, h};
+    mVelX = 0;
+    mVelY = 0;
+    mUtilityX = textX;
+    mUtilityY = textY;
+    mHasActivated = false;
+    mGravity = 0;
+    mType = PROJECTILE_TEXTDISPLAYER;
+    mTextTexture.loadFromRenderedText(textToDisplay, textColour, "res/04b.TTF", size);
+    mDisplayText = false;
+    mActivateOnPlayerCollision = true;
+    mDestroyOnPlayerCollision = false;
+    mActivateOnTileCollision = false;
+    mDestroyOnTileCollision = false;
+    mAnimationSpeed = 1;
+}
+void CProjectile::move(float timeStep)
+{
+    if (mActivateOnPlayerCollision && checkCollision(mCollisionBox, player->getBox()) && !mHasActivated) {
+        projectileEvent();
+        mHasActivated = true;
+    } else if (!(mActivateOnPlayerCollision && checkCollision(mCollisionBox, player->getBox()))) mHasActivated = false;
+    if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) destroySelf();
+    if (mVelX == 0 && mVelY == 0 && (mGravity == 0 || (mCollisionBox.x == -mCollisionBox.w && mCollisionBox.y == -mCollisionBox.h))) return;
     SDL_Rect tempBox = mCollisionBox;
     mCollisionBox.x += mVelX * timeStep;
-    if(mCollisionBox.x < 0) mCollisionBox.x = 0;
-    else if(mCollisionBox.x > levelDimensions[save.level - 1].w - mCollisionBox.w) mCollisionBox.x = levelDimensions[save.level - 1].w - mCollisionBox.w;
-    if (!touchesGround(tiles)) mVelY += mGravity * timeStep;
+    if(mCollisionBox.x < 0) {
+        mCollisionBox.x = 0;
+        if (mActivateOnTileCollision) projectileEvent();
+        if (mDestroyOnTileCollision) destroySelf();
+    }
+    else if(mCollisionBox.x > levelDimensions[save.level - 1].w - mCollisionBox.w) {
+        mCollisionBox.x = levelDimensions[save.level - 1].w - mCollisionBox.w;
+        if (mActivateOnTileCollision) projectileEvent();
+        if (mDestroyOnTileCollision) destroySelf();
+    }
+    if (!touchesGround()) mVelY += mGravity * timeStep;
     mCollisionBox.y += mVelY * timeStep;
     if (mVelY > 6 * mGravity) mVelY = 6 * mGravity;
-    if(mCollisionBox.y < 0) mCollisionBox.y = 0;
-    else if(mCollisionBox.y > levelDimensions[save.level - 1].h - mCollisionBox.h) mCollisionBox.y = levelDimensions[save.level - 1].h - mCollisionBox.h;
-    if (touchesTile(tiles)) {
-        if (mDestroyOnTileCollision) {
-            projectileEvent(tiles);
-            mVelX = 0;
-            mVelY = 0;
-            mCollisionBox.x = -mCollisionBox.w;
-            mCollisionBox.y = -mCollisionBox.h;
-            return;
-        }
-        SDL_Point point = getNearestCollision(mVelX, 0, tempBox, tiles);
+    if(mCollisionBox.y < 0) {
+        mCollisionBox.y = 0;
+        if (mActivateOnTileCollision) projectileEvent();
+        if (mDestroyOnTileCollision) destroySelf();
+    }
+    else if(mCollisionBox.y > levelDimensions[save.level - 1].h - mCollisionBox.h) {
+        mCollisionBox.y = levelDimensions[save.level - 1].h - mCollisionBox.h;
+        if (mActivateOnTileCollision) projectileEvent();
+        if (mDestroyOnTileCollision) destroySelf();
+    }
+    if (touchesTile()) {
+        if (mActivateOnTileCollision) projectileEvent();
+        if (mDestroyOnTileCollision) destroySelf();
+        SDL_Point point = getNearestCollision(mVelX, 0, tempBox);
         mCollisionBox.x = point.x;
-        point = getNearestCollision(0, mVelY, tempBox, tiles);
+        point = getNearestCollision(0, mVelY, tempBox);
         mCollisionBox.y = point.y;
     }
-    if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) {
-        projectileEvent(tiles);
-        mVelX = 0;
-        mVelY = 0;
-        mCollisionBox.x = -mCollisionBox.w;
-        mCollisionBox.y = -mCollisionBox.h;
-        return;
-    }
-    if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
-    if (touchesGround(tiles)) mVelX *= 0.8;
+    if (mActivateOnPlayerCollision && checkCollision(mCollisionBox, player->getBox()) && !mHasActivated) {
+        projectileEvent();
+        mHasActivated = true;
+    } else if (!(mActivateOnPlayerCollision && checkCollision(mCollisionBox, player->getBox()))) mHasActivated = false;
+    if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) destroySelf();
+    if (touchesCeiling() && mVelY < 0) mVelY = 0;
+    if (touchesGround()) mVelX *= 0.8;
 }
 void CProjectile::setPos(int x, int y)
 {
@@ -70,6 +119,7 @@ void CProjectile::render(SDL_Rect& camera)
     mFrame = (mFrame + 1) % (numFrames[mType] * mAnimationSpeed);
     SDL_Rect renderRect = {mType * 25, (int)(mFrame / mAnimationSpeed) * 25, 25, 25};
     projectileTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &renderRect);
+    if (mDisplayText) mTextTexture.render(mUtilityX, mUtilityY);
 }
 int CProjectile::getPosX()
 {
@@ -79,7 +129,17 @@ int CProjectile::getPosY()
 {
     return (int)mCollisionBox.y;
 }
-void CProjectile::projectileEvent(std::vector<CTile*>& tiles)
+int CProjectile::getEditTileIndex()
+{
+    if (mType == PROJECTILE_BUTTON_TILECHANGE) return mEditTileIndex;
+    else return -1;
+}
+int CProjectile::getEditTileOriginal()
+{
+    if (mType == PROJECTILE_BUTTON_TILECHANGE) return mEditTileOriginal;
+    else return -1;
+}
+void CProjectile::projectileEvent()
 {
     switch (mType) {
         case PROJECTILE_HEART:
@@ -89,7 +149,12 @@ void CProjectile::projectileEvent(std::vector<CTile*>& tiles)
             player->setShield(player->getShield() + 1);
             break;
         case PROJECTILE_DAMAGEBALL:
-            if (player->getInvulnerable() || player->getForm() == FORM_RAINBOW) return;
+            if (!checkCollision(mCollisionBox, player->getBox())) {
+                mCollisionBox.x = mUtilityX;
+                mCollisionBox.y = mUtilityY;
+                break;
+            }
+            if (player->getInvulnerable() || player->getForm() == FORM_RAINBOW) break;
             if (player->getShield() > 0) player->setShield(player->getShield() - 1);
             else player->setHealth(player->getHealth() - 1);
             player->setPos(player->getSafePos().x, player->getSafePos().y);
@@ -101,14 +166,28 @@ void CProjectile::projectileEvent(std::vector<CTile*>& tiles)
                 isDead = true;
             } else player->setInvulnerable(true);
             break;
-        case PROJECTILE_BUTTON:
+        case PROJECTILE_BUTTON_TILECHANGE:
+            tiles[mEditTileIndex]->setType(mEditTileNew);
+            mEditTileNew = mEditTileOriginal;
+            mEditTileOriginal = tiles[mEditTileIndex]->getType();
             break;
         case PROJECTILE_CHARGER:
             if (player->getCharge() < 100) player->setCharge(player->getCharge() + 1);
             break;
+        case PROJECTILE_TEXTDISPLAYER:
+            mDisplayText = true;
+            break;
     }
 }
-bool CProjectile::touchesTile(std::vector<CTile*>& tiles)
+void CProjectile::destroySelf()
+{
+    mVelX = 0;
+    mVelY = 0;
+    mCollisionBox.x = -mCollisionBox.w;
+    mCollisionBox.y = -mCollisionBox.h;
+    return;
+}
+bool CProjectile::touchesTile()
 {
     int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
@@ -120,7 +199,7 @@ bool CProjectile::touchesTile(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CProjectile::touchesGround(std::vector<CTile*>& tiles)
+bool CProjectile::touchesGround()
 {
     if (mCollisionBox.y == levelDimensions[save.level - 1].h - mCollisionBox.h) return true; 
     SDL_Rect groundBox = {mCollisionBox.x, mCollisionBox.y + mCollisionBox.h, mCollisionBox.w, 1};
@@ -131,7 +210,7 @@ bool CProjectile::touchesGround(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CProjectile::touchesCeiling(std::vector<CTile*>& tiles)
+bool CProjectile::touchesCeiling()
 {
     if (mCollisionBox.y == 0) return true; 
     SDL_Rect ceilingBox = {mCollisionBox.x, mCollisionBox.y - 1, mCollisionBox.w, 1};
@@ -142,31 +221,7 @@ bool CProjectile::touchesCeiling(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CProjectile::touchesWallRight(std::vector<CTile*>& tiles)
-{
-    if (mCollisionBox.x == levelDimensions[save.level - 1].w - mCollisionBox.w) return true; 
-    SDL_Rect rightBox = {mCollisionBox.x + mCollisionBox.w, mCollisionBox.y, 1, mCollisionBox.h};
-    int topRightTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) + 1;
-    for (int i = 0; i < 3; i++) {
-        int curTile = topRightTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
-        if (curTile < 0 || curTile >= tileCount) continue;
-        if((tiles[curTile]->getType() > TILE_EMPTY || tiles[curTile]->getType() == TILE_GHOST_T_D || tiles[curTile]->getType() == TILE_GHOST_F_D) && checkCollision(rightBox, tiles[curTile]->getBox())) return true;
-    }
-    return false;
-}
-bool CProjectile::touchesWallLeft(std::vector<CTile*>& tiles)
-{
-    if (mCollisionBox.x == 0) return true; 
-    SDL_Rect leftBox = {mCollisionBox.x - 1, mCollisionBox.y, 1, mCollisionBox.h};
-    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
-    for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
-        if (curTile < 0 || curTile >= tileCount) continue;
-        if((tiles[curTile]->getType() > TILE_EMPTY || tiles[curTile]->getType() == TILE_GHOST_T_D || tiles[curTile]->getType() == TILE_GHOST_F_D) && checkCollision(leftBox, tiles[curTile]->getBox())) return true;
-    }
-    return false;
-}
-SDL_Point CProjectile::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<CTile*>& tiles)
+SDL_Point CProjectile::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox)
 {
     SDL_Point point = {mCollisionBox.x, mCollisionBox.y};
     int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;

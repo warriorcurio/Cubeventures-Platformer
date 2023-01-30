@@ -12,9 +12,9 @@ class CPlayer
         CPlayer(int x, int y);
         ~CPlayer();
         void handleEvent(SDL_Event* e);
-        void move(std::vector<CTile*>& tiles, float timeStep);
+        void move(float timeStep);
         void setCamera(SDL_Rect& camera);
-        void checkItemCollisions(std::vector<CTile*>& tiles);
+        void checkItemCollisions();
         void setForm(int form);
         void setHealth(int health);
         void setShield(int shield);
@@ -36,12 +36,12 @@ class CPlayer
         int getPosY();
         bool getInvulnerable();
     private:
-        bool touchesTile(std::vector<CTile*>& tiles);
-        bool touchesGround(std::vector<CTile*>& tiles);
-        bool touchesCeiling(std::vector<CTile*>& tiles);
-        bool touchesWallRight(std::vector<CTile*>& tiles);
-        bool touchesWallLeft(std::vector<CTile*>& tiles);
-        SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<CTile*>& tiles);
+        bool touchesTile();
+        bool touchesGround();
+        bool touchesCeiling();
+        bool touchesWallRight();
+        bool touchesWallLeft();
+        SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox);
         CTexture mTexture;
         SDL_Rect mCollisionBox;
         SDL_Point mSafePos;

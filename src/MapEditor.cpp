@@ -122,13 +122,18 @@ void mapEditorHandleEvent(SDL_Event* e)
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
         editorTiles[tileNum]->setType(copyType);
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
+        copyType++;
         for (int i = 0; i < editorTileCount; i++) {
+
             if (editorTiles[i]->getType() >= copyType) editorTiles[i]->setType(editorTiles[i]->getType() + 1);
         }
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_j && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
+        copyType--;
         for (int i = 0; i < editorTileCount; i++) {
             if (editorTiles[i]->getType() >= copyType) editorTiles[i]->setType(editorTiles[i]->getType() - 1);
         }
+    } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_i && SDL_GetModState() & KMOD_CTRL) {
+        printf("%dx, %dy, %dt; ", (int)(sX - editorCamera.x), (int)(sY - editorCamera.y), tileNum);
     }
 }
 void mapEditorUpdate()

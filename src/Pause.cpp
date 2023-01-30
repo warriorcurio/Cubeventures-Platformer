@@ -22,6 +22,9 @@ void pauseSaveCall()
     sprintf(slotFile, "saves/save_%s.bin", save.slot);
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
     SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        SDL_RWwrite(writeFile, projectiles[i], sizeof(CProjectile), 1);
+    }
     SDL_RWclose(writeFile);
     pauseButtons[PAUSE_BUTTON_SAVE]->setClickable(false);
 }

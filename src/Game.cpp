@@ -130,6 +130,7 @@ void setLevel(int level)
     tiles.clear();
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     save.level = level;
+    projectiles.clear();
     if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
     save.chapterTime = 0;
     player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
@@ -178,13 +179,18 @@ bool gameLoadMedia()
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
     timeTicks = SDL_GetTicks();
     player = new CPlayer(save.x, save.y);
-    projectileTexture.loadFromFile("res/items.png");
-    projectiles.push_back(new CProjectile(400, 300, 25, 25, 300, -300, 1000, PROJECTILE_DAMAGEBALL));
-    projectiles.push_back(new CProjectile(400, 400, 25, 25, 300, -300, 1000, PROJECTILE_BUTTON));
-    projectiles.push_back(new CProjectile(400, 500, 25, 25, 300, -300, 1000, PROJECTILE_SHIELD));
     tileTexture.loadFromFile("res/tilesDEBUG.png");
     tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
     setTiles();
+    projectileTexture.loadFromFile("res/projectiles.png");
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        if (projectiles[i]->getEditTileIndex() != -1) tiles[projectiles[i]->getEditTileIndex()]->setType(projectiles[i]->getEditTileOriginal());
+    }
+    projectiles.push_back(new CProjectile(400, 300, PROJECTILE_DAMAGEBALL, 300, 0));
+    projectiles.push_back(new CProjectile(640, 300, PROJECTILE_DAMAGEBALL, 300, 0, 400));
+    projectiles.push_back(new CProjectile(80, 1015, 2500, TILE_WATERUP, false));
+    projectiles.push_back(new CProjectile(400, 500, PROJECTILE_SHIELD, 0, 0));
+    projectiles.push_back(new CProjectile(320, 760, 40, 240, 440, 760, "Junaid is so cute!!!!", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
     return true;
 }
 void gameHandleEvent(SDL_Event* e)
@@ -197,11 +203,11 @@ void gameHandleEvent(SDL_Event* e)
         return;
     }
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h) {
-        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_HEART));
+        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, PROJECTILE_HEART, 0, 0));
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_j) {
-        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 1, 1000, PROJECTILE_SHIELD));
+        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, PROJECTILE_SHIELD, 0, 0));
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_k) {
-        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, 25, 25, 0, 0, 0, PROJECTILE_CHARGER));
+        projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, PROJECTILE_CHARGER, 0, 0));
     }
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         transition(SCENE_PAUSE);
@@ -226,9 +232,9 @@ void gameUpdate()
         timeTicks = SDL_GetTicks();
         return;
     }
-    player->move(tiles, timeStep);
+    player->move(timeStep);
     for (int i = 0; i < (int)projectiles.size(); i++) {
-        if (projectiles[i]) projectiles[i]->move(tiles, timeStep);
+        if (projectiles[i]) projectiles[i]->move(timeStep);
     }
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->updateTiles(timeStep);
@@ -237,7 +243,7 @@ void gameUpdate()
     save.totalTime += timeStep;
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
-    player->checkItemCollisions(tiles);
+    player->checkItemCollisions();
     if (parallaxOffset < -LOGICAL_SCREEN_WIDTH) parallaxOffset += LOGICAL_SCREEN_WIDTH;
     if (parallaxOffset > 0) parallaxOffset -= LOGICAL_SCREEN_WIDTH;
 }

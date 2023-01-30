@@ -102,7 +102,7 @@ void CPlayer::handleEvent(SDL_Event* e)
         if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mVelY < -mJumpVelMin && mForm != FORM_RAINBOW) mVelY = -mJumpVelMin;
     }
 }
-void CPlayer::move(std::vector<CTile*>& tiles, float timeStep)
+void CPlayer::move(float timeStep)
 {
     SDL_Rect tempBox = mCollisionBox;
     if (mIsInvulnerable) invulnerabilityTimeTimerSeconds += timeStep;
@@ -123,23 +123,23 @@ void CPlayer::move(std::vector<CTile*>& tiles, float timeStep)
     if (mGravity > 0 && mVelY > 6 * mGravity) mVelY = 6 * mGravity;
     if(mCollisionBox.y < 0) mCollisionBox.y = 0;
     else if(mCollisionBox.y > levelDimensions[save.level - 1].h - PLAYER_HEIGHT) mCollisionBox.y = levelDimensions[save.level - 1].h - PLAYER_HEIGHT;
-    if (touchesTile(tiles)) {
-        SDL_Point point = getNearestCollision(mVelX, 0, tempBox, tiles);
+    if (touchesTile()) {
+        SDL_Point point = getNearestCollision(mVelX, 0, tempBox);
         mCollisionBox.x = point.x;
-        point = getNearestCollision(0, mVelY, tempBox, tiles);
+        point = getNearestCollision(0, mVelY, tempBox);
         mCollisionBox.y = point.y;  
     }
-    if (!mIsClimbing && mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) {
+    if (!mIsClimbing && mForm == FORM_BLUE && (touchesWallLeft() || touchesWallRight())) {
         mIsClimbing = true;
         mVelY = 0;
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
         if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_UP])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) < -JOYSTICK_DEAD_ZONE) mVelY -= mPlayerVel;
         if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_DOWN])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) > JOYSTICK_DEAD_ZONE) mVelY += mPlayerVel;
-    } else if (!(mForm == FORM_BLUE && (touchesWallLeft(tiles) || touchesWallRight(tiles))) ){
+    } else if (!(mForm == FORM_BLUE && (touchesWallLeft() || touchesWallRight())) ){
         mIsClimbing = false;
         mVelY += mGravity * timeStep;
     }
-    if (touchesGround(tiles)) {
+    if (touchesGround()) {
         mVelY = 0;
         mIsOnGround = true;
         mJumpsRemaining = mMaxJumps;
@@ -159,7 +159,7 @@ void CPlayer::move(std::vector<CTile*>& tiles, float timeStep)
             if (mJumpsRemaining == mMaxJumps) mJumpsRemaining--;
         }
     }
-    if (touchesCeiling(tiles) && mVelY < 0) mVelY = 0;
+    if (touchesCeiling() && mVelY < 0) mVelY = 0;
 }
 void CPlayer::setCamera(SDL_Rect& camera)
 {
@@ -174,7 +174,7 @@ void CPlayer::setCamera(SDL_Rect& camera)
     if(camera.y > levelDimensions[save.level - 1].h - camera.h) camera.y = levelDimensions[save.level - 1].h - camera.h;
     parallaxOffset -= (camera.x - tempCamera.x) / 3;
 }
-void CPlayer::checkItemCollisions(std::vector<CTile*>& tiles)
+void CPlayer::checkItemCollisions()
 {
     for(int i = 0; i < tileCount; i++)
     {
@@ -330,7 +330,7 @@ bool CPlayer::getInvulnerable()
 {
     return mIsInvulnerable;
 }
-bool CPlayer::touchesTile(std::vector<CTile*>& tiles)
+bool CPlayer::touchesTile()
 {
     int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
@@ -342,7 +342,7 @@ bool CPlayer::touchesTile(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CPlayer::touchesGround(std::vector<CTile*>& tiles)
+bool CPlayer::touchesGround()
 {
     if (mCollisionBox.y == levelDimensions[save.level - 1].h - mCollisionBox.h) return true; 
     SDL_Rect groundBox = {mCollisionBox.x, mCollisionBox.y + mCollisionBox.h, mCollisionBox.w, 1};
@@ -353,7 +353,7 @@ bool CPlayer::touchesGround(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CPlayer::touchesCeiling(std::vector<CTile*>& tiles)
+bool CPlayer::touchesCeiling()
 {
     if (mCollisionBox.y == 0) return true; 
     SDL_Rect ceilingBox = {mCollisionBox.x, mCollisionBox.y - 1, mCollisionBox.w, 1};
@@ -364,7 +364,7 @@ bool CPlayer::touchesCeiling(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CPlayer::touchesWallRight(std::vector<CTile*>& tiles)
+bool CPlayer::touchesWallRight()
 {
     if (mCollisionBox.x == levelDimensions[save.level - 1].w - mCollisionBox.w) return true; 
     SDL_Rect rightBox = {mCollisionBox.x + mCollisionBox.w, mCollisionBox.y, 1, mCollisionBox.h};
@@ -376,7 +376,7 @@ bool CPlayer::touchesWallRight(std::vector<CTile*>& tiles)
     }
     return false;
 }
-bool CPlayer::touchesWallLeft(std::vector<CTile*>& tiles)
+bool CPlayer::touchesWallLeft()
 {
     if (mCollisionBox.x == 0) return true; 
     SDL_Rect leftBox = {mCollisionBox.x - 1, mCollisionBox.y, 1, mCollisionBox.h};
@@ -388,7 +388,7 @@ bool CPlayer::touchesWallLeft(std::vector<CTile*>& tiles)
     }
     return false;
 }
-SDL_Point CPlayer::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox, std::vector<CTile*>& tiles)
+SDL_Point CPlayer::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox)
 {
     SDL_Point point = {mCollisionBox.x, mCollisionBox.y};
     int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
