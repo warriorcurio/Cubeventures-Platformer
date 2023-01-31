@@ -1,7 +1,7 @@
 #include "CProjectile.h"
 #include "Game.h"
 
-int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 1, 1, 1};
+int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 1, 4, 4, 1};
 
 CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX, int respawnY)
 {
@@ -40,6 +40,22 @@ CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, boo
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 1;
+}
+CProjectile::CProjectile(int x, int y, int teleportX, int teleportY)
+{
+    mFrame = 0;
+    mCollisionBox = {x, y, 25, 25};
+    mVelX = 0;
+    mVelY = 0;
+    mUtilityX = teleportX;
+    mUtilityY = teleportY;
+    mGravity = 0;
+    mType = PROJECTILE_TELEPORTER;
+    mActivateOnPlayerCollision = true;
+    mDestroyOnPlayerCollision = false;
+    mActivateOnTileCollision = false;
+    mDestroyOnTileCollision = false;
+    mAnimationSpeed = 3;
 }
 CProjectile::CProjectile(int x, int y, int w, int h, int textX, int textY, const char* textToDisplay, SDL_Color textColour, int size)
 {
@@ -184,6 +200,11 @@ void CProjectile::projectileEvent()
             break;
         case PROJECTILE_CHARGER:
             if (player->getCharge() < 100) player->setCharge(player->getCharge() + 1);
+            break;
+        case PROJECTILE_TELEPORTER:
+            player->setPos(mUtilityX, mUtilityY);
+            save.x = player->getSafePos().x;
+            save.y = player->getSafePos().y;
             break;
         case PROJECTILE_TEXTDISPLAYER:
             mDisplayText = true;

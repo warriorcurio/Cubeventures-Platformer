@@ -133,7 +133,7 @@ void mapEditorHandleEvent(SDL_Event* e)
             if (editorTiles[i]->getType() >= copyType) editorTiles[i]->setType(editorTiles[i]->getType() - 1);
         }
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_i && SDL_GetModState() & KMOD_CTRL) {
-        printf("%dx, %dy, %dt; ", (int)(sX - editorCamera.x), (int)(sY - editorCamera.y), tileNum);
+        printf("%dx, %dy, %dt; ", (int)sX, (int)sY, tileNum);
     }
 }
 void mapEditorUpdate()

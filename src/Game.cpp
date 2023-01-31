@@ -47,6 +47,9 @@ std::vector<SDL_Point> heartTwinklePositions;
 bool isDead;
 CTexture gameOverTexture;
 
+bool isEndLevel;
+CTexture levelCompleteTexture, scoreTexture;
+
 CTexture bgTexture;
 CTexture bgPTexture;
 float parallaxOffset;
@@ -77,7 +80,7 @@ void setProjectiles()
     }
     projectiles.clear();
     switch (save.level) {
-        case 1:
+        case 1: {
             const char* tutorialKeybindsText[5] = {"Up", "Left", "Down", "Right", "Jump"};
             char* curText = (char*)calloc(50, sizeof(char));
             for (int i = 0; i < KEYBINDS_TOTAL; i++) {
@@ -86,7 +89,24 @@ void setProjectiles()
             }
             sprintf(curText, "Hold %s longer to jump higher!", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
             projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(980, 800, 200, 40, 1200, 770, "< Requires a key", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(760, 600, 40, 40, 580, 420, "White: Affects Ghost Blocks", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(1480, 1000, 40, 40, 1340, 580, "Green: Jump 50% Higher", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(1920, 720, 40, 40, 1980, 540, "Red: Move 50% Quicker", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 340, "Blue: Stick To and Climb Walls", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 360, "Use Up and Down on a wall!", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(3760, 720, 40, 40, 3420, 730, "Restores Your Jumps >", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(160, 0, 40, 40, 930, 90, "Gold Medals give extra score", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 520, "Collect the Purple Medal", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
+            projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 560, "to complete levels!", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
+            projectiles.push_back(new CProjectile(1840, 440, 40, 40, 2170, 850, "Spikes are dangerous...", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
             break;
+        }
+        case 2: {
+            projectiles.push_back(new CProjectile(295, 615, 1640, 840));
+            projectiles.push_back(new CProjectile(4800, 40, 40, 840, 5200, 730, "Don't try to swim!", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            break;
+        }
     }
 }
 bool setTiles()
@@ -148,10 +168,15 @@ void setLevel(int level)
     }
     tiles.clear();
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
-    save.level = level;
     if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
     save.chapterTime = 0;
+    if (level > save.level) {
+        isEndLevel = true;
+        scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), gameButtonTextColour, "res/04b.TTF", 80);
+    }
+    save.level = level;
     player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
+    player->setCamera(camera);
     for (int i = 0; i < 5; i++) {
         save.collectedKeys[i] = -1;
         save.unlockedLocks[i] = -1;
@@ -181,15 +206,22 @@ void gameDeathQuitCall()
     isDead = false;
     transition(SCENE_MAINMENU);
 }
+void gameContinueCall()
+{
+    isEndLevel = false;
+}
 
 bool gameLoadMedia()
 {
     setWindowIcon(save.level);
     gameOverTexture.loadFromRenderedText("You Died!", gameButtonTextColour, "res/04b.TTF", 100);
+    levelCompleteTexture.loadFromRenderedText("Level Complete!", gameButtonTextColour, "res/04b.TTF", 100);
     gameButtons[GAME_BUTTON_DEATHRETRY] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Retry", gameButtonTextColour, &gameDeathRetryCall);
     gameButtons[GAME_BUTTON_DEATHRETRY]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHRETRY]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_DEATHRETRY]->getH()) / 2);
     gameButtons[GAME_BUTTON_DEATHQUIT] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Quit", gameButtonTextColour, &gameDeathQuitCall);
     gameButtons[GAME_BUTTON_DEATHQUIT]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHQUIT]->getW()) / 2, gameButtons[GAME_BUTTON_DEATHRETRY]->getY() + 120);
+    gameButtons[GAME_BUTTON_CONTINUE] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Continue", gameButtonTextColour, &gameContinueCall);
+    gameButtons[GAME_BUTTON_CONTINUE]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_CONTINUE]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_CONTINUE]->getH()) / 2);
     bgTexture.loadFromFile(bgNames[(save.level - 1) / 2]);
     bgPTexture.loadFromFile(bgParallaxNames[(save.level - 1) / 2]);
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
@@ -216,9 +248,11 @@ void gameHandleEvent(SDL_Event* e)
 {
     player->handleEvent(e);
     if (isDead) {
-        for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
-            if (gameButtons[i]) gameButtons[i]->handleEvent(e);
-        }
+        gameButtons[GAME_BUTTON_DEATHRETRY]->handleEvent(e);
+        gameButtons[GAME_BUTTON_DEATHQUIT]->handleEvent(e);
+        return;
+    } else if (isEndLevel) {
+        gameButtons[GAME_BUTTON_CONTINUE]->handleEvent(e);
         return;
     }
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h) {
@@ -247,7 +281,7 @@ void gameUpdate()
         heartTwinklePositions.erase(heartTwinklePositions.begin());
     }
     timeStep = (SDL_GetTicks() - timeTicks) / 1000.f;
-    if (isDead) {
+    if (isDead || isEndLevel) {
         timeTicks = SDL_GetTicks();
         return;
     }
@@ -276,10 +310,10 @@ void gameRender()
     for (int i = 0; i < tileCount; i++) {
         tiles[i]->render(camera);
     }
-    player->render(camera);
     for (int i = 0; i < (int)projectiles.size(); i++) {
         if (projectiles[i]) projectiles[i]->render(camera);
     }
+    player->render(camera);
     for (int i = 0; i < save.maxHealth; i++) {
         heartTexture.render(80 * i, 0, &heartClips[0]);
         if (i < player->getHealth() && save.difficulty != DIFFICULTY_EASY) heartTexture.render(80 * i, 0, &heartClips[1]);
@@ -305,9 +339,15 @@ void gameRender()
         SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xAF);
         SDL_RenderFillRect(gRenderer, NULL);
         gameOverTexture.render((LOGICAL_SCREEN_WIDTH - gameOverTexture.getWidth()) / 2, (LOGICAL_SCREEN_HEIGHT - gameOverTexture.getHeight()) / 4);
-        for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {   
-            if (gameButtons[i]) gameButtons[i]->render();
-        }
+        gameButtons[GAME_BUTTON_DEATHRETRY]->render();
+        gameButtons[GAME_BUTTON_DEATHQUIT]->render();
+    } else if (isEndLevel) {
+        SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xAF);
+        SDL_RenderFillRect(gRenderer, NULL);
+        levelCompleteTexture.render((LOGICAL_SCREEN_WIDTH - levelCompleteTexture.getWidth()) / 2, (LOGICAL_SCREEN_HEIGHT - levelCompleteTexture.getHeight()) / 4);
+        scoreTexture.render(10, LOGICAL_SCREEN_HEIGHT - scoreTexture.getHeight() - 10);
+        gameButtons[GAME_BUTTON_CONTINUE]->render();
     }
 }
 void gameClose()
@@ -333,4 +373,6 @@ void gameClose()
     heartTwinklePositions.clear();
     projectileTexture.free();
     gameOverTexture.free();
+    levelCompleteTexture.free();
+    scoreTexture.free();
 }

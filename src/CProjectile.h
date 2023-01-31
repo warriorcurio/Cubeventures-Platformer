@@ -9,6 +9,7 @@ class CProjectile
     public:
         CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX = -1, int respawnY = -1); //Hearts, shields, chargers, energy balls
         CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, bool isOneTimeOnly); //Tile changing buttons
+        CProjectile(int x, int y, int teleportX, int teleportY); //Teleporters
         CProjectile(int x, int y, int w, int h, int textX, int textY, const char* textToDisplay, SDL_Color textColour, int size); //Text displayers
         ~CProjectile();
         void move(float timeStep);
