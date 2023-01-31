@@ -71,7 +71,7 @@ CProjectile::CProjectile(int x, int y, int w, int h, int textX, int textY, const
     std::strcpy(mTextToDisplay, textToDisplay);
     mTextColour = textColour;
     mTextSize = size;
-    mTextTexture.loadFromRenderedText(mTextToDisplay, mTextColour, "res/04b.TTF", mTextSize);
+    mTextTexture.loadFromRenderedText(mTextToDisplay, mTextColour, mTextSize);
     mDisplayText = false;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = false;

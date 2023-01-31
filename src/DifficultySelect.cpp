@@ -1,8 +1,5 @@
 #include "DifficultySelect.h"
 
-SDL_Color difficultySelectButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string difficultySelectButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
-
 CButton* difficultySelectButtons[DIFFICULTYSELECT_BUTTON_TOTAL];
 
 CTexture textDifficultySelect;
@@ -37,14 +34,14 @@ void difficultySelectHardCall()
 
 bool difficultySelectLoadMedia()
 {
-    textDifficultySelect.loadFromRenderedText("Difficulty Select", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-    textDifficultyDescription.loadFromRenderedText(" ", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_BACK]  = new CButton(10, 1020, 40, difficultySelectButtonBackgroundColours, "Back", difficultySelectButtonTextColour, &backCall);
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY] = new CButton(402, 390, 60, difficultySelectButtonBackgroundColours, " ", difficultySelectButtonTextColour, &difficultySelectEasyCall, 300, 300);
+    textDifficultySelect.loadFromRenderedText("Difficulty Select", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+    textDifficultyDescription.loadFromRenderedText(" ", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_BACK]  = new CButton(10, 1020, 40, "Back", &backCall);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY] = new CButton(402, 390, 60, " ", &difficultySelectEasyCall, 300, 300);
     difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY]->setLabelFromPath("res/difficultyEASY.png");
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_MEDIUM] = new CButton(810, 390, 60, difficultySelectButtonBackgroundColours, " ", difficultySelectButtonTextColour, &difficultySelectMediumCall, 300, 300);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_MEDIUM] = new CButton(810, 390, 60, " ", &difficultySelectMediumCall, 300, 300);
     difficultySelectButtons[DIFFICULTYSELECT_BUTTON_MEDIUM]->setLabelFromPath("res/difficultyMEDIUM.png");
-    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_HARD] = new CButton(1218, 390, 60, difficultySelectButtonBackgroundColours, " ", difficultySelectButtonTextColour, &difficultySelectHardCall, 300, 300);
+    difficultySelectButtons[DIFFICULTYSELECT_BUTTON_HARD] = new CButton(1218, 390, 60, " ", &difficultySelectHardCall, 300, 300);
     difficultySelectButtons[DIFFICULTYSELECT_BUTTON_HARD]->setLabelFromPath("res/difficultyHARD.png");
     return true;
 }
@@ -60,17 +57,17 @@ void difficultySelectHandleEvent(SDL_Event* e)
 void difficultySelectUpdate()
 {
     if (difficultySelectButtons[DIFFICULTYSELECT_BUTTON_EASY]->getFrame() == BUTTON_MOUSE_OVER) {
-        textDifficultySelect.loadFromRenderedText("Easy", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-        textDifficultyDescription.loadFromRenderedText("5 Health, Regeneration", difficultySelectButtonTextColour, "res/04b.TTF", 40);
+        textDifficultySelect.loadFromRenderedText("Easy", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+        textDifficultyDescription.loadFromRenderedText("5 Health, Regeneration", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
     } else if (difficultySelectButtons[DIFFICULTYSELECT_BUTTON_MEDIUM]->getFrame() == BUTTON_MOUSE_OVER) {
-        textDifficultySelect.loadFromRenderedText("Medium", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-        textDifficultyDescription.loadFromRenderedText("3 Health", difficultySelectButtonTextColour, "res/04b.TTF", 40);
+        textDifficultySelect.loadFromRenderedText("Medium", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+        textDifficultyDescription.loadFromRenderedText("3 Health", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
     } else if (difficultySelectButtons[DIFFICULTYSELECT_BUTTON_HARD]->getFrame() == BUTTON_MOUSE_OVER) {
-        textDifficultySelect.loadFromRenderedText("Hard", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-        textDifficultyDescription.loadFromRenderedText("1 Health, Instant Death", difficultySelectButtonTextColour, "res/04b.TTF", 40);
+        textDifficultySelect.loadFromRenderedText("Hard", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+        textDifficultyDescription.loadFromRenderedText("1 Health, Instant Death", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
     } else {
-        textDifficultySelect.loadFromRenderedText("Difficulty Select", difficultySelectButtonTextColour, "res/04b.TTF", 40);
-        textDifficultyDescription.loadFromRenderedText(" ", difficultySelectButtonTextColour, "res/04b.TTF", 40);
+        textDifficultySelect.loadFromRenderedText("Difficulty Select", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+        textDifficultyDescription.loadFromRenderedText(" ", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
     }
 }
 void difficultySelectRender()

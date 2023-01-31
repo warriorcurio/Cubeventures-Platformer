@@ -1,8 +1,5 @@
 #include "MainMenu.h"
 
-SDL_Color mainMenuButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string mainMenuButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
-
 CButton* mainMenuButtons[MAINMENU_BUTTON_TOTAL];
 
 CTexture menuBackground, menuOverlay, logo, star;
@@ -40,11 +37,11 @@ bool mainMenuLoadMedia()
     menuOverlay.loadFromFile("res/menuOverlay.png");
     logo.loadFromFile("res/logo.png");
     star.loadFromFile("res/star.png");
-    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new CButton(75, 500, 40, mainMenuButtonBackgroundColours, "New Game", mainMenuButtonTextColour, &mainMenuNewGameCall);
-    mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new CButton(75, 580, 40, mainMenuButtonBackgroundColours, "Load Game", mainMenuButtonTextColour, &mainMenuLoadGameCall);
-    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new CButton(75, 660, 40, mainMenuButtonBackgroundColours, "Level Select", mainMenuButtonTextColour, &mainMenuLevelSelectCall);
-    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new CButton(75, 740, 40, mainMenuButtonBackgroundColours, "Settings", mainMenuButtonTextColour, &mainMenuSettingsCall);
-    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new CButton(75, 820, 40, mainMenuButtonBackgroundColours, "Exit", mainMenuButtonTextColour, &mainMenuExitCall);
+    mainMenuButtons[MAINMENU_BUTTON_NEWGAME] = new CButton(75, 500, 40, "New Game", &mainMenuNewGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LOADGAME] = new CButton(75, 580, 40, "Load Game", &mainMenuLoadGameCall);
+    mainMenuButtons[MAINMENU_BUTTON_LEVELSELECT] = new CButton(75, 660, 40, "Level Select", &mainMenuLevelSelectCall);
+    mainMenuButtons[MAINMENU_BUTTON_SETTINGS] = new CButton(75, 740, 40, "Settings", &mainMenuSettingsCall);
+    mainMenuButtons[MAINMENU_BUTTON_EXIT] = new CButton(75, 820, 40, "Exit", &mainMenuExitCall);
     return true;
 }
 void mainMenuHandleEvent(SDL_Event* e)

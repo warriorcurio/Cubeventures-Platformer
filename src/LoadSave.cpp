@@ -1,10 +1,6 @@
 #include "LoadSave.h"
 #include "CProjectile.h"
 
-SDL_Color loadSaveButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string loadSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
-std::string loadSaveButtonDelBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};
-
 CButton* loadSaveButtons[LOADSAVE_BUTTON_TOTAL];
 
 SDL_Rect saveHeartClips[3] = {{0, 0, 60, 60}, {0, 60, 60, 60}, {0, 120, 60, 60}};
@@ -43,36 +39,38 @@ GEN_LOADSAVE_CALL(THREE);
 
 bool loadSaveLoadMedia()
 {
-    textLoadSave.loadFromRenderedText("Load Save", loadSaveButtonTextColour, "res/04b.TTF", 40);
+    textLoadSave.loadFromRenderedText("Load Save", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
     for (int i = 0; i < 3; i++) {
         if (!std::filesystem::exists(saveFileNames[i].c_str())) continue;
         SDL_RWops* readFile = SDL_RWFromFile(saveFileNames[i].c_str(), "rb");
         SDL_RWread(readFile, &(saveSlots[i]), sizeof(Save), 1);
         SDL_RWclose(readFile);
-        textLoadScores[i].loadFromRenderedText(std::to_string(saveSlots[i].score), loadSaveButtonTextColour, "res/04b.TTF", 34);
+        textLoadScores[i].loadFromRenderedText(std::to_string(saveSlots[i].score), SDL_Color{0xFF, 0xFF, 0xFF}, 34);
         char* timeString = (char*)calloc(5, sizeof(char));
         sprintf(timeString, "%02d:%02d", (int)(saveSlots[i].totalTime / 60), (int)saveSlots[i].totalTime % 60);
-        textLoadTimes[i].loadFromRenderedText(timeString, loadSaveButtonTextColour, "res/04b.TTF", 34);
-        textLoadNumDeaths[i].loadFromRenderedText(std::to_string(saveSlots[i].deaths), loadSaveButtonTextColour, "res/04b.TTF", 24);
-        textLoadNumKeys[i].loadFromRenderedText(std::to_string(saveSlots[i].keys), loadSaveButtonTextColour, "res/04b.TTF", 24);
-        textLoadDifficulties[i].loadFromRenderedText(difficultyNames[saveSlots[i].difficulty], loadSaveButtonTextColour, "res/04b.TTF", 50);
-        textLoadNames[i].loadFromRenderedText(saveSlots[i].name, loadSaveButtonTextColour, "res/04b.TTF", 50);
+        textLoadTimes[i].loadFromRenderedText(timeString, SDL_Color{0xFF, 0xFF, 0xFF}, 34);
+        textLoadNumDeaths[i].loadFromRenderedText(std::to_string(saveSlots[i].deaths), SDL_Color{0xFF, 0xFF, 0xFF}, 24);
+        textLoadNumKeys[i].loadFromRenderedText(std::to_string(saveSlots[i].keys), SDL_Color{0xFF, 0xFF, 0xFF}, 24);
+        textLoadDifficulties[i].loadFromRenderedText(difficultyNames[saveSlots[i].difficulty], SDL_Color{0xFF, 0xFF, 0xFF}, 50);
+        textLoadNames[i].loadFromRenderedText(saveSlots[i].name, SDL_Color{0xFF, 0xFF, 0xFF}, 50);
     }
     saveHearts.loadFromFile("res/saveslots/saveHearts.png");
-    loadSaveButtons[LOADSAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, loadSaveButtonBackgroundColours, "Back", loadSaveButtonTextColour, &backCall);
-    loadSaveButtons[LOADSAVE_BUTTON_ONE] = new CButton(402, 390, 60, loadSaveButtonBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveONECall, 300, 300);
-    loadSaveButtons[LOADSAVE_BUTTON_TWO] = new CButton(810, 390, 60, loadSaveButtonBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveTWOCall, 300, 300);
-    loadSaveButtons[LOADSAVE_BUTTON_THREE] = new CButton(1218, 390, 60, loadSaveButtonBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveTHREECall, 300, 300);
+    loadSaveButtons[LOADSAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, "Back", &backCall);
+    loadSaveButtons[LOADSAVE_BUTTON_ONE] = new CButton(402, 390, 60, " ", &loadSaveONECall, 300, 300);
+    loadSaveButtons[LOADSAVE_BUTTON_TWO] = new CButton(810, 390, 60, " ", &loadSaveTWOCall, 300, 300);
+    loadSaveButtons[LOADSAVE_BUTTON_THREE] = new CButton(1218, 390, 60, " ", &loadSaveTHREECall, 300, 300);
     for (int i = LOADSAVE_BUTTON_ONE; i <= LOADSAVE_BUTTON_THREE; i++) {
         loadSaveButtons[i]->setClickable(std::filesystem::exists(saveFileNames[i].c_str()));
         if (std::filesystem::exists(saveFileNames[i].c_str())) loadSaveButtons[i]->setBGFromPath("res/saveslots/loadSave" + saveButtonPaths[saveSlots[i].level - 1]);
         else loadSaveButtons[i]->setBGFromPath("res/saveslots/loadSaveONE.png");
     }
-    loadSaveButtons[LOADSAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelONECall);
-    loadSaveButtons[LOADSAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelTWOCall);
-    loadSaveButtons[LOADSAVE_BUTTON_DELTHREE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, loadSaveButtonDelBackgroundColours, " ", loadSaveButtonTextColour, &loadSaveDelTHREECall);
+    loadSaveButtons[LOADSAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &loadSaveDelONECall);
+    loadSaveButtons[LOADSAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &loadSaveDelTWOCall);
+    loadSaveButtons[LOADSAVE_BUTTON_DELTHREE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &loadSaveDelTHREECall);
+    std::string deleteBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};
     for (int i = LOADSAVE_BUTTON_DELONE; i <= LOADSAVE_BUTTON_DELTHREE; i++) {
         loadSaveButtons[i]->setLabelFromPath("res/trash.png");
+        loadSaveButtons[i]->setBGFromSVG(deleteBackgroundColours);
         if (std::filesystem::exists(saveFileNames[i - 3].c_str())) loadSaveButtons[i]->setPos(loadSaveButtons[i - 3]->getX() + (loadSaveButtons[i - 3]->getW() - loadSaveButtons[i]->getW()) / 2, loadSaveButtons[i - 3]->getY() + loadSaveButtons[i - 3]->getH() + 1);
         else loadSaveButtons[i]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
     }

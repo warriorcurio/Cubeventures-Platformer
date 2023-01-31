@@ -8,7 +8,7 @@ class CTexture
         CTexture();
         ~CTexture();
         bool loadFromFile(std::string path);
-        bool loadFromRenderedText(std::string textureText, SDL_Color textColor, std::string path, int size);
+        bool loadFromRenderedText(std::string textureText, SDL_Color textColor, int size);
         bool loadFromSVG(std::string svg);
         void free();
         void setColour(Uint8 r, Uint8 g, Uint8 b);

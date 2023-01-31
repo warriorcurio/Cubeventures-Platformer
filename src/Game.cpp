@@ -2,7 +2,7 @@
 
 Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
-    {6000, 6000},
+    {6000, 4000},
     {10000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -56,9 +56,6 @@ float parallaxOffset;
 std::string bgNames[5] = {"res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
 std::string bgParallaxNames[5] = {"res/bgONE_P.png", "res/bgTWO_P.png", "res/bgTHREE_P.png", "res/bgFOUR_P.png", "res/bgFIVE_P.png"};
 
-SDL_Color gameButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string gameButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
-
 CButton* gameButtons[GAME_BUTTON_TOTAL];
 
 CPlayer* player;
@@ -75,36 +72,38 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
 }
 void setProjectiles()
 {
-    for (int i = 0; i < (int)projectiles.size(); i++) {
-        delete projectiles[i];
-    }
-    projectiles.clear();
     switch (save.level) {
         case 1: {
             const char* tutorialKeybindsText[5] = {"Up", "Left", "Down", "Right", "Jump"};
             char* curText = (char*)calloc(50, sizeof(char));
             for (int i = 0; i < KEYBINDS_TOTAL; i++) {
                 sprintf(curText, "%s - %s", tutorialKeybindsText[i], SDL_GetKeyName(keybinds[i]));
-                projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 840 + 20 * i, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+                projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 810 + 25 * i, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             }
-            sprintf(curText, "Hold %s longer to jump higher!", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
-            projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(980, 800, 200, 40, 1200, 770, "< Requires a key", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(760, 600, 40, 40, 580, 420, "White: Affects Ghost Blocks", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(1480, 1000, 40, 40, 1340, 580, "Green: Jump 50% Higher", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(1920, 720, 40, 40, 1980, 540, "Red: Move 50% Quicker", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 340, "Blue: Stick To and Climb Walls", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 360, "Use Up and Down on a wall!", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(3760, 720, 40, 40, 3420, 730, "Restores Your Jumps >", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
-            projectiles.push_back(new CProjectile(160, 0, 40, 40, 930, 90, "Gold Medals give extra score", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            sprintf(curText, "Hold %s longer", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
+            projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 845, "to jump higher!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(960, 800, 200, 40, 1210, 770, "< Requires a key", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(760, 600, 40, 40, 480, 420, "White: Affects Ghost Blocks", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(1480, 1000, 40, 40, 1240, 580, "Green: Jump 50% Higher", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(1920, 720, 40, 40, 1900, 540, "Red: Move 50% Quicker", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 340, "Blue: Stick To and Climb Walls", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 365, "Use Up and Down on a wall!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(3760, 720, 40, 40, 3310, 730, "Restores Your Jumps >", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(160, 0, 40, 40, 930, 85, "Gold Medals give extra score", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 520, "Collect the Purple Medal", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
             projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 560, "to complete levels!", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
-            projectiles.push_back(new CProjectile(1840, 440, 40, 40, 2170, 850, "Spikes are dangerous...", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            projectiles.push_back(new CProjectile(1840, 440, 40, 40, 2080, 850, "Spikes are dangerous...", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             break;
         }
         case 2: {
-            projectiles.push_back(new CProjectile(295, 615, 1640, 840));
-            projectiles.push_back(new CProjectile(4800, 40, 40, 840, 5200, 730, "Don't try to swim!", SDL_Color{0xFF, 0xFF, 0xFF}, 20));
+            if ((int)projectiles.size() == 0) {
+                projectiles.push_back(new CProjectile(295, 615, 1640, 840));
+                projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0));
+                projectiles.push_back(new CProjectile(5370, 855, 2234, TILE_WHITECRYSTAL, true));
+            }
+            projectiles.push_back(new CProjectile(4295, 855, 40, 40, 4160, 610, "Shields serve as an extra life", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(4800, 40, 40, 840, 5150, 725, "Don't try to swim!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             break;
         }
     }
@@ -171,8 +170,12 @@ void setLevel(int level)
     if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
     save.chapterTime = 0;
     if (level > save.level) {
+        for (int i = 0; i < (int)projectiles.size(); i++) {
+            delete projectiles[i];
+        }
+        projectiles.clear();
         isEndLevel = true;
-        scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), gameButtonTextColour, "res/04b.TTF", 80);
+        scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), SDL_Color{0xFF, 0xFF, 0xFF}, 80);
     }
     save.level = level;
     player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
@@ -214,13 +217,13 @@ void gameContinueCall()
 bool gameLoadMedia()
 {
     setWindowIcon(save.level);
-    gameOverTexture.loadFromRenderedText("You Died!", gameButtonTextColour, "res/04b.TTF", 100);
-    levelCompleteTexture.loadFromRenderedText("Level Complete!", gameButtonTextColour, "res/04b.TTF", 100);
-    gameButtons[GAME_BUTTON_DEATHRETRY] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Retry", gameButtonTextColour, &gameDeathRetryCall);
+    gameOverTexture.loadFromRenderedText("You Died!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
+    levelCompleteTexture.loadFromRenderedText("Level Complete!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
+    gameButtons[GAME_BUTTON_DEATHRETRY] = new CButton(0, 0, 80, "Retry", &gameDeathRetryCall);
     gameButtons[GAME_BUTTON_DEATHRETRY]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHRETRY]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_DEATHRETRY]->getH()) / 2);
-    gameButtons[GAME_BUTTON_DEATHQUIT] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Quit", gameButtonTextColour, &gameDeathQuitCall);
+    gameButtons[GAME_BUTTON_DEATHQUIT] = new CButton(0, 0, 80, "Quit", &gameDeathQuitCall);
     gameButtons[GAME_BUTTON_DEATHQUIT]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHQUIT]->getW()) / 2, gameButtons[GAME_BUTTON_DEATHRETRY]->getY() + 120);
-    gameButtons[GAME_BUTTON_CONTINUE] = new CButton(0, 0, 80, gameButtonBackgroundColours, "Continue", gameButtonTextColour, &gameContinueCall);
+    gameButtons[GAME_BUTTON_CONTINUE] = new CButton(0, 0, 80, "Continue", &gameContinueCall);
     gameButtons[GAME_BUTTON_CONTINUE]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_CONTINUE]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_CONTINUE]->getH()) / 2);
     bgTexture.loadFromFile(bgNames[(save.level - 1) / 2]);
     bgPTexture.loadFromFile(bgParallaxNames[(save.level - 1) / 2]);
@@ -240,8 +243,6 @@ bool gameLoadMedia()
     setProjectiles();
     // projectiles.push_back(new CProjectile(400, 300, PROJECTILE_DAMAGEBALL, 300, 0));
     // projectiles.push_back(new CProjectile(640, 300, PROJECTILE_DAMAGEBALL, 300, 0, 400));
-    // projectiles.push_back(new CProjectile(80, 1015, 2500, TILE_WATERUP, false));
-    // projectiles.push_back(new CProjectile(400, 500, PROJECTILE_SHIELD, 0, 0));
     return true;
 }
 void gameHandleEvent(SDL_Event* e)

@@ -2,7 +2,7 @@
 
 Resolution editorLevelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
-    {6000, 6000},
+    {6000, 4000},
     {10000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -145,7 +145,7 @@ void mapEditorUpdate()
 }
 void mapEditorRender()
 {
-    SDL_SetRenderDrawColor(gRenderer, 69, 69, 69, 0xFF);
+    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xAA, 0xFF);
     SDL_RenderClear(gRenderer);
     for (int i = 0; i < editorTileCount; i++) {
         editorTiles[i]->render(editorCamera);

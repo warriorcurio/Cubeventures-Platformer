@@ -1,8 +1,5 @@
 #include "NameSave.h"
 
-SDL_Color nameSaveButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string nameSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
-
 std::string inputName;
 
 CButton* nameSaveButtons[NAMESAVE_BUTTON_TOTAL];
@@ -15,9 +12,9 @@ bool nameSaveLoadMedia()
 {
     inputName = "";
     SDL_StartTextInput();
-    textNameSave.loadFromRenderedText("Type Your Name", nameSaveButtonTextColour, "res/04b.TTF", 40);
-    textEnter.loadFromRenderedText("Press ENTER To Submit", nameSaveButtonTextColour, "res/04b.TTF", 40);
-    nameSaveButtons[NAMESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, nameSaveButtonBackgroundColours, "Back", nameSaveButtonTextColour, &backCall);
+    textNameSave.loadFromRenderedText("Type Your Name", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+    textEnter.loadFromRenderedText("Press ENTER To Submit", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+    nameSaveButtons[NAMESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, "Back", &backCall);
     return true;
 }
 void nameSaveHandleEvent(SDL_Event* e)
@@ -44,9 +41,9 @@ void nameSaveHandleEvent(SDL_Event* e)
 void nameSaveUpdate()
 {
     if (inputName != "") {
-        textInputName.loadFromRenderedText(inputName.c_str(), nameSaveButtonTextColour, "res/04b.TTF", 60);
+        textInputName.loadFromRenderedText(inputName.c_str(), SDL_Color{0xFF, 0xFF, 0xFF}, 60);
     } else {
-        textInputName.loadFromRenderedText(" ", nameSaveButtonTextColour, "res/04b.TTF", 60);
+        textInputName.loadFromRenderedText(" ", SDL_Color{0xFF, 0xFF, 0xFF}, 60);
     }
 }
 void nameSaveRender()

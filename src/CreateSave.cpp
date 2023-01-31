@@ -1,9 +1,5 @@
 #include "CreateSave.h"
 
-SDL_Color createSaveButtonTextColour = {0xFF, 0xFF, 0xFF, 0xFF};
-std::string createSaveButtonBackgroundColours[3] = {"#006F00", "#003F00", "#003F3F"};
-std::string createSaveButtonDelBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};
-
 CButton* createSaveButtons[CREATESAVE_BUTTON_TOTAL];
 
 CTexture textCreateSave;
@@ -47,36 +43,38 @@ GEN_CREATESAVE_CALL(THREE);
 
 bool createSaveLoadMedia()
 {
-    textCreateSave.loadFromRenderedText("Create Save", createSaveButtonTextColour, "res/04b.TTF", 40);
+    textCreateSave.loadFromRenderedText("Create Save", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
     for (int i = 0; i < 3; i++) {
         if (!std::filesystem::exists(saveFileNames[i].c_str())) continue;
         SDL_RWops* readFile = SDL_RWFromFile(saveFileNames[i].c_str(), "rb");
         SDL_RWread(readFile, &(saveSlots[i]), sizeof(Save), 1);
         SDL_RWclose(readFile);
-        textCreateScores[i].loadFromRenderedText(std::to_string(saveSlots[i].score), createSaveButtonTextColour, "res/04b.TTF", 34);
+        textCreateScores[i].loadFromRenderedText(std::to_string(saveSlots[i].score), SDL_Color{0xFF, 0xFF, 0xFF}, 34);
         char* timeString = (char*)calloc(5, sizeof(char));
         sprintf(timeString, "%02d:%02d", (int)(saveSlots[i].totalTime / 60), (int)saveSlots[i].totalTime % 60);
-        textCreateTimes[i].loadFromRenderedText(timeString, createSaveButtonTextColour, "res/04b.TTF", 34);
-        textCreateNumDeaths[i].loadFromRenderedText(std::to_string(saveSlots[i].deaths), createSaveButtonTextColour, "res/04b.TTF", 24);
-        textCreateNumKeys[i].loadFromRenderedText(std::to_string(saveSlots[i].keys), createSaveButtonTextColour, "res/04b.TTF", 24);
-        textCreateDifficulties[i].loadFromRenderedText(difficultyNames[saveSlots[i].difficulty], createSaveButtonTextColour, "res/04b.TTF", 50);
-        textCreateNames[i].loadFromRenderedText(saveSlots[i].name, createSaveButtonTextColour, "res/04b.TTF", 50);
+        textCreateTimes[i].loadFromRenderedText(timeString, SDL_Color{0xFF, 0xFF, 0xFF}, 34);
+        textCreateNumDeaths[i].loadFromRenderedText(std::to_string(saveSlots[i].deaths), SDL_Color{0xFF, 0xFF, 0xFF}, 24);
+        textCreateNumKeys[i].loadFromRenderedText(std::to_string(saveSlots[i].keys), SDL_Color{0xFF, 0xFF, 0xFF}, 24);
+        textCreateDifficulties[i].loadFromRenderedText(difficultyNames[saveSlots[i].difficulty], SDL_Color{0xFF, 0xFF, 0xFF}, 50);
+        textCreateNames[i].loadFromRenderedText(saveSlots[i].name, SDL_Color{0xFF, 0xFF, 0xFF}, 50);
     }
     saveHearts.loadFromFile("res/saveslots/saveHearts.png");
-    createSaveButtons[CREATESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, createSaveButtonBackgroundColours, "Back", createSaveButtonTextColour, &backCall);
-    createSaveButtons[CREATESAVE_BUTTON_ONE] = new CButton(402, 390, 60, createSaveButtonBackgroundColours, " ", createSaveButtonTextColour, &createSaveONECall, 300, 300);
-    createSaveButtons[CREATESAVE_BUTTON_TWO] = new CButton(810, 390, 60, createSaveButtonBackgroundColours, " ", createSaveButtonTextColour, &createSaveTWOCall, 300, 300);
-    createSaveButtons[CREATESAVE_BUTTON_THREE] = new CButton(1218, 390, 60, createSaveButtonBackgroundColours, " ", createSaveButtonTextColour, &createSaveTHREECall, 300, 300);
+    createSaveButtons[CREATESAVE_BUTTON_BACK]  = new CButton(10, 1020, 40, "Back", &backCall);
+    createSaveButtons[CREATESAVE_BUTTON_ONE] = new CButton(402, 390, 60, " ", &createSaveONECall, 300, 300);
+    createSaveButtons[CREATESAVE_BUTTON_TWO] = new CButton(810, 390, 60, " ", &createSaveTWOCall, 300, 300);
+    createSaveButtons[CREATESAVE_BUTTON_THREE] = new CButton(1218, 390, 60, " ", &createSaveTHREECall, 300, 300);
     for (int i = CREATESAVE_BUTTON_ONE; i <= CREATESAVE_BUTTON_THREE; i++) {
         createSaveButtons[i]->setClickable(!std::filesystem::exists(saveFileNames[i].c_str()));
         if (std::filesystem::exists(saveFileNames[i].c_str())) createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[saveSlots[i].level - 1]);
         else createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[save.level - 1]);
     }
-    createSaveButtons[CREATESAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelONECall);
-    createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTWOCall);
-    createSaveButtons[CREATESAVE_BUTTON_DELTHREE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, createSaveButtonDelBackgroundColours, " ", createSaveButtonTextColour, &createSaveDelTHREECall);
+    createSaveButtons[CREATESAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &createSaveDelONECall);
+    createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &createSaveDelTWOCall);
+    createSaveButtons[CREATESAVE_BUTTON_DELTHREE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &createSaveDelTHREECall);
+    std::string deleteBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};
     for (int i = CREATESAVE_BUTTON_DELONE; i <= CREATESAVE_BUTTON_DELTHREE; i++) {
         createSaveButtons[i]->setLabelFromPath("res/trash.png");
+        createSaveButtons[i]->setBGFromSVG(deleteBackgroundColours);
         if (std::filesystem::exists(saveFileNames[i - 3].c_str())) createSaveButtons[i]->setPos(createSaveButtons[i - 3]->getX() + (createSaveButtons[i - 3]->getW() - createSaveButtons[i]->getW()) / 2, createSaveButtons[i - 3]->getY() + createSaveButtons[i - 3]->getH() + 1);
         else createSaveButtons[i]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
     }

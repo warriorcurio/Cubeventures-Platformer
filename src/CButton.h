@@ -13,12 +13,13 @@ enum ButtonFrames
 class CButton
 {
     public:
-        CButton(int x, int y, int  fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w = 0, int h = 0);
+        CButton(int x, int y, int  fontSize, std::string label, void (*callback)(), int w = 0, int h = 0);
         ~CButton();
         void handleEvent(SDL_Event* e);
         void render();
         void setPos(int x, int y);
         void setBGFromPath(std::string path);
+        void setBGFromSVG(std::string bgColours[3]);
         void setLabelFromPath(std::string path);
         void setClickable(bool isClickable);
         void setSelected(bool isSelected);

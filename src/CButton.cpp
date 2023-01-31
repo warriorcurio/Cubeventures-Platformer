@@ -1,10 +1,10 @@
 #include "CButton.h"
 
-CButton::CButton(int x, int y, int fontSize, std::string bgColours[3], std::string label, SDL_Color labelColour, void (*callback)(), int w, int h)
+CButton::CButton(int x, int y, int fontSize, std::string label, void (*callback)(), int w, int h)
 {
     mX = x;
     mY = y;
-    mLabelTexture.loadFromRenderedText(label.c_str(), labelColour, "res/04b.TTF", fontSize);
+    mLabelTexture.loadFromRenderedText(label.c_str(), SDL_Color{0xFF, 0xFF, 0xFF}, fontSize);
     mW = mLabelTexture.getWidth() + 10;
     mH = mLabelTexture.getHeight() + 10;
     if (w > 0) {
@@ -14,8 +14,8 @@ CButton::CButton(int x, int y, int fontSize, std::string bgColours[3], std::stri
     mClickable = true;
     mIsSelected = false;
     mCurFrame = BUTTON_MOUSE_OUT;
-    char svg[300];
-    sprintf(svg, "<svg width='%d' height='%d'><rect y='0' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#3F3F3F' /></svg>", mW, mH*4, mW, mH, bgColours[0].c_str(), mH, mW, mH, bgColours[1].c_str(), mH*2, mW, mH, bgColours[2].c_str(), mH*3, mW, mH);
+    char svg[350];
+    sprintf(svg, "<svg width='%d' height='%d'><rect y='0' rx='5' ry='5' width='%d' height='%d' style='fill:#006F00' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#003F00' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#003F3F' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#3F3F3F' /></svg>", mW, mH*4, mW, mH, mH, mW, mH, mH*2, mW, mH, mH*3, mW, mH);
     mTexture.loadFromSVG(svg);
     mCallback = callback;
 }
@@ -84,6 +84,13 @@ void CButton::setBGFromPath(std::string path)
 {
     mTexture.free();
     mTexture.loadFromFile(path.c_str());
+}
+void CButton::setBGFromSVG(std::string bgColours[3])
+{
+    mTexture.free();
+    char svg[350];
+    sprintf(svg, "<svg width='%d' height='%d'><rect y='0' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:%s' /><rect y='%d' rx='5' ry='5' width='%d' height='%d' style='fill:#3F3F3F' /></svg>", mW, mH*4, mW, mH, bgColours[0].c_str(), mH, mW, mH, bgColours[1].c_str(), mH*2, mW, mH, bgColours[2].c_str(), mH*3, mW, mH);
+    mTexture.loadFromSVG(svg);
 }
 void CButton::setLabelFromPath(std::string path)
 {
