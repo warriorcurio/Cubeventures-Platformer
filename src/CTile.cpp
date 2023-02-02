@@ -49,11 +49,6 @@ void CTile::collisionEvent(int tileNum)
             player->setJumps(save.maxJumps);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 2, 0xFFFF / 2, 150);
             break;
-        case TILE_EXIT:
-            save.score += (save.difficulty + 1) * 100;
-            setLevel(save.level + 1);
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 1000);
-            break;
         case TILE_KEY:
             mType = TILE_EMPTY;
             player->setKeys(player->getKeys() + 1);
@@ -81,11 +76,20 @@ void CTile::collisionEvent(int tileNum)
             }
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 3, 50);
             break;
+        case TILE_SLIME:
+            if (player->getVelY() < 0) break;
+            player->setVel(player->getVelX(), player->getVelY() * -0.75);
+            break;
         case TILE_MEDAL:
             mType = TILE_EMPTY;
             save.score += 100;
             save.collectedMedals[save.level] = true;
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF, 0xFFFF / 6, 250);
+            break;
+        case TILE_EXIT:
+            save.score += (save.difficulty + 1) * 100;
+            setLevel(save.level + 1);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 1000);
             break;
     }
     if (mType < TILE_EMPTY && mType > TILE_EXIT) {
@@ -97,8 +101,8 @@ void CTile::collisionEvent(int tileNum)
             save.deaths++;
             player->setHealth(save.maxHealth);
             player->setKeys(0);
-            setLevel(save.level);
             isDead = true;
+            setLevel(save.level);
         } else player->setInvulnerable(true);
     }
 }

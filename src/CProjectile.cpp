@@ -1,7 +1,7 @@
 #include "CProjectile.h"
 #include "Game.h"
 
-int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 1, 4, 4, 1};
+int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1};
 
 CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX, int respawnY)
 {
@@ -26,7 +26,7 @@ CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY,
 CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, bool isOneTimeOnly)
 {
     mFrame = 0;
-    mCollisionBox = {x, y, 25, 25};
+    mCollisionBox = {x, y, 25, 6};
     mVelX = 0;
     mVelY = 0;
     mEditTileIndex = editTileIndex;
@@ -37,6 +37,24 @@ CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, boo
     mType = PROJECTILE_BUTTON_TILECHANGE;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = isOneTimeOnly;
+    mActivateOnTileCollision = false;
+    mDestroyOnTileCollision = false;
+    mAnimationSpeed = 1;
+}
+CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileOriginal, Tiles editTileNew)
+{
+    mFrame = 0;
+    mCollisionBox = {x, y, 25, 6};
+    mVelX = 0;
+    mVelY = 0;
+    mEditTileIndex = editTileIndex;
+    mEditTileOriginal = editTileOriginal;
+    mEditTileNew = editTileNew;
+    mHasActivated = false;
+    mGravity = 0;
+    mType = PROJECTILE_BUTTON_TILETOGGLE;
+    mActivateOnPlayerCollision = true;
+    mDestroyOnPlayerCollision = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 1;
@@ -141,7 +159,7 @@ void CProjectile::render(SDL_Rect& camera)
 {
     mFrame = (mFrame + 1) % (numFrames[mType] * mAnimationSpeed);
     SDL_Rect renderRect = {mType * 25, (int)(mFrame / mAnimationSpeed) * 25, 25, 25};
-    projectileTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &renderRect);
+    projectileTexture.render(mCollisionBox.x - camera.x, mCollisionBox.y - camera.y + mCollisionBox.h - 25, &renderRect);
     if (mDisplayText) mTextTexture.render(mUtilityX - camera.x, mUtilityY- camera.y);
 }
 int CProjectile::getPosX()
@@ -174,6 +192,9 @@ void CProjectile::projectileEvent()
             break;
         case PROJECTILE_SHIELD:
             player->setShield(player->getShield() + 1);
+        case PROJECTILE_CHARGER:
+            if (player->getCharge() < 100) player->setCharge(player->getCharge() + 1);
+            break;
             break;
         case PROJECTILE_DAMAGEBALL:
             if (!checkCollision(mCollisionBox, player->getBox())) {
@@ -189,8 +210,8 @@ void CProjectile::projectileEvent()
                 save.deaths++;
                 player->setHealth(save.maxHealth);
                 player->setKeys(0);
-                setLevel(save.level);
                 isDead = true;
+                setLevel(save.level);
             } else player->setInvulnerable(true);
             break;
         case PROJECTILE_BUTTON_TILECHANGE:
@@ -198,8 +219,9 @@ void CProjectile::projectileEvent()
             mEditTileNew = mEditTileOriginal;
             mEditTileOriginal = tiles[mEditTileIndex]->getType();
             break;
-        case PROJECTILE_CHARGER:
-            if (player->getCharge() < 100) player->setCharge(player->getCharge() + 1);
+        case PROJECTILE_BUTTON_TILETOGGLE:
+            if (tiles[mEditTileIndex]->getType() == mEditTileOriginal) tiles[mEditTileIndex]->setType(mEditTileNew);
+            else tiles[mEditTileIndex]->setType(mEditTileOriginal);
             break;
         case PROJECTILE_TELEPORTER:
             player->setPos(mUtilityX, mUtilityY);

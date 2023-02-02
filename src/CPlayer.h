@@ -22,6 +22,7 @@ class CPlayer
         void setJumps(int jumps);
         void setKeys(int keys);
         void setPos(int x, int y);
+        void setVel(int velX, int velY);
         void setInvulnerable(bool isInvulnerable);
         void render(SDL_Rect& camera);
         int getForm();
@@ -34,6 +35,8 @@ class CPlayer
         int getKeys();
         int getPosX();
         int getPosY();
+        int getVelX();
+        int getVelY();
         bool getInvulnerable();
     private:
         bool touchesTile();

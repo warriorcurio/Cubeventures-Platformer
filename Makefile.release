@@ -1,4 +1,4 @@
-OBJS = src/*.cpp
+OBJS = src/*.cpp src/*.res
 CC = g++
 INCLUDE_PATHS = -I include
 LIBRARY_PATHS = -L lib

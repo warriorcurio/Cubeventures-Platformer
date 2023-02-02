@@ -12,6 +12,7 @@ void pauseResumeCall()
     update = &gameUpdate;
     render = &gameRender;
     close = &gameClose;
+    SDL_ShowCursor(SDL_DISABLE);
 }
 void pauseSaveCall()
 {
@@ -20,7 +21,7 @@ void pauseSaveCall()
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
     SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
     for (int i = 0; i < (int)projectiles.size(); i++) {
-        if (projectiles[i]->getType() >= PROJECTILE_TELEPORTER) continue;
+        if (projectiles[i]->getType() >= PROJECTILE_BUTTON_TILETOGGLE) continue;
         SDL_RWwrite(writeFile, projectiles[i], sizeof(CProjectile), 1);
     }
     SDL_RWclose(writeFile);

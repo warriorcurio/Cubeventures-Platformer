@@ -24,7 +24,7 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     { 0, 1020},
     { 0, 1020}
 };
-int levelFinishTimes[LEVEL_TOTAL] = {80, 999, 999, 999, 999, 999, 999, 999, 999, 999};
+int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 999, 999, 999, 999, 999, 999, 999, 999};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -98,12 +98,30 @@ void setProjectiles()
         }
         case 2: {
             if ((int)projectiles.size() == 0) {
-                projectiles.push_back(new CProjectile(295, 615, 1640, 840));
-                projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0));
-                projectiles.push_back(new CProjectile(5370, 855, 2234, TILE_WHITECRYSTAL, true));
+                projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0)); //Shield intended to let hard difficulty players access the secret gold medal
+
+                projectiles.push_back(new CProjectile(5370, 874, 2234, TILE_WHITECRYSTAL, true)); //Activates crystal for gold medal
+                projectiles.push_back(new CProjectile(640, 3434, 13389, TILE_EMPTY, false)); //Lower left side, lets white jump over a grass pillar
+                projectiles.push_back(new CProjectile(3967, 3474, 13597, TILE_GRASS_TOPMIDDLE, false)); //Lower right side, places block so blue can get up for next button
+                projectiles.push_back(new CProjectile(4128, 3114, 12402, TILE_GRASS_MIDDLE, false)); //Lower right side, places block so red can get up for a key
             }
-            projectiles.push_back(new CProjectile(4295, 855, 40, 40, 4160, 610, "Shields serve as an extra life", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(487, 1927, 2807, 3855)); //Teleports player from the end of the middle left puzzle to below the exit to the next level
+            projectiles.push_back(new CProjectile(1727, 2807, 800, 1560)); //Teleports player from lower left side to the middle left puzzle
+            projectiles.push_back(new CProjectile(1247, 3767, 5920, 1500)); //Teleports player from lower left side to middle right section
+            projectiles.push_back(new CProjectile(5967, 1567, 2807, 3855)); //Teleports player from middle right section to below the exit to the next level
+            projectiles.push_back(new CProjectile(5847, 1127, 760, 3300)); //Teleports player from middle right section to the lower left button 
+            //Text spawners
+            projectiles.push_back(new CProjectile(4295, 855, 25, 25, 4160, 610, "Shields serve as an extra life", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(4800, 40, 40, 840, 5150, 725, "Don't try to swim!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            //Toggle buttons for the middle left key puzzle
+            projectiles.push_back(new CProjectile(600, 1754, 6612, TILE_GRASS_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(200, 1754, 6762, TILE_GRASS_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(200, 1754, 6912, TILE_GRASS_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(375, 1754, 6612, TILE_GRASS_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(375, 1754, 6912, TILE_GRASS_MIDDLE, TILE_EMPTY));
+            break;
+        }
+        case 3: {
             break;
         }
     }
@@ -167,14 +185,17 @@ void setLevel(int level)
     }
     tiles.clear();
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
-    if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
-    save.chapterTime = 0;
-    if (level > save.level) {
+    if (level > save.level || isDead) {
+        SDL_ShowCursor(SDL_ENABLE);
         for (int i = 0; i < (int)projectiles.size(); i++) {
             delete projectiles[i];
         }
         projectiles.clear();
+    }
+    if (level > save.level) {
         isEndLevel = true;
+        if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
+        save.chapterTime = 0;
         scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), SDL_Color{0xFF, 0xFF, 0xFF}, 80);
     }
     save.level = level;
@@ -202,6 +223,7 @@ void setLevel(int level)
 
 void gameDeathRetryCall()
 {
+    SDL_ShowCursor(SDL_DISABLE);
     isDead = false;
 }
 void gameDeathQuitCall()
@@ -211,11 +233,13 @@ void gameDeathQuitCall()
 }
 void gameContinueCall()
 {
+    SDL_ShowCursor(SDL_DISABLE);
     isEndLevel = false;
 }
 
 bool gameLoadMedia()
 {
+    SDL_ShowCursor(SDL_DISABLE);
     setWindowIcon(save.level);
     gameOverTexture.loadFromRenderedText("You Died!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
     levelCompleteTexture.loadFromRenderedText("Level Complete!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
@@ -264,6 +288,7 @@ void gameHandleEvent(SDL_Event* e)
         projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, PROJECTILE_CHARGER, 0, 0));
     }
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
+        SDL_ShowCursor(SDL_ENABLE);
         transition(SCENE_PAUSE);
     }
 }
@@ -353,6 +378,7 @@ void gameRender()
 }
 void gameClose()
 {
+    SDL_ShowCursor(SDL_ENABLE);
     for (int i = 0; i < GAME_BUTTON_TOTAL; i++) {
         if (gameButtons[i]) delete gameButtons[i];
     }

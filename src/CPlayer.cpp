@@ -270,6 +270,11 @@ void CPlayer::setPos(int x, int y)
     save.x = x;
     save.y = y;
 }
+void CPlayer::setVel(int velX, int velY)
+{
+    mVelX = velX;
+    mVelY = velY;
+}
 void CPlayer::setInvulnerable(bool isInvulnerable)
 {
     mIsInvulnerable = isInvulnerable;
@@ -320,11 +325,19 @@ int CPlayer::getKeys()
 }
 int CPlayer::getPosX()
 {
-    return (int)mCollisionBox.x;
+    return mCollisionBox.x;
 }
 int CPlayer::getPosY()
 {
-    return (int)mCollisionBox.y;
+    return mCollisionBox.y;
+}
+int CPlayer::getVelX()
+{
+    return mVelX;
+}
+int CPlayer::getVelY()
+{
+    return mVelY;
 }
 bool CPlayer::getInvulnerable()
 {
