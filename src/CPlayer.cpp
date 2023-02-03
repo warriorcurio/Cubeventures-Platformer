@@ -174,14 +174,15 @@ void CPlayer::setCamera(SDL_Rect& camera)
     if(camera.y > levelDimensions[save.level - 1].h - camera.h) camera.y = levelDimensions[save.level - 1].h - camera.h;
     parallaxOffset -= (camera.x - tempCamera.x) / 3;
 }
-void CPlayer::checkItemCollisions()
+void CPlayer::checkSpecialTileCollisions()
 {
-    for(int i = 0; i < tileCount; i++)
-    {
-        if(tiles[i]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[i]->getBox()))
-        {
-            tiles[i]->collisionEvent(i);
-        }
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    for (int i = 0; i < 3; i++) {
+        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        if (curTile < 0 || curTile + 2 >= tileCount) continue;
+        if(tiles[curTile]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile]->getBox())) tiles[curTile]->collisionEvent(curTile);
+        if(tiles[curTile + 1]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) tiles[curTile + 1]->collisionEvent(curTile);
+        if(tiles[curTile + 2]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) tiles[curTile + 2]->collisionEvent(curTile);
     }
 }
 void CPlayer::setForm(int form)
@@ -230,6 +231,20 @@ void CPlayer::setForm(int form)
             mVelY = 0;
             break;
     }
+    mVelX = mPlayerVel * modifiedVel;
+    save.form = mForm;
+}
+void CPlayer::setCustomForm(int playerVel, int jumpMax, int jumpMin, int gravity)
+{
+    int modifiedVel = 0;
+    if (mVelX == mPlayerVel || mVelX == -mPlayerVel) {
+        modifiedVel = mVelX == mPlayerVel ? 1 : -1;
+        mVelX = 0;
+    }
+    mPlayerVel = playerVel;
+    mJumpVelMax = jumpMax;
+    mJumpVelMin = jumpMin;
+    mGravity = gravity;
     mVelX = mPlayerVel * modifiedVel;
     save.form = mForm;
 }
@@ -294,6 +309,22 @@ void CPlayer::render(SDL_Rect& camera)
 int CPlayer::getForm()
 {
     return mForm;
+}
+int CPlayer::getPlayerVel()
+{
+    return mPlayerVel;
+}
+int CPlayer::getJumpMax()
+{
+    return mJumpVelMax;
+}
+int CPlayer::getJumpMin()
+{
+    return mJumpVelMin;
+}
+int CPlayer::getGravity()
+{
+    return mGravity;
 }
 int CPlayer::getHealth()
 {

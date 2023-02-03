@@ -14,8 +14,9 @@ class CPlayer
         void handleEvent(SDL_Event* e);
         void move(float timeStep);
         void setCamera(SDL_Rect& camera);
-        void checkItemCollisions();
+        void checkSpecialTileCollisions();
         void setForm(int form);
+        void setCustomForm(int playerVel, int jumpMax, int jumpMin, int gravity);
         void setHealth(int health);
         void setShield(int shield);
         void setCharge(int charge);
@@ -26,6 +27,10 @@ class CPlayer
         void setInvulnerable(bool isInvulnerable);
         void render(SDL_Rect& camera);
         int getForm();
+        int getPlayerVel();
+        int getJumpMax();
+        int getJumpMin();
+        int getGravity();
         int getHealth();
         int getShield();
         int getCharge();

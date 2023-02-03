@@ -76,10 +76,6 @@ void CTile::collisionEvent(int tileNum)
             }
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 3, 50);
             break;
-        case TILE_SLIME:
-            if (player->getVelY() < 0) break;
-            player->setVel(player->getVelX(), player->getVelY() * -0.75);
-            break;
         case TILE_MEDAL:
             mType = TILE_EMPTY;
             save.score += 100;

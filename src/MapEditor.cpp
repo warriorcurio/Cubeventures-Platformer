@@ -3,7 +3,7 @@
 Resolution editorLevelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
-    {10000, 1080},
+    {8000, 2000},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -122,11 +122,10 @@ void mapEditorHandleEvent(SDL_Event* e)
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
         editorTiles[tileNum]->setType(copyType);
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_h && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
-        copyType++;
         for (int i = 0; i < editorTileCount; i++) {
-
             if (editorTiles[i]->getType() >= copyType) editorTiles[i]->setType(editorTiles[i]->getType() + 1);
         }
+        copyType++;
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_j && SDL_GetModState() & KMOD_CTRL && copyType != -1) {
         copyType--;
         for (int i = 0; i < editorTileCount; i++) {

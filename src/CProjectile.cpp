@@ -1,7 +1,7 @@
 #include "CProjectile.h"
 #include "Game.h"
 
-int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1};
+int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1, 1};
 
 CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX, int respawnY)
 {
@@ -19,6 +19,7 @@ CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY,
     mType = type;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = true;
+    mActivateOnPlayerLeave = false;
     mActivateOnTileCollision = mType == PROJECTILE_DAMAGEBALL;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 10;
@@ -37,6 +38,7 @@ CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, boo
     mType = PROJECTILE_BUTTON_TILECHANGE;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = isOneTimeOnly;
+    mActivateOnPlayerLeave = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 1;
@@ -55,6 +57,7 @@ CProjectile::CProjectile(int x, int y, int editTileIndex, Tiles editTileOriginal
     mType = PROJECTILE_BUTTON_TILETOGGLE;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = false;
+    mActivateOnPlayerLeave = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 1;
@@ -71,9 +74,26 @@ CProjectile::CProjectile(int x, int y, int teleportX, int teleportY)
     mType = PROJECTILE_TELEPORTER;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = false;
+    mActivateOnPlayerLeave = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 3;
+}
+CProjectile::CProjectile(int x, int y, int w, int h, ProjectileTypes type)
+{
+    mFrame = 0;
+    mCollisionBox = {x, y, w, h};
+    mVelX = 0;
+    mVelY = 0;
+    mHasActivated = false;
+    mGravity = 0;
+    mType = type;
+    mActivateOnPlayerCollision = true;
+    mDestroyOnPlayerCollision = false;
+    mActivateOnPlayerLeave = true;
+    mActivateOnTileCollision = false;
+    mDestroyOnTileCollision = false;
+    mAnimationSpeed = 1;
 }
 CProjectile::CProjectile(int x, int y, int w, int h, int textX, int textY, const char* textToDisplay, SDL_Color textColour, int size)
 {
@@ -93,6 +113,7 @@ CProjectile::CProjectile(int x, int y, int w, int h, int textX, int textY, const
     mDisplayText = false;
     mActivateOnPlayerCollision = true;
     mDestroyOnPlayerCollision = false;
+    mActivateOnPlayerLeave = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
     mAnimationSpeed = 1;
@@ -106,7 +127,10 @@ void CProjectile::move(float timeStep)
     if (mActivateOnPlayerCollision && checkCollision(mCollisionBox, player->getBox()) && !mHasActivated) {
         projectileEvent();
         mHasActivated = true;
-    } else if (!(mActivateOnPlayerCollision && checkCollision(mCollisionBox, player->getBox()))) mHasActivated = false;
+    } else if (!checkCollision(mCollisionBox, player->getBox())) {
+        if (mActivateOnPlayerLeave) projectileEvent();
+        mHasActivated = false;
+    }
     if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) destroySelf();
     if (mVelX == 0 && mVelY == 0 && (mGravity == 0 || (mCollisionBox.x == -mCollisionBox.w && mCollisionBox.y == -mCollisionBox.h))) return;
     SDL_Rect tempBox = mCollisionBox;
@@ -230,6 +254,11 @@ void CProjectile::projectileEvent()
             break;
         case PROJECTILE_TEXTDISPLAYER:
             mDisplayText = true;
+            break;
+        case PROJECTILE_BOUNCEBLOCK:
+            printf("%d", mHasActivated);
+            if (mHasActivated) player->setCustomForm(player->getPlayerVel(), player->getJumpMax() * 2, player->getJumpMin() * 2, player->getGravity());
+            else player->setForm(player->getForm());
             break;
     }
 }

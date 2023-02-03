@@ -3,7 +3,7 @@
 Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
-    {10000, 1080},
+    {8000, 2000},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -122,6 +122,7 @@ void setProjectiles()
             break;
         }
         case 3: {
+            projectiles.push_back(new CProjectile(640, 1840, 40, 40, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
@@ -322,7 +323,7 @@ void gameUpdate()
     save.totalTime += timeStep;
     timeTicks = SDL_GetTicks();
     player->setCamera(camera);
-    player->checkItemCollisions();
+    player->checkSpecialTileCollisions();
     if (parallaxOffset < -LOGICAL_SCREEN_WIDTH) parallaxOffset += LOGICAL_SCREEN_WIDTH;
     if (parallaxOffset > 0) parallaxOffset -= LOGICAL_SCREEN_WIDTH;
 }
