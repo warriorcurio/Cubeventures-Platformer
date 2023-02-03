@@ -217,8 +217,7 @@ void CProjectile::projectileEvent()
         case PROJECTILE_SHIELD:
             player->setShield(player->getShield() + 1);
         case PROJECTILE_CHARGER:
-            if (player->getCharge() < 100) player->setCharge(player->getCharge() + 1);
-            break;
+            if (player->getCharge() < CPlayer::MAX_CHARGE && player->getForm() != FORM_RAINBOW) player->setCharge(player->getCharge() + 1);
             break;
         case PROJECTILE_DAMAGEBALL:
             if (!checkCollision(mCollisionBox, player->getBox())) {
@@ -256,8 +255,7 @@ void CProjectile::projectileEvent()
             mDisplayText = true;
             break;
         case PROJECTILE_BOUNCEBLOCK:
-            printf("%d", mHasActivated);
-            if (mHasActivated) player->setCustomForm(player->getPlayerVel(), player->getJumpMax() * 2, player->getJumpMin() * 2, player->getGravity());
+            if (checkCollision(mCollisionBox, player->getBox())) player->setCustomForm(player->getPlayerVel() * 0.5, player->getJumpMax() * 1.5, player->getJumpMin() * 1.5, player->getGravity());
             else player->setForm(player->getForm());
             break;
     }

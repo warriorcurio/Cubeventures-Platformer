@@ -100,6 +100,11 @@ void CPlayer::handleEvent(SDL_Event* e)
         if (e->key.keysym.sym == keybinds[KEYBINDS_DOWN] && (mIsClimbing || mForm == FORM_RAINBOW)) mVelY = 0;
         if (e->key.keysym.sym == keybinds[KEYBINDS_RIGHT]) mVelX -= mPlayerVel;
         if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mVelY < -mJumpVelMin && mForm != FORM_RAINBOW) mVelY = -mJumpVelMin;
+        if (e->key.keysym.sym == SDLK_q && mCharge >= MAX_CHARGE) {
+            setForm(FORM_RAINBOW);
+            mCharge = 0;
+            mFrame = 0;
+        }
     }
 }
 void CPlayer::move(float timeStep)
@@ -260,11 +265,6 @@ void CPlayer::setShield(int shield)
 void CPlayer::setCharge(int charge)
 {
     mCharge = charge;
-    if (charge == 100) {
-        mCharge = 0;
-        setForm(FORM_RAINBOW);
-        mFrame = 0;
-    }
 }
 void CPlayer::setJumps(int jumps)
 {
@@ -297,7 +297,7 @@ void CPlayer::setInvulnerable(bool isInvulnerable)
 void CPlayer::render(SDL_Rect& camera)
 {
     if (mForm != FORM_RAINBOW) {
-        int frameSpeed = 3 + (int)((100 - mCharge) * 12 / 100);
+        int frameSpeed = 3 + (int)((MAX_CHARGE - mCharge) * 6 / MAX_CHARGE);
         if (!mIsInvulnerable) mFrame = (mFrame + 1) % (frameSpeed * 11);
         if (!mIsInvulnerable || rand() % 3 == 0) mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &defaultAnimFrameClips[mFrame / frameSpeed]);
     } else {

@@ -62,6 +62,9 @@ CPlayer* player;
 std::vector<CProjectile*> projectiles;
 CTexture projectileTexture;
 
+CTexture rainbowIndicatorTexture;
+Uint8 rainbowIndicatorRGB[3] = {0xFF, 0x00, 0x00};
+
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
     if(a.y + a.h <= b.y) return false;
@@ -122,7 +125,7 @@ void setProjectiles()
             break;
         }
         case 3: {
-            projectiles.push_back(new CProjectile(640, 1840, 40, 40, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(640, 1879, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
@@ -256,6 +259,7 @@ bool gameLoadMedia()
     keyTexture.loadFromFile("res/key.png");
     heartTexture.loadFromFile("res/hearts.png");
     heartTwinkleTexture.loadFromFile("res/heartTwinkle.png");
+    rainbowIndicatorTexture.loadFromFile("res/rainbowIndicator.png");
     timeTicks = SDL_GetTicks();
     player = new CPlayer(save.x, save.y);
     tileTexture.loadFromFile("res/tilesDEBUG.png");
@@ -360,6 +364,16 @@ void gameRender()
     }
     for (int i = 0; i < player->getKeys(); i++) {
         keyTexture.render(i * keyTexture.getWidth(), 80);
+    }
+    if (player->getCharge() >= CPlayer::MAX_CHARGE || player->getForm() == FORM_RAINBOW) {
+        rainbowIndicatorTexture.render(0, 0);
+        if(rainbowIndicatorRGB[2] == 0xFF) {
+            rainbowIndicatorRGB[1] == 0 ? rainbowIndicatorRGB[0]++ : rainbowIndicatorRGB[1]--;
+            if (rainbowIndicatorRGB[0] == 0xFF) rainbowIndicatorRGB[2]--;
+        }
+        else if(rainbowIndicatorRGB[1] == 0xFF) rainbowIndicatorRGB[0] == 0 ? rainbowIndicatorRGB[2]++ : rainbowIndicatorRGB[0]--;
+        else if(rainbowIndicatorRGB[0] == 0xFF) rainbowIndicatorRGB[2] == 0 ? rainbowIndicatorRGB[1]++ : rainbowIndicatorRGB[2]--;
+        rainbowIndicatorTexture.setColour(rainbowIndicatorRGB[0], rainbowIndicatorRGB[1], rainbowIndicatorRGB[2]);
     }
     if (isDead) {
         SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);

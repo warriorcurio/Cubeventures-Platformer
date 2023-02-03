@@ -8,6 +8,7 @@ class CPlayer
 {
     public:
         static const int PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
+        static const int MAX_CHARGE = 20;
 
         CPlayer(int x, int y);
         ~CPlayer();
