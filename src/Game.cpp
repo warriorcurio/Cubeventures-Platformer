@@ -24,7 +24,7 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {  0, 1020},
     {  0, 1020}
 };
-int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 999, 999, 999, 999, 999, 999, 999, 999};
+int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 230, 999, 999, 999, 999, 999, 999, 999};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -126,15 +126,34 @@ void setProjectiles()
         }
         case 3: {
             if ((int)projectiles.size() == 0) {
+                //Extra lives to aid the player
+                projectiles.push_back(new CProjectile(2127, 55, PROJECTILE_HEART, 0, 0));
+                projectiles.push_back(new CProjectile(2448, 55, PROJECTILE_HEART, 0, 0));
+                projectiles.push_back(new CProjectile(6607, 1215, PROJECTILE_HEART, 0, 0));
+                //Absorbs damange for the player
+                projectiles.push_back(new CProjectile(5328, 1215, PROJECTILE_SHIELD, 0, 0));
+                //Charges the player's rainbow ability at the end of the map
+                for (int i = 0; i < 20; i++) {
+                    projectiles.push_back(new CProjectile(6687 + i % 2, 327 + 80 * i, PROJECTILE_CHARGER, 0, 0, 6680, 327 + 80 * i));
+                }
                 //Tile changing buttons
                 projectiles.push_back(new CProjectile(687, 1834, 7800, TILE_BOUNCE, true)); //Place a bounce block for the secret gold medal
-                projectiles.push_back(new CProjectile(5327, 594, 1551, TILE_STONE, true)); //Places a block to access the final key
                 projectiles.push_back(new CProjectile(7007, 1954, 4800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
+                projectiles.push_back(new CProjectile(4407, 314, 2800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
+                projectiles.push_back(new CProjectile(5127, 1354, 1400, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
+                projectiles.push_back(new CProjectile(5327, 594, 1551, TILE_STONE, true)); //Places a block to access the final key
+                projectiles.push_back(new CProjectile(2887, 1354, 8070, TILE_BOUNCE, false)); //Places a block to access the top lake key
+                projectiles.push_back(new CProjectile(3967, 394, 8083, TILE_REDCRYSTAL, true)); //Removes a block to continue to the final building
+                projectiles.push_back(new CProjectile(6607, 1154, 6365, TILE_EMPTY, true)); //Removes a block to drop a heart
+                projectiles.push_back(new CProjectile(6487, 1394, 6333, TILE_EMPTY, true)); //Removes a block to drop a shield
             }
-            projectiles.push_back(new CProjectile(687, 1727, 770, 1820)); //TEMPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
             projectiles.push_back(new CProjectile(5327, 967, 6250, 1220)); //Teleports the player from the final key room to outside of it in case they are trapped
             projectiles.push_back(new CProjectile(6615, 360, 7170, 1940)); //Teleports the player from the final key room to a button for the secret gold medal
             projectiles.push_back(new CProjectile(6847, 1927, 6330, 1820)); //Teleports the player from the previous button room to outside
+            projectiles.push_back(new CProjectile(3007, 767, 770, 1820)); //Teleports the player from near the top lake area to a button for the secret gold medal
+            projectiles.push_back(new CProjectile(607, 1807, 610, 1540)); //Teleports the player from the previous button room to outside
+            projectiles.push_back(new CProjectile(3287, 1327, 3250, 300)); //Teleports the player from the lower part of the map to the lake key part
+            projectiles.push_back(new CProjectile(2207, 1567, 2010, 900)); //Teleports the player from the lower part of the map to the higher part
             //Toggle buttons for the final key puzzle
             projectiles.push_back(new CProjectile(5447, 1154, 5757, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
             projectiles.push_back(new CProjectile(5447, 1154, 5759, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
@@ -149,9 +168,19 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(5927, 1154, 5760, TILE_EMPTY, TILE_JUNGLE_MIDDLE));
             projectiles.push_back(new CProjectile(6087, 1154, 5758, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
             projectiles.push_back(new CProjectile(6087, 1154, 5759, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            //Text spawners
+            projectiles.push_back(new CProjectile(840, 1559, 40, 1, 240, 1120, "Bounce Blocks allow you", SDL_Color{0x00, 0xFF, 0x00}, 25));
+            projectiles.push_back(new CProjectile(840, 1559, 40, 1, 240, 1150, "to jump twice as high!", SDL_Color{0x00, 0xFF, 0x00}, 25));
+            projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 127, "Collect 20 Rainbow Charges", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 167, "and press Q to gain flight", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 207, "and invulnerability for a short time", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             //Bounce blocks based around the level
             projectiles.push_back(new CProjectile(840, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
             projectiles.push_back(new CProjectile(0, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(1800, 919, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(1840, 559, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(2760, 1839, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(2800, 1599, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
