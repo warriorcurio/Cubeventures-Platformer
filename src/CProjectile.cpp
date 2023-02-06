@@ -77,7 +77,7 @@ CProjectile::CProjectile(int x, int y, int teleportX, int teleportY)
     mActivateOnPlayerLeave = false;
     mActivateOnTileCollision = false;
     mDestroyOnTileCollision = false;
-    mAnimationSpeed = 3;
+    mAnimationSpeed = 8;
 }
 CProjectile::CProjectile(int x, int y, int w, int h, ProjectileTypes type)
 {
@@ -128,7 +128,7 @@ void CProjectile::move(float timeStep)
         projectileEvent();
         mHasActivated = true;
     } else if (!checkCollision(mCollisionBox, player->getBox())) {
-        if (mActivateOnPlayerLeave) projectileEvent();
+        if (mHasActivated && mActivateOnPlayerLeave) projectileEvent();
         mHasActivated = false;
     }
     if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) destroySelf();
@@ -216,6 +216,7 @@ void CProjectile::projectileEvent()
             break;
         case PROJECTILE_SHIELD:
             player->setShield(player->getShield() + 1);
+            break;
         case PROJECTILE_CHARGER:
             if (player->getCharge() < CPlayer::MAX_CHARGE && player->getForm() != FORM_RAINBOW) player->setCharge(player->getCharge() + 1);
             break;
@@ -255,7 +256,7 @@ void CProjectile::projectileEvent()
             mDisplayText = true;
             break;
         case PROJECTILE_BOUNCEBLOCK:
-            if (checkCollision(mCollisionBox, player->getBox())) player->setCustomForm(player->getPlayerVel() * 0.5, player->getJumpMax() * 1.5, player->getJumpMin() * 1.5, player->getGravity());
+            if (checkCollision(mCollisionBox, player->getBox())) player->setCustomForm(player->getPlayerVel() * 0.5, player->getJumpMax() * 1.414, player->getJumpMin() * 1.414, player->getGravity());
             else player->setForm(player->getForm());
             break;
     }
@@ -273,10 +274,9 @@ bool CProjectile::touchesTile()
     int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
         int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
-        if (curTile < 0 || curTile >= tileCount) continue;
-        if((tiles[curTile]->getType() > TILE_EMPTY || tiles[curTile]->getType() == TILE_GHOST_T_D || tiles[curTile]->getType() == TILE_GHOST_F_D) && checkCollision(mCollisionBox, tiles[curTile]->getBox())) return true;
-        if((tiles[curTile + 1]->getType() > TILE_EMPTY || tiles[curTile + 1]->getType() == TILE_GHOST_T_D) && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) return true;
-        if((tiles[curTile + 2]->getType() > TILE_EMPTY || tiles[curTile + 2]->getType() == TILE_GHOST_T_D) && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) return true;
+        if(curTile >= 0 && curTile < tileCount && (tiles[curTile]->getType() > TILE_EMPTY || tiles[curTile]->getType() == TILE_GHOST_T_D || tiles[curTile]->getType() == TILE_GHOST_F_D) && checkCollision(mCollisionBox, tiles[curTile]->getBox())) return true;
+        if(curTile + 1 >= 0 && curTile + 1 < tileCount && (tiles[curTile + 1]->getType() > TILE_EMPTY || tiles[curTile + 1]->getType() == TILE_GHOST_T_D) && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) return true;
+        if(curTile + 2 >= 0 && curTile + 2 < tileCount && (tiles[curTile + 2]->getType() > TILE_EMPTY || tiles[curTile + 2]->getType() == TILE_GHOST_T_D) && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) return true;
     }
     return false;
 }
@@ -286,8 +286,7 @@ bool CProjectile::touchesGround()
     SDL_Rect groundBox = {mCollisionBox.x, mCollisionBox.y + mCollisionBox.h, mCollisionBox.w, 1};
     int bottomLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) + 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = bottomLeftTile; i < bottomLeftTile + 3; i++) {
-        if (i >= tileCount) continue;
-        if((tiles[i]->getType() > TILE_EMPTY || tiles[i]->getType() == TILE_GHOST_T_D) && checkCollision(groundBox, tiles[i]->getBox())) return true;
+        if(i < tileCount && (tiles[i]->getType() > TILE_EMPTY || tiles[i]->getType() == TILE_GHOST_T_D) && checkCollision(groundBox, tiles[i]->getBox())) return true;
     }
     return false;
 }
@@ -297,8 +296,7 @@ bool CProjectile::touchesCeiling()
     SDL_Rect ceilingBox = {mCollisionBox.x, mCollisionBox.y - 1, mCollisionBox.w, 1};
     int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = topLeftTile; i < topLeftTile + 3; i++) {
-        if (i < 0) continue;
-        if((tiles[i]->getType() > TILE_EMPTY || tiles[i]->getType() == TILE_GHOST_T_D) && checkCollision(ceilingBox, tiles[i]->getBox())) return true;
+        if(i >= 0 && (tiles[i]->getType() > TILE_EMPTY || tiles[i]->getType() == TILE_GHOST_T_D) && checkCollision(ceilingBox, tiles[i]->getBox())) return true;
     }
     return false;
 }

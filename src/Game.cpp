@@ -13,16 +13,16 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080}
 };
 SDL_Point levelStartPositions[LEVEL_TOTAL] = {
-    { 0, 1020},
-    {80,  320},
-    { 0, 1020},
-    { 0, 1020},
-    { 0, 1020},
-    { 0, 1020},
-    { 0, 1020},
-    { 0, 1020},
-    { 0, 1020},
-    { 0, 1020}
+    {  0, 1020},
+    { 80,  320},
+    {490, 1540},
+    {  0, 1020},
+    {  0, 1020},
+    {  0, 1020},
+    {  0, 1020},
+    {  0, 1020},
+    {  0, 1020},
+    {  0, 1020}
 };
 int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 999, 999, 999, 999, 999, 999, 999, 999};
 
@@ -84,8 +84,8 @@ void setProjectiles()
                 projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 810 + 25 * i, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             }
             sprintf(curText, "Hold %s longer", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
-            projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
-            projectiles.push_back(new CProjectile(320, 760, 40, 200, 400, 845, "to jump higher!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(320, 760, 40, 240, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(320, 760, 40, 240, 400, 845, "to jump higher!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(960, 800, 200, 40, 1210, 770, "< Requires a key", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(760, 600, 40, 40, 480, 420, "White: Affects Ghost Blocks", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(1480, 1000, 40, 40, 1240, 580, "Green: Jump 50% Higher", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
@@ -102,7 +102,7 @@ void setProjectiles()
         case 2: {
             if ((int)projectiles.size() == 0) {
                 projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0)); //Shield intended to let hard difficulty players access the secret gold medal
-
+                //Tile changing buttons
                 projectiles.push_back(new CProjectile(5370, 874, 2234, TILE_WHITECRYSTAL, true)); //Activates crystal for gold medal
                 projectiles.push_back(new CProjectile(640, 3434, 13389, TILE_EMPTY, false)); //Lower left side, lets white jump over a grass pillar
                 projectiles.push_back(new CProjectile(3967, 3474, 13597, TILE_GRASS_TOPMIDDLE, false)); //Lower right side, places block so blue can get up for next button
@@ -125,7 +125,33 @@ void setProjectiles()
             break;
         }
         case 3: {
-            projectiles.push_back(new CProjectile(640, 1879, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            if ((int)projectiles.size() == 0) {
+                //Tile changing buttons
+                projectiles.push_back(new CProjectile(687, 1834, 7800, TILE_BOUNCE, true)); //Place a bounce block for the secret gold medal
+                projectiles.push_back(new CProjectile(5327, 594, 1551, TILE_STONE, true)); //Places a block to access the final key
+                projectiles.push_back(new CProjectile(7007, 1954, 4800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
+            }
+            projectiles.push_back(new CProjectile(687, 1727, 770, 1820)); //TEMPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+            projectiles.push_back(new CProjectile(5327, 967, 6250, 1220)); //Teleports the player from the final key room to outside of it in case they are trapped
+            projectiles.push_back(new CProjectile(6615, 360, 7170, 1940)); //Teleports the player from the final key room to a button for the secret gold medal
+            projectiles.push_back(new CProjectile(6847, 1927, 6330, 1820)); //Teleports the player from the previous button room to outside
+            //Toggle buttons for the final key puzzle
+            projectiles.push_back(new CProjectile(5447, 1154, 5757, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5447, 1154, 5759, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5447, 1154, 5760, TILE_EMPTY, TILE_JUNGLE_MIDDLE));
+            projectiles.push_back(new CProjectile(5607, 1154, 5758, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5607, 1154, 5759, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5607, 1154, 5761, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5767, 1154, 5757, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5767, 1154, 5759, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5767, 1154, 5761, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5927, 1154, 5758, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(5927, 1154, 5760, TILE_EMPTY, TILE_JUNGLE_MIDDLE));
+            projectiles.push_back(new CProjectile(6087, 1154, 5758, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(6087, 1154, 5759, TILE_JUNGLE_MIDDLE, TILE_EMPTY));
+            //Bounce blocks based around the level
+            projectiles.push_back(new CProjectile(840, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(0, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
