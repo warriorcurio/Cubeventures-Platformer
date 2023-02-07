@@ -196,6 +196,9 @@ void CPlayer::setForm(int form)
         modifiedVel = mVelX == mPlayerVel ? 1 : -1;
         mVelX = 0;
     }
+    if (mForm == FORM_RAINBOW && form != FORM_RAINBOW) {
+        rainbowTimeTimerSeconds = 0.f;
+    }
     mForm = form;
     switch (form) {
         case FORM_WHITE:

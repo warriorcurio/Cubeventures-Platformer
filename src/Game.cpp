@@ -4,7 +4,7 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
     {8000, 2000},
-    {10000, 1080},
+    {5000, 5000},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -16,7 +16,7 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {  0, 1020},
     { 80,  320},
     {490, 1540},
-    {  0, 1020},
+    { 70, 260},
     {  0, 1020},
     {  0, 1020},
     {  0, 1020},
@@ -174,6 +174,7 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 127, "Collect 20 Rainbow Charges", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 167, "and press Q to gain flight", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 207, "and invulnerability for a short time", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(6760, 80, 40, 240, 6850, 447, "Fly down here!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             //Bounce blocks based around the level
             projectiles.push_back(new CProjectile(840, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
             projectiles.push_back(new CProjectile(0, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
@@ -184,9 +185,7 @@ void setProjectiles()
             break;
         }
         case 4: {
-            projectiles.push_back(new CProjectile(2120, 1039, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(3200, 799, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(7400, 439, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(2600, 559, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
@@ -243,6 +242,7 @@ bool setTiles()
 void setLevel(int level)
 {
     setWindowIcon(level);
+    if (player->getForm() == FORM_RAINBOW) player->setForm(FORM_WHITE);
     bgTexture.loadFromFile(bgNames[(level - 1) / 2]);
     bgPTexture.loadFromFile(bgParallaxNames[(level - 1) / 2]);
     for (int i = 0; i < tileCount; i++) {
