@@ -4,7 +4,7 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
     {8000, 2000},
-    {4000, 1080},
+    {10000, 1080},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080},
@@ -181,6 +181,12 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(1840, 559, 40, 1, PROJECTILE_BOUNCEBLOCK));
             projectiles.push_back(new CProjectile(2760, 1839, 40, 1, PROJECTILE_BOUNCEBLOCK));
             projectiles.push_back(new CProjectile(2800, 1599, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            break;
+        }
+        case 4: {
+            projectiles.push_back(new CProjectile(2120, 1039, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(3200, 799, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(7400, 439, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
