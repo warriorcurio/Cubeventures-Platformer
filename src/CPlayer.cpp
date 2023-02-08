@@ -268,6 +268,10 @@ void CPlayer::setCharge(int charge)
 {
     mCharge = charge;
 }
+void CPlayer::setSafePos(int safeX, int safeY)
+{
+    mSafePos = {safeX, safeY};
+}
 void CPlayer::setJumps(int jumps)
 {
     mJumpsRemaining = jumps;

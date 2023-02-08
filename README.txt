@@ -1,1 +1,0 @@
-RUN "cube.exe" to play the game

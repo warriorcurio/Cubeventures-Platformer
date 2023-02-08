@@ -21,6 +21,7 @@ class CPlayer
         void setHealth(int health);
         void setShield(int shield);
         void setCharge(int charge);
+        void setSafePos(int safeX, int safeY);
         void setJumps(int jumps);
         void setKeys(int keys);
         void setPos(int x, int y);
