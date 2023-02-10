@@ -9,8 +9,8 @@ CTexture textCreateScores[3], textCreateNumDeaths[3], textCreateTimes[3], textCr
     void createSave##NUMBER##Call()\
     {\
         std::strcpy(save.slot, #NUMBER);\
-        save.maxJumps = save.level > 5 ? 2 : 1;\
-        save.score = (200 + save.difficulty * 100) * (save.level - 1);\
+        save.maxJumps = save.level > LEVEL_THREE ? 2 : 1;\
+        save.score = (200 + save.difficulty * 100) * save.level;\
         save.deaths = 0;\
         save.keys = 0;\
         save.chapterTime = 0;\
@@ -19,11 +19,11 @@ CTexture textCreateScores[3], textCreateNumDeaths[3], textCreateTimes[3], textCr
             save.unlockedLocks[i] = -1;\
             save.collectedKeys[i] = -1;\
         }\
-        for (int i = 0; i < 10; i++) {\
+        for (int i = 0; i < LEVEL_TOTAL; i++) {\
             save.collectedMedals[i] = false;\
         }\
-        save.x = levelStartPositions[save.level - 1].x;\
-        save.y = levelStartPositions[save.level - 1].y;\
+        save.x = levelStartPositions[save.level].x;\
+        save.y = levelStartPositions[save.level].y;\
         save.form = FORM_WHITE;\
         SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
         SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\
@@ -34,7 +34,7 @@ CTexture textCreateScores[3], textCreateNumDeaths[3], textCreateTimes[3], textCr
     {\
         remove("saves/save_"#NUMBER".bin");\
         createSaveButtons[CREATESAVE_BUTTON_##NUMBER]->setClickable(true);\
-        createSaveButtons[CREATESAVE_BUTTON_##NUMBER]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[save.level - 1]);\
+        createSaveButtons[CREATESAVE_BUTTON_##NUMBER]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[save.level]);\
         createSaveButtons[CREATESAVE_BUTTON_DEL##NUMBER]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);\
     }
 GEN_CREATESAVE_CALL(ONE);
@@ -66,7 +66,7 @@ bool createSaveLoadMedia()
     for (int i = CREATESAVE_BUTTON_ONE; i <= CREATESAVE_BUTTON_THREE; i++) {
         createSaveButtons[i]->setClickable(!std::filesystem::exists(saveFileNames[i].c_str()));
         if (std::filesystem::exists(saveFileNames[i].c_str())) createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[saveSlots[i].level - 1]);
-        else createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[save.level - 1]);
+        else createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[save.level]);
     }
     createSaveButtons[CREATESAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &createSaveDelONECall);
     createSaveButtons[CREATESAVE_BUTTON_DELTWO] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &createSaveDelTWOCall);

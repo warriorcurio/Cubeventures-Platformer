@@ -35,10 +35,6 @@ enum Levels {
     LEVEL_FOUR,
     LEVEL_FIVE,
     LEVEL_SIX,
-    LEVEL_SEVEN,
-    LEVEL_EIGHT,
-    LEVEL_NINE,
-    LEVEL_TEN,
     LEVEL_TOTAL
 };
 
@@ -105,7 +101,7 @@ struct Save {
     char slot[5];
     float totalTime, chapterTime;
     int collectedKeys[5], unlockedLocks[5];
-    bool collectedMedals[10];
+    bool collectedMedals[LEVEL_TOTAL];
 };
 
 enum Keybinds {
@@ -149,8 +145,8 @@ extern SDL_Rect tileClips[TILE_TOTAL];
 extern Resolution resolutions[5];
 extern int curRes;
 extern int maxLevel;
-extern std::string bgNames[5];
-extern std::string bgParallaxNames[5];
+extern std::string bgNames[LEVEL_TOTAL];
+extern std::string bgParallaxNames[LEVEL_TOTAL];
 extern int keybinds[KEYBINDS_TOTAL];
 extern bool quit;
 extern void menuHandleButtonSwitching(SDL_Event* e, int totalButtons);

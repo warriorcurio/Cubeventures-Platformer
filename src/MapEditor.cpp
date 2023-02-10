@@ -4,10 +4,6 @@ Resolution editorLevelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
     {8000, 2000},
-    {5000, 5000},
-    {4000, 1080},
-    {4000, 1080},
-    {4000, 1080},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080}
@@ -23,7 +19,7 @@ bool editorSetTiles()
 {
     int x = 0, y = 0;
     char* mapFile = (char*)calloc(17, sizeof(char));
-    sprintf(mapFile, "saves/maps/%d.map", save.level);
+    sprintf(mapFile, "saves/maps/%d.map", save.level + 1);
     std::ifstream map(mapFile);
     if (map.fail()) {
         printf("Unable to load map\n");
@@ -43,7 +39,7 @@ bool editorSetTiles()
             return false;
         }
         x += CTile::TILE_WIDTH;
-        if(x >= editorLevelDimensions[save.level - 1].w) {
+        if(x >= editorLevelDimensions[save.level].w) {
             x = 0;
             y += CTile::TILE_HEIGHT;
         }
@@ -65,7 +61,7 @@ bool mapEditorLoadMedia()
 {
     dragType = -1, copyType = -1;
     tileTexture.loadFromFile("res/tilesDEBUG.png");
-    editorTileCount = (editorLevelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (editorLevelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
+    editorTileCount = (editorLevelDimensions[save.level].w / CTile::TILE_WIDTH) * (editorLevelDimensions[save.level].h / CTile::TILE_HEIGHT);
     editorSetTiles();
     return true;
 }
@@ -75,19 +71,19 @@ void mapEditorHandleEvent(SDL_Event* e)
         quit = true;
     } else if (SDL_GetModState() & KMOD_CTRL && e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_s) {
         char* mapFile = (char*)calloc(17, sizeof(char));
-        sprintf(mapFile, "saves/maps/%d.map", save.level);
+        sprintf(mapFile, "saves/maps/%d.map", save.level + 1);
         std::ofstream map(mapFile);
         for (int i = 0; i < editorTileCount; i++) {
             if (editorTiles[i]->getType() < 10) map << 0;
             map << editorTiles[i]->getType();
-            if ((i + 1) % (editorLevelDimensions[save.level - 1].w / CTile::TILE_WIDTH) == 0 && i != editorTileCount - 1) map << "\n";
+            if ((i + 1) % (editorLevelDimensions[save.level].w / CTile::TILE_WIDTH) == 0 && i != editorTileCount - 1) map << "\n";
             else if (i != editorTileCount - 1) map << " ";
         }
         map.close();
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_RIGHTBRACKET) {
         editorCamera.x = 0;
         editorCamera.y = 0;
-        save.level = save.level % LEVEL_TOTAL + 1;
+        save.level = (save.level + 1) % LEVEL_TOTAL;
         mapEditorClose();
         mapEditorLoadMedia();
     }
@@ -108,7 +104,7 @@ void mapEditorHandleEvent(SDL_Event* e)
         sY += editorCamera.y;
         int rowNum = (sY - (int)sY % CTile::TILE_HEIGHT) / CTile::TILE_HEIGHT;
         int colNum = (sX - (int)sX % CTile::TILE_WIDTH) / CTile::TILE_WIDTH;
-        int tileNum = (rowNum * editorLevelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + colNum;
+        int tileNum = (rowNum * editorLevelDimensions[save.level].w / CTile::TILE_WIDTH) + colNum;
     if (e->type == SDL_MOUSEBUTTONUP && !(SDL_GetModState() & KMOD_CTRL) && dragType == -1) {
         if (e->button.button == SDL_BUTTON_LEFT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() + 1) % TILE_TOTAL);
         if (e->button.button == SDL_BUTTON_RIGHT) editorTiles[tileNum]->setType((editorTiles[tileNum]->getType() - 1 + TILE_TOTAL) % TILE_TOTAL);
@@ -139,8 +135,8 @@ void mapEditorUpdate()
 {
     if(editorCamera.x < 0) editorCamera.x = 0;
     if(editorCamera.y < 0) editorCamera.y = 0;
-    if(editorCamera.x > levelDimensions[save.level - 1].w - editorCamera.w) editorCamera.x = levelDimensions[save.level - 1].w - editorCamera.w;
-    if(editorCamera.y > levelDimensions[save.level - 1].h - editorCamera.h) editorCamera.y = levelDimensions[save.level - 1].h - editorCamera.h;
+    if(editorCamera.x > levelDimensions[save.level].w - editorCamera.w) editorCamera.x = levelDimensions[save.level].w - editorCamera.w;
+    if(editorCamera.y > levelDimensions[save.level].h - editorCamera.h) editorCamera.y = levelDimensions[save.level].h - editorCamera.h;
 }
 void mapEditorRender()
 {

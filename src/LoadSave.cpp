@@ -60,7 +60,7 @@ bool loadSaveLoadMedia()
     loadSaveButtons[LOADSAVE_BUTTON_THREE] = new CButton(1218, 390, 60, " ", &loadSaveTHREECall, 300, 300);
     for (int i = LOADSAVE_BUTTON_ONE; i <= LOADSAVE_BUTTON_THREE; i++) {
         loadSaveButtons[i]->setClickable(std::filesystem::exists(saveFileNames[i].c_str()));
-        if (std::filesystem::exists(saveFileNames[i].c_str())) loadSaveButtons[i]->setBGFromPath("res/saveslots/loadSave" + saveButtonPaths[saveSlots[i].level - 1]);
+        if (std::filesystem::exists(saveFileNames[i].c_str())) loadSaveButtons[i]->setBGFromPath("res/saveslots/loadSave" + saveButtonPaths[saveSlots[i].level]);
         else loadSaveButtons[i]->setBGFromPath("res/saveslots/loadSaveONE.png");
     }
     loadSaveButtons[LOADSAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &loadSaveDelONECall);

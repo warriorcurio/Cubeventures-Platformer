@@ -4,10 +4,6 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
     {8000, 2000},
-    {5000, 5000},
-    {4000, 1080},
-    {4000, 1080},
-    {4000, 1080},
     {4000, 1080},
     {4000, 1080},
     {4000, 1080}
@@ -16,15 +12,11 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {  0, 1020},
     { 80,  320},
     {490, 1540},
-    { 70, 260},
-    {  0, 1020},
-    {  0, 1020},
-    {  0, 1020},
-    {  0, 1020},
+    {  0,    0},
     {  0, 1020},
     {  0, 1020}
 };
-int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 230, 999, 999, 999, 999, 999, 999, 999};
+int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 230, 999, 999, 999};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -53,8 +45,8 @@ CTexture levelCompleteTexture, scoreTexture;
 CTexture bgTexture;
 CTexture bgPTexture;
 float parallaxOffset;
-std::string bgNames[5] = {"res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
-std::string bgParallaxNames[5] = {"res/bgONE_P.png", "res/bgTWO_P.png", "res/bgTHREE_P.png", "res/bgFOUR_P.png", "res/bgFIVE_P.png"};
+std::string bgNames[LEVEL_TOTAL] = {"res/bgONE.png", "res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
+std::string bgParallaxNames[LEVEL_TOTAL] = {"res/bgONE_P.png", "res/bgONE_P.png", "res/bgTWO_P.png", "res/bgTHREE_P.png", "res/bgFOUR_P.png", "res/bgFIVE_P.png"};
 
 CButton* gameButtons[GAME_BUTTON_TOTAL];
 
@@ -76,7 +68,7 @@ bool checkCollision(SDL_Rect a, SDL_Rect b)
 void setProjectiles()
 {
     switch (save.level) {
-        case 1: {
+        case LEVEL_ONE: {
             const char* tutorialKeybindsText[5] = {"Up", "Left", "Down", "Right", "Jump"};
             char* curText = (char*)calloc(50, sizeof(char));
             for (int i = 0; i < KEYBINDS_TOTAL; i++) {
@@ -99,7 +91,7 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(1840, 440, 40, 40, 2080, 850, "Spikes are dangerous...", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             break;
         }
-        case 2: {
+        case LEVEL_TWO: {
             if ((int)projectiles.size() == 0) {
                 projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0)); //Shield intended to let hard difficulty players access the secret gold medal
                 //Tile changing buttons
@@ -124,7 +116,7 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(375, 1754, 6912, TILE_GRASS_MIDDLE, TILE_EMPTY));
             break;
         }
-        case 3: {
+        case LEVEL_THREE: {
             if ((int)projectiles.size() == 0) {
                 //Extra lives to aid the player
                 projectiles.push_back(new CProjectile(2127, 55, PROJECTILE_HEART, 0, 0));
@@ -184,8 +176,8 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(2800, 1599, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
-        case 4: {
-            projectiles.push_back(new CProjectile(2600, 559, 40, 1, PROJECTILE_BOUNCEBLOCK));
+        case LEVEL_FIVE: {
+            projectiles.push_back(new CProjectile(160, 1039, 520, 1, PROJECTILE_ICEBLOCK));
             break;
         }
     }
@@ -194,7 +186,7 @@ bool setTiles()
 {
     int x = 0, y = 0;
     char* mapFile = (char*)calloc(18, sizeof(char));
-    sprintf(mapFile, "saves/maps/%d.map", save.level);
+    sprintf(mapFile, "saves/maps/%d.map", save.level + 1);
     std::ifstream map(mapFile);
     if (map.fail()) {
         printf("Unable to load map\n");
@@ -217,7 +209,7 @@ bool setTiles()
             return false;
         }
         x += CTile::TILE_WIDTH;
-        if(x >= levelDimensions[save.level - 1].w) {
+        if(x >= levelDimensions[save.level].w) {
             x = 0;
             y += CTile::TILE_HEIGHT;
         }
@@ -241,10 +233,10 @@ bool setTiles()
 
 void setLevel(int level)
 {
-    setWindowIcon(level);
+    setWindowIcon(level + 1);
     if (player->getForm() == FORM_RAINBOW) player->setForm(FORM_WHITE);
-    bgTexture.loadFromFile(bgNames[(level - 1) / 2]);
-    bgPTexture.loadFromFile(bgParallaxNames[(level - 1) / 2]);
+    bgTexture.loadFromFile(bgNames[level]);
+    bgPTexture.loadFromFile(bgParallaxNames[level]);
     for (int i = 0; i < tileCount; i++) {
         if (tiles[i]) delete tiles[i];
     }
@@ -259,12 +251,12 @@ void setLevel(int level)
     }
     if (level > save.level) {
         isEndLevel = true;
-        if (save.chapterTime <= levelFinishTimes[level - 1]) save.score += 100;
+        if (save.chapterTime <= levelFinishTimes[level]) save.score += 100;
         save.chapterTime = 0;
         scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), SDL_Color{0xFF, 0xFF, 0xFF}, 80);
     }
     save.level = level;
-    player->setPos(levelStartPositions[save.level - 1].x, levelStartPositions[save.level - 1].y);
+    player->setPos(levelStartPositions[save.level].x, levelStartPositions[save.level].y);
     player->setCamera(camera);
     for (int i = 0; i < 5; i++) {
         save.collectedKeys[i] = -1;
@@ -272,7 +264,7 @@ void setLevel(int level)
     }
     if (save.level > maxLevel) {
         maxLevel = save.level;
-        menuBackground.loadFromFile(bgNames[(maxLevel - 1) / 2]);
+        menuBackground.loadFromFile(bgNames[maxLevel]);
         savePersistent();
     }
     char* slotFile = (char*)calloc(20, sizeof(char));
@@ -281,7 +273,7 @@ void setLevel(int level)
     SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
     SDL_RWclose(writeFile);
     timeTicks = SDL_GetTicks();
-    tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
+    tileCount = (levelDimensions[save.level].w / CTile::TILE_WIDTH) * (levelDimensions[save.level].h / CTile::TILE_HEIGHT);
     setTiles();
     setProjectiles();
 }
@@ -305,7 +297,7 @@ void gameContinueCall()
 bool gameLoadMedia()
 {
     SDL_ShowCursor(SDL_DISABLE);
-    setWindowIcon(save.level);
+    setWindowIcon(save.level + 1);
     gameOverTexture.loadFromRenderedText("You Died!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
     levelCompleteTexture.loadFromRenderedText("Level Complete!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
     gameButtons[GAME_BUTTON_DEATHRETRY] = new CButton(0, 0, 80, "Retry", &gameDeathRetryCall);
@@ -314,8 +306,8 @@ bool gameLoadMedia()
     gameButtons[GAME_BUTTON_DEATHQUIT]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_DEATHQUIT]->getW()) / 2, gameButtons[GAME_BUTTON_DEATHRETRY]->getY() + 120);
     gameButtons[GAME_BUTTON_CONTINUE] = new CButton(0, 0, 80, "Continue", &gameContinueCall);
     gameButtons[GAME_BUTTON_CONTINUE]->setPos((LOGICAL_SCREEN_WIDTH - gameButtons[GAME_BUTTON_CONTINUE]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - gameButtons[GAME_BUTTON_CONTINUE]->getH()) / 2);
-    bgTexture.loadFromFile(bgNames[(save.level - 1) / 2]);
-    bgPTexture.loadFromFile(bgParallaxNames[(save.level - 1) / 2]);
+    bgTexture.loadFromFile(bgNames[save.level]);
+    bgPTexture.loadFromFile(bgParallaxNames[save.level]);
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     keyTexture.loadFromFile("res/key.png");
     heartTexture.loadFromFile("res/hearts.png");
@@ -324,7 +316,7 @@ bool gameLoadMedia()
     timeTicks = SDL_GetTicks();
     player = new CPlayer(save.x, save.y);
     tileTexture.loadFromFile("res/tilesDEBUG.png");
-    tileCount = (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) * (levelDimensions[save.level - 1].h / CTile::TILE_HEIGHT);
+    tileCount = (levelDimensions[save.level].w / CTile::TILE_WIDTH) * (levelDimensions[save.level].h / CTile::TILE_HEIGHT);
     setTiles();
     projectileTexture.loadFromFile("res/projectiles.png");
     for (int i = 0; i < (int)projectiles.size(); i++) {

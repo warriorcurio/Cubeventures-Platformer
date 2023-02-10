@@ -7,7 +7,7 @@ CTexture menuBackground, menuOverlay, logo, star;
 void mainMenuNewGameCall()
 {
     backStack.push_back(SCENE_MAINMENU);
-    save.level = 1;
+    save.level = LEVEL_ONE;
     transition(SCENE_DIFFICULTYSELECT);
 }
 void mainMenuLoadGameCall()
@@ -33,7 +33,7 @@ void mainMenuExitCall()
 bool mainMenuLoadMedia()
 {
     setWindowIcon(0);
-    menuBackground.loadFromFile(bgNames[(maxLevel - 1) / 2]);
+    menuBackground.loadFromFile(bgNames[maxLevel - 1]);
     menuOverlay.loadFromFile("res/menuOverlay.png");
     logo.loadFromFile("res/logo.png");
     star.loadFromFile("res/star.png");
@@ -53,7 +53,7 @@ void mainMenuHandleEvent(SDL_Event* e)
         if (mainMenuButtons[i]) mainMenuButtons[i]->handleEvent(e);
     }
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_SLASH && SDL_GetModState() & KMOD_CTRL) {
-        save.level = 1;
+        save.level = LEVEL_ONE;
         transition(SCENE_MAPEDITOR);
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_d && SDL_GetModState() & (KMOD_CTRL | KMOD_SHIFT)) {
         curRes = 4;
@@ -91,8 +91,8 @@ void mainMenuRender()
     SDL_RenderClear(gRenderer);
     menuBackground.render(0, 0);
     logo.render(75, 210);
-    for (int i = 2; i < maxLevel; i += 2) {
-        star.render(i * 40 - 72, 1008);
+    for (int i = 2; i < maxLevel; i++) {
+        star.render(i * 80 - 152, 1008);
     }
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->render();

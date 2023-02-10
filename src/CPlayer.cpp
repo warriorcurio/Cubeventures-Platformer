@@ -123,11 +123,11 @@ void CPlayer::move(float timeStep)
     }
     mCollisionBox.x += mVelX * timeStep;
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
-    else if(mCollisionBox.x > levelDimensions[save.level - 1].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level - 1].w - PLAYER_WIDTH;
+    else if(mCollisionBox.x > levelDimensions[save.level].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level].w - PLAYER_WIDTH;
     mCollisionBox.y += mVelY * timeStep;
     if (mGravity > 0 && mVelY > 6 * mGravity) mVelY = 6 * mGravity;
     if(mCollisionBox.y < 0) mCollisionBox.y = 0;
-    else if(mCollisionBox.y > levelDimensions[save.level - 1].h - PLAYER_HEIGHT) mCollisionBox.y = levelDimensions[save.level - 1].h - PLAYER_HEIGHT;
+    else if(mCollisionBox.y > levelDimensions[save.level].h - PLAYER_HEIGHT) mCollisionBox.y = levelDimensions[save.level].h - PLAYER_HEIGHT;
     if (touchesTile()) {
         SDL_Point point = getNearestCollision(mVelX, 0, tempBox);
         mCollisionBox.x = point.x;
@@ -175,15 +175,15 @@ void CPlayer::setCamera(SDL_Rect& camera)
     camera.h = LOGICAL_SCREEN_HEIGHT;
     if(camera.x < 0) camera.x = 0;
     if(camera.y < 0) camera.y = 0;
-    if(camera.x > levelDimensions[save.level - 1].w - camera.w) camera.x = levelDimensions[save.level - 1].w - camera.w;
-    if(camera.y > levelDimensions[save.level - 1].h - camera.h) camera.y = levelDimensions[save.level - 1].h - camera.h;
+    if(camera.x > levelDimensions[save.level].w - camera.w) camera.x = levelDimensions[save.level].w - camera.w;
+    if(camera.y > levelDimensions[save.level].h - camera.h) camera.y = levelDimensions[save.level].h - camera.h;
     parallaxOffset -= (camera.x - tempCamera.x) / 3;
 }
 void CPlayer::checkSpecialTileCollisions()
 {
-    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        int curTile = topLeftTile + i * (levelDimensions[save.level].w / CTile::TILE_WIDTH);
         if(curTile >= 0 && curTile < tileCount && tiles[curTile]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile]->getBox())) tiles[curTile]->collisionEvent(curTile);
         if(curTile + 1 >= 0 && curTile + 1 < tileCount && tiles[curTile + 1]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) tiles[curTile + 1]->collisionEvent(curTile);
         if(curTile + 2 >= 0 && curTile + 2 < tileCount && tiles[curTile + 2]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) tiles[curTile + 2]->collisionEvent(curTile);
@@ -382,9 +382,9 @@ bool CPlayer::getInvulnerable()
 }
 bool CPlayer::touchesTile()
 {
-    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        int curTile = topLeftTile + i * (levelDimensions[save.level].w / CTile::TILE_WIDTH);
         if(curTile >= 0 && curTile < tileCount && tiles[curTile]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile]->getBox())) return true;
         if(curTile + 1 >= 0 && curTile + 1 < tileCount && tiles[curTile + 1]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) return true;
         if(curTile + 2 >= 0 && curTile + 2 < tileCount && tiles[curTile + 2]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) return true;
@@ -393,9 +393,9 @@ bool CPlayer::touchesTile()
 }
 bool CPlayer::touchesGround()
 {
-    if (mCollisionBox.y == levelDimensions[save.level - 1].h - mCollisionBox.h) return true; 
+    if (mCollisionBox.y == levelDimensions[save.level].h - mCollisionBox.h) return true; 
     SDL_Rect groundBox = {mCollisionBox.x, mCollisionBox.y + mCollisionBox.h, mCollisionBox.w, 1};
-    int bottomLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) + 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    int bottomLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) + 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = bottomLeftTile; i < bottomLeftTile + 3; i++) {
         if(i < tileCount && tiles[i]->getType() > TILE_EMPTY && checkCollision(groundBox, tiles[i]->getBox())) return true;
     }
@@ -405,7 +405,7 @@ bool CPlayer::touchesCeiling()
 {
     if (mCollisionBox.y == 0) return true; 
     SDL_Rect ceilingBox = {mCollisionBox.x, mCollisionBox.y - 1, mCollisionBox.w, 1};
-    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = topLeftTile; i < topLeftTile + 3; i++) {
         if(i >= 0 && tiles[i]->getType() > TILE_EMPTY && checkCollision(ceilingBox, tiles[i]->getBox())) return true;
     }
@@ -413,11 +413,11 @@ bool CPlayer::touchesCeiling()
 }
 bool CPlayer::touchesWallRight()
 {
-    if (mCollisionBox.x == levelDimensions[save.level - 1].w - mCollisionBox.w) return true; 
+    if (mCollisionBox.x == levelDimensions[save.level].w - mCollisionBox.w) return true; 
     SDL_Rect rightBox = {mCollisionBox.x + mCollisionBox.w, mCollisionBox.y, 1, mCollisionBox.h};
-    int topRightTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) + 1;
+    int topRightTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) + 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topRightTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        int curTile = topRightTile + i * (levelDimensions[save.level].w / CTile::TILE_WIDTH);
         if(curTile >= 0 && curTile < tileCount && tiles[curTile]->getType() > TILE_EMPTY && tiles[curTile]->getType() != TILE_GHOST_T && checkCollision(rightBox, tiles[curTile]->getBox())) return true;
     }
     return false;
@@ -426,9 +426,9 @@ bool CPlayer::touchesWallLeft()
 {
     if (mCollisionBox.x == 0) return true; 
     SDL_Rect leftBox = {mCollisionBox.x - 1, mCollisionBox.y, 1, mCollisionBox.h};
-    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        int curTile = topLeftTile + i * (levelDimensions[save.level].w / CTile::TILE_WIDTH);
         if(curTile >= 0 && curTile < tileCount && tiles[curTile]->getType() > TILE_EMPTY && tiles[curTile]->getType() != TILE_GHOST_T && checkCollision(leftBox, tiles[curTile]->getBox())) return true;
     }
     return false;
@@ -436,9 +436,9 @@ bool CPlayer::touchesWallLeft()
 SDL_Point CPlayer::getNearestCollision(int xVel, int yVel, SDL_Rect oldBox)
 {
     SDL_Point point = {mCollisionBox.x, mCollisionBox.y};
-    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
+    int topLeftTile = ((int)(mCollisionBox.y / CTile::TILE_HEIGHT) - 1) * (levelDimensions[save.level].w / CTile::TILE_WIDTH) + (int)(mCollisionBox.x / CTile::TILE_WIDTH) - 1;
     for (int i = 0; i < 3; i++) {
-        int curTile = topLeftTile + i * (levelDimensions[save.level - 1].w / CTile::TILE_WIDTH);
+        int curTile = topLeftTile + i * (levelDimensions[save.level].w / CTile::TILE_WIDTH);
         for (int j = curTile; j < curTile + 3; j++) {
             if (j < 0 || j >= tileCount) continue;
             if (tiles[j]->getType() > TILE_EMPTY && checkCollision(mCollisionBox, tiles[j]->getBox())) {
