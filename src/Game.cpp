@@ -4,7 +4,7 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {4000, 1080},
     {6000, 4000},
     {8000, 2000},
-    {4000, 1080},
+    {4000, 6000},
     {4000, 1080},
     {4000, 1080}
 };
@@ -12,7 +12,7 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {  0, 1020},
     { 80,  320},
     {490, 1540},
-    {  0,    0},
+    {  0, 5940},
     {  0, 1020},
     {  0, 1020}
 };
@@ -176,8 +176,13 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(2800, 1599, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
-        case LEVEL_FIVE: {
-            projectiles.push_back(new CProjectile(160, 1039, 520, 1, PROJECTILE_ICEBLOCK));
+        case LEVEL_FOUR: {
+            if ((int)projectiles.size() == 0) {
+                projectiles.push_back(new CProjectile(0, 4247, PROJECTILE_DAMAGEBALL, 400, 0));
+                projectiles.push_back(new CProjectile(0, 4407, PROJECTILE_DAMAGEBALL, 300, 0));
+                projectiles.push_back(new CProjectile(0, 4567, PROJECTILE_DAMAGEBALL, 500, 0));
+            }
+            projectiles.push_back(new CProjectile(320, 4759, 40, 1, PROJECTILE_BOUNCEBLOCK));
             break;
         }
     }
@@ -323,8 +328,6 @@ bool gameLoadMedia()
         if (projectiles[i]->getType() == PROJECTILE_BUTTON_TILECHANGE) tiles[projectiles[i]->getEditTileIndex()]->setType(projectiles[i]->getEditTileOriginal());
     }
     setProjectiles();
-    // projectiles.push_back(new CProjectile(400, 300, PROJECTILE_DAMAGEBALL, 300, 0));
-    // projectiles.push_back(new CProjectile(640, 300, PROJECTILE_DAMAGEBALL, 300, 0, 400));
     return true;
 }
 void gameHandleEvent(SDL_Event* e)
