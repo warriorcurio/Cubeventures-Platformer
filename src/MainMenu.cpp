@@ -33,7 +33,7 @@ void mainMenuExitCall()
 bool mainMenuLoadMedia()
 {
     setWindowIcon(0);
-    menuBackground.loadFromFile(bgNames[maxLevel - 1]);
+    menuBackground.loadFromFile(bgNames[maxLevel]);
     menuOverlay.loadFromFile("res/menuOverlay.png");
     logo.loadFromFile("res/logo.png");
     star.loadFromFile("res/star.png");
@@ -63,7 +63,7 @@ void mainMenuHandleEvent(SDL_Event* e)
         keybinds[KEYBINDS_DOWN] = SDLK_s;
         keybinds[KEYBINDS_RIGHT] = SDLK_d;
         keybinds[KEYBINDS_JUMP] = SDLK_SPACE;
-        maxLevel = 1;
+        maxLevel = LEVEL_ONE;
         SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
         SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
         SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
@@ -91,8 +91,8 @@ void mainMenuRender()
     SDL_RenderClear(gRenderer);
     menuBackground.render(0, 0);
     logo.render(75, 210);
-    for (int i = 2; i < maxLevel; i++) {
-        star.render(i * 80 - 152, 1008);
+    for (int i = LEVEL_TWO; i < maxLevel; i++) {
+        star.render(i * 80 - 72, 1008);
     }
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->render();

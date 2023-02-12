@@ -69,7 +69,7 @@ void CTile::collisionEvent(int tileNum)
                 break;
             }
             for (int i = 0; i < 5; i++) {
-                if (save.unlockedLocks[i] != -1) {
+                if (save.unlockedLocks[i] == -1) {
                     save.unlockedLocks[i] = tileNum;
                     break;
                 }

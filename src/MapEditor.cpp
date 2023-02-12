@@ -68,7 +68,7 @@ bool mapEditorLoadMedia()
 void mapEditorHandleEvent(SDL_Event* e)
 {
     if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
-        quit = true;
+        transition(SCENE_MAINMENU);
     } else if (SDL_GetModState() & KMOD_CTRL && e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_s) {
         char* mapFile = (char*)calloc(17, sizeof(char));
         sprintf(mapFile, "saves/maps/%d.map", save.level + 1);

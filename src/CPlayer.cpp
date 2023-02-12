@@ -121,10 +121,10 @@ void CPlayer::move(float timeStep)
         setForm(FORM_WHITE);
         rainbowTimeTimerSeconds = 0;
     }
-    mCollisionBox.x += mVelX * timeStep;
+    mCollisionBox.x += (int)(mVelX * timeStep);
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
     else if(mCollisionBox.x > levelDimensions[save.level].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level].w - PLAYER_WIDTH;
-    mCollisionBox.y += mVelY * timeStep;
+    mCollisionBox.y += (int)(mVelY * timeStep);
     if (mGravity > 0 && mVelY > 6 * mGravity) mVelY = 6 * mGravity;
     if(mCollisionBox.y < 0) mCollisionBox.y = 0;
     else if(mCollisionBox.y > levelDimensions[save.level].h - PLAYER_HEIGHT) mCollisionBox.y = levelDimensions[save.level].h - PLAYER_HEIGHT;
@@ -142,6 +142,7 @@ void CPlayer::move(float timeStep)
         if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_DOWN])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) > JOYSTICK_DEAD_ZONE) mVelY += mPlayerVel;
     } else if (!(mForm == FORM_BLUE && (touchesWallLeft() || touchesWallRight())) ){
         mIsClimbing = false;
+        mCollisionBox.y += mGravity * timeStep * timeStep / 2;
         mVelY += mGravity * timeStep;
     }
     if (touchesGround()) {
@@ -177,7 +178,7 @@ void CPlayer::setCamera(SDL_Rect& camera)
     if(camera.y < 0) camera.y = 0;
     if(camera.x > levelDimensions[save.level].w - camera.w) camera.x = levelDimensions[save.level].w - camera.w;
     if(camera.y > levelDimensions[save.level].h - camera.h) camera.y = levelDimensions[save.level].h - camera.h;
-    parallaxOffset -= (camera.x - tempCamera.x) / 3;
+    parallaxOffset -= (camera.x - tempCamera.x) / 2;
 }
 void CPlayer::checkSpecialTileCollisions()
 {
@@ -185,8 +186,8 @@ void CPlayer::checkSpecialTileCollisions()
     for (int i = 0; i < 3; i++) {
         int curTile = topLeftTile + i * (levelDimensions[save.level].w / CTile::TILE_WIDTH);
         if(curTile >= 0 && curTile < tileCount && tiles[curTile]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile]->getBox())) tiles[curTile]->collisionEvent(curTile);
-        if(curTile + 1 >= 0 && curTile + 1 < tileCount && tiles[curTile + 1]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) tiles[curTile + 1]->collisionEvent(curTile);
-        if(curTile + 2 >= 0 && curTile + 2 < tileCount && tiles[curTile + 2]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) tiles[curTile + 2]->collisionEvent(curTile);
+        if(curTile + 1 >= 0 && curTile + 1 < tileCount && tiles[curTile + 1]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 1]->getBox())) tiles[curTile + 1]->collisionEvent(curTile + 1);
+        if(curTile + 2 >= 0 && curTile + 2 < tileCount && tiles[curTile + 2]->getType() < TILE_EMPTY && checkCollision(mCollisionBox, tiles[curTile + 2]->getBox())) tiles[curTile + 2]->collisionEvent(curTile + 2);
     }
 }
 void CPlayer::setForm(int form)

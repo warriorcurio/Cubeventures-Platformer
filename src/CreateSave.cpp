@@ -65,7 +65,7 @@ bool createSaveLoadMedia()
     createSaveButtons[CREATESAVE_BUTTON_THREE] = new CButton(1218, 390, 60, " ", &createSaveTHREECall, 300, 300);
     for (int i = CREATESAVE_BUTTON_ONE; i <= CREATESAVE_BUTTON_THREE; i++) {
         createSaveButtons[i]->setClickable(!std::filesystem::exists(saveFileNames[i].c_str()));
-        if (std::filesystem::exists(saveFileNames[i].c_str())) createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[saveSlots[i].level - 1]);
+        if (std::filesystem::exists(saveFileNames[i].c_str())) createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[saveSlots[i].level]);
         else createSaveButtons[i]->setBGFromPath("res/saveslots/createSave" + saveButtonPaths[save.level]);
     }
     createSaveButtons[CREATESAVE_BUTTON_DELONE] = new CButton(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT, 40, " ", &createSaveDelONECall);

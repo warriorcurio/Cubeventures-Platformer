@@ -16,7 +16,7 @@ SDL_Point levelStartPositions[LEVEL_TOTAL] = {
     {  0, 1020},
     {  0, 1020}
 };
-int levelFinishTimes[LEVEL_TOTAL] = {80, 145, 230, 999, 999, 999};
+int levelFinishTimes[LEVEL_TOTAL] = {90, 50, 215, 999, 999, 999};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -96,14 +96,16 @@ void setProjectiles()
                 projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0)); //Shield intended to let hard difficulty players access the secret gold medal
                 //Tile changing buttons
                 projectiles.push_back(new CProjectile(5370, 874, 2234, TILE_WHITECRYSTAL, true)); //Activates crystal for gold medal
-                projectiles.push_back(new CProjectile(640, 3434, 13389, TILE_EMPTY, false)); //Lower left side, lets white jump over a grass pillar
-                projectiles.push_back(new CProjectile(3967, 3474, 13597, TILE_GRASS_TOPMIDDLE, false)); //Lower right side, places block so blue can get up for next button
-                projectiles.push_back(new CProjectile(4128, 3114, 12402, TILE_GRASS_MIDDLE, false)); //Lower right side, places block so red can get up for a key
+                projectiles.push_back(new CProjectile(640, 3434, 13389, TILE_EMPTY, true)); //Lower left side, lets white jump over a grass pillar
+                projectiles.push_back(new CProjectile(640, 3434, 13990, TILE_STONE, true)); //Lower left side, lets white jump over a grass pillar
+                projectiles.push_back(new CProjectile(640, 3434, 14140, TILE_STONE, true)); //Lower left side, lets white jump over a grass pillar
+                projectiles.push_back(new CProjectile(3967, 3514, 13746, TILE_GRASS_TOPMIDDLE, true)); //Lower right side, places block so blue can get up for next button
+                projectiles.push_back(new CProjectile(4127, 3194, 12702, TILE_GRASS_MIDDLE, true)); //Lower right side, places block so red can get up for a key
             }
-            projectiles.push_back(new CProjectile(487, 1927, 2807, 3855)); //Teleports player from the end of the middle left puzzle to below the exit to the next level
+            projectiles.push_back(new CProjectile(487, 1927, 2807, 3815)); //Teleports player from the end of the middle left puzzle to below the exit to the next level
             projectiles.push_back(new CProjectile(1727, 2807, 800, 1560)); //Teleports player from lower left side to the middle left puzzle
             projectiles.push_back(new CProjectile(1247, 3767, 5920, 1500)); //Teleports player from lower left side to middle right section
-            projectiles.push_back(new CProjectile(5967, 1567, 2807, 3855)); //Teleports player from middle right section to below the exit to the next level
+            projectiles.push_back(new CProjectile(5967, 1567, 2807, 3815)); //Teleports player from middle right section to below the exit to the next level
             projectiles.push_back(new CProjectile(5847, 1127, 760, 3300)); //Teleports player from middle right section to the lower left button 
             //Text spawners
             projectiles.push_back(new CProjectile(4295, 855, 25, 25, 4160, 610, "Shields serve as an extra life", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
@@ -129,15 +131,16 @@ void setProjectiles()
                     projectiles.push_back(new CProjectile(6687 + i % 2, 327 + 80 * i, PROJECTILE_CHARGER, 0, 0, 6680, 327 + 80 * i));
                 }
                 //Tile changing buttons
-                projectiles.push_back(new CProjectile(687, 1834, 7800, TILE_BOUNCE, true)); //Place a bounce block for the secret gold medal
+                projectiles.push_back(new CProjectile(687, 1834, 7805, TILE_STONE, true)); //Places a block for the secret gold medal
+                projectiles.push_back(new CProjectile(687, 1834, 7800, TILE_BOUNCE, true)); //Places a bounce block for the secret gold medal
                 projectiles.push_back(new CProjectile(7007, 1954, 4800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
-                projectiles.push_back(new CProjectile(4407, 314, 2800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
-                projectiles.push_back(new CProjectile(5127, 1354, 1400, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
-                projectiles.push_back(new CProjectile(5327, 594, 1551, TILE_STONE, true)); //Places a block to access the final key
-                projectiles.push_back(new CProjectile(2887, 1354, 8070, TILE_BOUNCE, false)); //Places a block to access the top lake key
+                projectiles.push_back(new CProjectile(4407, 314, 3400, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
+                projectiles.push_back(new CProjectile(5127, 1354, 1800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
+                projectiles.push_back(new CProjectile(2887, 1354, 8070, TILE_BOUNCE, true)); //Places a block to access the top lake key
                 projectiles.push_back(new CProjectile(3967, 394, 8083, TILE_REDCRYSTAL, true)); //Removes a block to continue to the final building
-                projectiles.push_back(new CProjectile(6607, 1154, 6365, TILE_EMPTY, true)); //Removes a block to drop a heart
-                projectiles.push_back(new CProjectile(6487, 1394, 6333, TILE_EMPTY, true)); //Removes a block to drop a shield
+                projectiles.push_back(new CProjectile(6607, 1154, 6365, TILE_EMPTY, false)); //Removes a block to drop a heart
+                projectiles.push_back(new CProjectile(6487, 1394, 6333, TILE_EMPTY, false)); //Removes a block to drop a shield
+                projectiles.push_back(new CProjectile(5327, 674, 1551, TILE_STONE, true)); //Places a block to access the final key
             }
             projectiles.push_back(new CProjectile(5327, 967, 6250, 1220)); //Teleports the player from the final key room to outside of it in case they are trapped
             projectiles.push_back(new CProjectile(6615, 360, 7170, 1940)); //Teleports the player from the final key room to a button for the secret gold medal

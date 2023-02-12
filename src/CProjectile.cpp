@@ -134,7 +134,7 @@ void CProjectile::move(float timeStep)
     if (mDestroyOnPlayerCollision && checkCollision(mCollisionBox, player->getBox())) destroySelf();
     if (mVelX == 0 && mVelY == 0 && (mGravity == 0 || (mCollisionBox.x == -mCollisionBox.w && mCollisionBox.y == -mCollisionBox.h))) return;
     SDL_Rect tempBox = mCollisionBox;
-    mCollisionBox.x += mVelX * timeStep;
+    mCollisionBox.x += (int)(mVelX * timeStep);
     if(mCollisionBox.x < 0) {
         mCollisionBox.x = 0;
         if (mActivateOnTileCollision) projectileEvent();
@@ -146,7 +146,7 @@ void CProjectile::move(float timeStep)
         if (mDestroyOnTileCollision) destroySelf();
     }
     if (!touchesGround()) mVelY += mGravity * timeStep;
-    mCollisionBox.y += mVelY * timeStep;
+    mCollisionBox.y += (int)(mVelY * timeStep);
     if (mVelY > 6 * mGravity) mVelY = 6 * mGravity;
     if(mCollisionBox.y < 0) {
         mCollisionBox.y = 0;
