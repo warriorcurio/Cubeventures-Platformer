@@ -51,13 +51,16 @@ enum Tiles {
     TILE_JUMPCRYSTAL_D,
     TILE_GHOST_T_D,
     TILE_GHOST_F_D,
+    TILE_STEAM,
+    TILE_STEAMVENT,
     TILE_KEY,
     TILE_LOCK_D,
     TILE_MEDAL,
     TILE_EXIT,
     TILE_SPIKEUP, TILE_SPIKERIGHT, TILE_SPIKEDOWN, TILE_SPIKELEFT,
     TILE_CAVESPIKEUP, TILE_CAVESPIKERIGHT, TILE_CAVESPIKEDOWN, TILE_CAVESPIKELEFT,
-    TILE_WATERUP, TILE_WATER,
+    TILE_HELLSPIKEUP, TILE_HELLSPIKERIGHT, TILE_HELLSPIKEDOWN, TILE_HELLSPIKELEFT,
+    TILE_WATERUP, TILE_WATER, TILE_LAVAUP, TILE_LAVA,
     TILE_EMPTY,
     TILE_GHOST_T,
     TILE_GHOST_F,
@@ -72,6 +75,8 @@ enum Tiles {
     TILE_BOUNCE,
     TILE_BLUESTONE,
     TILE_ICE,
+    TILE_ASH,
+    TILE_OBSIDIAN,
     TILE_TOTAL
 };
 
@@ -99,7 +104,7 @@ enum Difficulty {
 
 struct Save {
     char name[6];
-    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys, deaths, score;
+    int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys, deaths, score, charge;
     char slot[5];
     float totalTime, chapterTime;
     int collectedKeys[5], unlockedLocks[5];
@@ -126,6 +131,7 @@ enum ProjectileTypes {
     PROJECTILE_SAVER,
     PROJECTILE_TEXTDISPLAYER,
     PROJECTILE_BOUNCEBLOCK,
+    PROJECTILE_ANTIGRAV,
     PROJECTILE_TOTAL
 };
 
@@ -137,7 +143,7 @@ extern Save save;
 extern std::vector<Scene> backStack;
 extern SDL_Rect saveHeartClips[3];
 extern std::string saveFileNames[3];
-extern std::string saveButtonPaths[10];
+extern std::string saveButtonPaths[LEVEL_TOTAL];
 extern std::string difficultyNames[3];
 extern Save saveSlots[3];
 extern Resolution levelDimensions[LEVEL_TOTAL];
@@ -146,6 +152,8 @@ extern SDL_Rect tileClips[TILE_TOTAL];
 extern Resolution resolutions[5];
 extern int curRes;
 extern int maxLevel;
+extern int maxScore;
+extern bool finishedGame;
 extern std::string bgNames[LEVEL_TOTAL];
 extern std::string bgParallaxNames[LEVEL_TOTAL];
 extern int keybinds[KEYBINDS_TOTAL];

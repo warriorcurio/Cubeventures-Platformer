@@ -20,3 +20,5 @@ void pauseHandleEvent(SDL_Event* e);
 void pauseUpdate();
 void pauseRender();
 void pauseClose();
+
+extern bool isFinishingGame;

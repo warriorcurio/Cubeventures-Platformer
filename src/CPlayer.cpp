@@ -44,10 +44,9 @@ CPlayer::CPlayer(int x, int y)
     mVelX = 0;
     mVelY = 0;
     mJumpsRemaining = 0;
-    mMaxJumps = save.maxJumps;
     setForm(save.form);
     setKeys(save.keys);
-    mCharge = 0;
+    mCharge = save.charge;
     mIsClimbing = false;
     mIsInvulnerable = false;
     mIsOnGround = false;
@@ -140,15 +139,16 @@ void CPlayer::move(float timeStep)
         const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
         if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_UP])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) < -JOYSTICK_DEAD_ZONE) mVelY -= mPlayerVel;
         if (currentKeyStates[SDL_GetScancodeFromKey(keybinds[KEYBINDS_DOWN])] || SDL_GameControllerGetAxis(gController, SDL_CONTROLLER_AXIS_LEFTY) > JOYSTICK_DEAD_ZONE) mVelY += mPlayerVel;
-    } else if (!(mForm == FORM_BLUE && (touchesWallLeft() || touchesWallRight())) ){
+    } else if (!(mForm == FORM_BLUE && (touchesWallLeft() || touchesWallRight()))){
         mIsClimbing = false;
-        mCollisionBox.y += mGravity * timeStep * timeStep / 2;
-        mVelY += mGravity * timeStep;
+        mCollisionBox.y += (int)(mGravity * timeStep * timeStep / 2);
+        mVelY += (int)(mGravity * timeStep);
     }
     if (touchesGround()) {
         mVelY = 0;
+        if (!mIsClimbing) mCollisionBox.y -= (int)(mGravity * timeStep * timeStep / 2);
         mIsOnGround = true;
-        mJumpsRemaining = mMaxJumps;
+        mJumpsRemaining = save.maxJumps;
         safePositionTimeTimerSeconds += timeStep;
         if (safePositionTimeTimerSeconds >= safePositionTimeSeconds && !mIsInvulnerable) {
             mSafePos = {mCollisionBox.x, mCollisionBox.y};
@@ -162,7 +162,7 @@ void CPlayer::move(float timeStep)
         if (coyoteTimeTimerSeconds >= coyoteTimeSeconds) {
             coyoteTimeTimerSeconds = 0;
             mIsOnGround = false;
-            if (mJumpsRemaining == mMaxJumps) mJumpsRemaining--;
+            if (mJumpsRemaining == save.maxJumps) mJumpsRemaining--;
         }
     }
     if (touchesCeiling() && mVelY < 0) mVelY = 0;
@@ -231,6 +231,7 @@ void CPlayer::setForm(int form)
             mJumpVelMin = 285;
             break;
         case FORM_RAINBOW:
+            mHealth = save.maxHealth;
             mTexture.setColour(0xFF, 0xFF, 0xFF);
             mPlayerVel = 450;
             mGravity = 0;
@@ -268,6 +269,7 @@ void CPlayer::setShield(int shield)
 void CPlayer::setCharge(int charge)
 {
     mCharge = charge;
+    save.charge = charge;
 }
 void CPlayer::setSafePos(int safeX, int safeY)
 {
@@ -304,7 +306,7 @@ void CPlayer::setInvulnerable(bool isInvulnerable)
 void CPlayer::render(SDL_Rect& camera)
 {
     if (mForm != FORM_RAINBOW) {
-        int frameSpeed = 3 + (int)((MAX_CHARGE - mCharge) * 6 / MAX_CHARGE);
+        int frameSpeed = 1 + (int)((MAX_CHARGE - mCharge) * 4 / MAX_CHARGE);
         if (!mIsInvulnerable) mFrame = (mFrame + 1) % (frameSpeed * 11);
         if (!mIsInvulnerable || rand() % 3 == 0) mTexture.render((int)mCollisionBox.x - camera.x, (int)mCollisionBox.y - camera.y, &defaultAnimFrameClips[mFrame / frameSpeed]);
     } else {

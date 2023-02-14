@@ -10,7 +10,7 @@ CTexture textCreateScores[3], textCreateNumDeaths[3], textCreateTimes[3], textCr
     {\
         std::strcpy(save.slot, #NUMBER);\
         save.maxJumps = save.level > LEVEL_THREE ? 2 : 1;\
-        save.score = (200 + save.difficulty * 100) * save.level;\
+        save.score = 100 * (save.difficulty + 1) * save.level;\
         save.deaths = 0;\
         save.keys = 0;\
         save.chapterTime = 0;\

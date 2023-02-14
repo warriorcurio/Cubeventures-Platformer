@@ -59,7 +59,7 @@ class CPlayer
         int mHealth, mShield, mForm, mKeys, mCharge;
         bool mIsClimbing, mIsInvulnerable, mIsOnGround;
         int mPlayerVel, mVelX, mVelY;
-        int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining, mMaxJumps;
+        int mGravity, mJumpVelMax, mJumpVelMin, mJumpsRemaining;
 };
 
 extern float parallaxOffset;

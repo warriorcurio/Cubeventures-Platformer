@@ -1,7 +1,7 @@
 #include "CProjectile.h"
 #include "Game.h"
 
-int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1, 1, 1};
+int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1, 1, 1, 1};
 
 CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX, int respawnY)
 {
@@ -261,6 +261,10 @@ void CProjectile::projectileEvent()
             break;
         case PROJECTILE_BOUNCEBLOCK:
             if (checkCollision(mCollisionBox, player->getBox())) player->setCustomForm(player->getPlayerVel() * 0.5, player->getJumpMax() * 1.414, player->getJumpMin() * 1.414, player->getGravity());
+            else player->setForm(player->getForm());
+            break;
+        case PROJECTILE_ANTIGRAV:
+            if (checkCollision(mCollisionBox, player->getBox())) player->setCustomForm(player->getPlayerVel(), 0, 0, 0);
             else player->setForm(player->getForm());
             break;
     }

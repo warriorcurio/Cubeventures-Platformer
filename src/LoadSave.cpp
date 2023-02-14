@@ -5,7 +5,7 @@ CButton* loadSaveButtons[LOADSAVE_BUTTON_TOTAL];
 
 SDL_Rect saveHeartClips[3] = {{0, 0, 60, 60}, {0, 60, 60, 60}, {0, 120, 60, 60}};
 std::string saveFileNames[3] = {"saves/save_ONE.bin", "saves/save_TWO.bin", "saves/save_THREE.bin"};
-std::string saveButtonPaths[10] = {"ONE.png", "TWO.png", "THREE.png", "FOUR.png", "FIVE.png", "SIX.png", "SEVEN.png", "EIGHT.png", "NINE.png", "TEN.png"};
+std::string saveButtonPaths[LEVEL_TOTAL] = {"ONE.png", "TWO.png", "THREE.png", "FOUR.png", "FIVE.png", "SIX.png"};
 std::string difficultyNames[3] = {"Easy", "Medium", "Hard"};
 Save saveSlots[3];
 

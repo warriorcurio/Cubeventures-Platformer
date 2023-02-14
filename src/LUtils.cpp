@@ -13,6 +13,8 @@ const int JOYSTICK_DEAD_ZONE = 8000;
 Uint8 controllerRGB[3] = {0xFF, 0x00, 0x00};
 
 int maxLevel;
+int maxScore;
+bool finishedGame;
 
 typedef void (*voidProcedure)();
 typedef bool (*boolProcedure)();
@@ -102,6 +104,8 @@ void savePersistent()
     SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
     SDL_RWwrite(writeFile, &keybinds, sizeof(keybinds), 1);
     SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
+    SDL_RWwrite(writeFile, &maxScore, sizeof(int), 1);
+    SDL_RWwrite(writeFile, &finishedGame, sizeof(bool), 1);
     SDL_RWclose(writeFile);
 }
 void backCall()
@@ -140,6 +144,8 @@ bool init()
     SDL_RWread(readFile, &windowFlags, sizeof(Uint32), 1);
     SDL_RWread(readFile, &keybinds, sizeof(keybinds), 1);
     SDL_RWread(readFile, &maxLevel, sizeof(int), 1);
+    SDL_RWread(readFile, &maxScore, sizeof(int), 1);
+    SDL_RWread(readFile, &finishedGame, sizeof(bool), 1);
     SDL_RWclose(readFile);
     gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, windowFlags);
     if (gWindow == NULL) {

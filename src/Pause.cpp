@@ -64,7 +64,7 @@ void pauseHandleEvent(SDL_Event* e)
 }
 void pauseUpdate()
 {
-
+    if (isFinishingGame) pauseQuitCall();
 }
 void pauseRender()
 {

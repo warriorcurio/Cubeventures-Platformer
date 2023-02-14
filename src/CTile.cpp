@@ -49,6 +49,9 @@ void CTile::collisionEvent(int tileNum)
             player->setJumps(save.maxJumps);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 2, 0xFFFF / 2, 150);
             break;
+        case TILE_STEAM:
+            if (player->getForm() != FORM_RAINBOW) player->setVel(player->getVelX(), -300);
+            break;
         case TILE_KEY:
             mType = TILE_EMPTY;
             player->setKeys(player->getKeys() + 1);
@@ -79,6 +82,10 @@ void CTile::collisionEvent(int tileNum)
         case TILE_MEDAL:
             mType = TILE_EMPTY;
             save.score += 100;
+            if (save.score > maxScore) {
+                maxScore = save.score;
+                savePersistent();
+            }
             save.collectedMedals[save.level] = true;
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF, 0xFFFF / 6, 250);
             break;
