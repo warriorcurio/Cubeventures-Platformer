@@ -53,6 +53,8 @@ enum Tiles {
     TILE_GHOST_F_D,
     TILE_STEAM,
     TILE_STEAMVENT,
+    TILE_ANTIGRAV_SOURCEMOON, TILE_ANTIGRAV_SOURCEVOID,
+    TILE_ANTIGRAV_TOPLEFT, TILE_ANTIGRAV_TOPMIDDLE, TILE_ANTIGRAV_TOPRIGHT, TILE_ANTIGRAV_MIDDLELEFT, TILE_ANTIGRAV_MIDDLE, TILE_ANTIGRAV_MIDDLERIGHT, TILE_ANTIGRAV_BOTTOMLEFT, TILE_ANTIGRAV_BOTTOMMIDDLE, TILE_ANTIGRAV_BOTTOMRIGHT,
     TILE_KEY,
     TILE_LOCK_D,
     TILE_MEDAL,
@@ -77,6 +79,8 @@ enum Tiles {
     TILE_ICE,
     TILE_ASH,
     TILE_OBSIDIAN,
+    TILE_MOONSTONE,
+    TILE_VOIDSTONE,
     TILE_TOTAL
 };
 
@@ -105,6 +109,7 @@ enum Difficulty {
 struct Save {
     char name[6];
     int level, x, y, form, maxJumps, difficulty, curHealth, maxHealth, keys, deaths, score, charge;
+    bool finishedGame;
     char slot[5];
     float totalTime, chapterTime;
     int collectedKeys[5], unlockedLocks[5];
@@ -117,6 +122,7 @@ enum Keybinds {
     KEYBINDS_DOWN,
     KEYBINDS_RIGHT,
     KEYBINDS_JUMP,
+    KEYBINDS_ABILITY,
     KEYBINDS_TOTAL
 };
 
@@ -153,7 +159,7 @@ extern Resolution resolutions[5];
 extern int curRes;
 extern int maxLevel;
 extern int maxScore;
-extern bool finishedGame;
+extern bool hasEverFinishedGame;
 extern std::string bgNames[LEVEL_TOTAL];
 extern std::string bgParallaxNames[LEVEL_TOTAL];
 extern int keybinds[KEYBINDS_TOTAL];

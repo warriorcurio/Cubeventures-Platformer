@@ -6,17 +6,17 @@ Resolution levelDimensions[LEVEL_TOTAL] = {
     {8000, 2000},
     {4000, 6000},
     {6000, 2400},
-    {4000, 1080}
+    {4000, 6000}
 };
 SDL_Point levelStartPositions[LEVEL_TOTAL] = {
-    {  0, 1020},
-    { 80,  320},
-    {490, 1540},
-    {  0, 5940},
-    { 50, 2180},
-    {  0, 1020}
+    {   0, 1020},
+    {  80,  320},
+    { 490, 1540},
+    {   0, 5940},
+    {  50, 2180},
+    {2290, 5860}
 };
-int levelFinishTimes[LEVEL_TOTAL] = {90, 50, 215, 190, 999, 999};
+int levelFinishTimes[LEVEL_TOTAL] = {90, 50, 215, 210, 195, 275};
 
 SDL_Rect camera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
 
@@ -41,8 +41,6 @@ CTexture gameOverTexture;
 
 bool isEndLevel;
 CTexture levelCompleteTexture, scoreTexture;
-
-bool isFinishingGame;
 
 CTexture bgTexture;
 CTexture bgPTexture;
@@ -73,24 +71,40 @@ void setProjectiles()
         case LEVEL_ONE: {
             const char* tutorialKeybindsText[5] = {"Up", "Left", "Down", "Right", "Jump"};
             char* curText = (char*)calloc(50, sizeof(char));
-            for (int i = 0; i < KEYBINDS_TOTAL; i++) {
-                sprintf(curText, "%s - %s", tutorialKeybindsText[i], SDL_GetKeyName(keybinds[i]));
-                projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 810 + 25 * i, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            if (!gController) {
+                for (int i = 0; i <= KEYBINDS_JUMP; i++) {
+                    sprintf(curText, "%s - %s", tutorialKeybindsText[i], SDL_GetKeyName(keybinds[i]));
+                    projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 810 + 25 * i, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+                }
+                sprintf(curText, "Hold %s longer", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
+            } else {
+                projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 860, "Use the left stick to move!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+                char controllerJumpButton = 'A';
+                switch (SDL_GameControllerGetType(gController)) {
+                    case SDL_CONTROLLER_TYPE_PS3: controllerJumpButton = 'X'; break;
+                    case SDL_CONTROLLER_TYPE_PS4: controllerJumpButton = 'X'; break;
+                    case SDL_CONTROLLER_TYPE_PS5: controllerJumpButton = 'X'; break;
+                    case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO: controllerJumpButton = 'B'; break;
+                    case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR: controllerJumpButton = 'B'; break;
+                    default: break;
+                }
+                sprintf(curText, "Press %c to jump!", controllerJumpButton);
+                projectiles.push_back(new CProjectile(0, 1020, 20, 20, 20, 885, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+                sprintf(curText, "Hold %c longer", controllerJumpButton);
             }
-            sprintf(curText, "Hold %s longer", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
-            projectiles.push_back(new CProjectile(320, 760, 40, 240, 400, 820, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
-            projectiles.push_back(new CProjectile(320, 760, 40, 240, 400, 845, "to jump higher!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(320, 760, 40, 240, 400, 780, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(320, 760, 40, 240, 400, 805, "to jump higher!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(960, 800, 200, 40, 1210, 770, "< Requires a key", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(760, 600, 40, 40, 480, 420, "White: Affects Ghost Blocks", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(1480, 1000, 40, 40, 1240, 580, "Green: Jump 50% Higher", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(1920, 720, 40, 40, 1900, 540, "Red: Move 50% Quicker", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 340, "Blue: Stick To and Climb Walls", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
-            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 365, "Use Up and Down on a wall!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(2600, 680, 40, 40, 2820, 365, "Move up and down on a wall!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(3760, 720, 40, 40, 3310, 730, "Restores Your Jumps >", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(160, 0, 40, 40, 930, 85, "Gold Medals give extra score", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 520, "Collect the Purple Medal", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
-            projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 560, "to complete levels!", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
-            projectiles.push_back(new CProjectile(1840, 440, 40, 40, 2080, 850, "Spikes are dangerous...", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            projectiles.push_back(new CProjectile(2760, 0, 40, 40, 2820, 560, "to complete the level!", SDL_Color{0xFF, 0xFF, 0xFF}, 40));
+            projectiles.push_back(new CProjectile(1840, 440, 40, 40, 2080, 850, "Avoid falling into spikes", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             break;
         }
         case LEVEL_TWO: {
@@ -130,7 +144,7 @@ void setProjectiles()
                 projectiles.push_back(new CProjectile(5328, 1215, PROJECTILE_SHIELD, 0, 0));
                 //Charges the player's rainbow ability at the end of the map
                 for (int i = 0; i < 20; i++) {
-                    projectiles.push_back(new CProjectile(6687 + i % 2, 327 + 80 * i, PROJECTILE_CHARGER, 0, 0, 6680, 327 + 80 * i));
+                    projectiles.push_back(new CProjectile(6687 + i % 2, 327 + 80 * i, PROJECTILE_CHARGER, 0, 0));
                 }
                 //Tile changing buttons
                 projectiles.push_back(new CProjectile(687, 1834, 7805, TILE_STONE, true)); //Places a block for the secret gold medal
@@ -170,16 +184,32 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(840, 1559, 40, 1, 240, 1120, "Bounce Blocks allow you", SDL_Color{0x00, 0xFF, 0x00}, 25));
             projectiles.push_back(new CProjectile(840, 1559, 40, 1, 240, 1150, "to jump twice as high!", SDL_Color{0x00, 0xFF, 0x00}, 25));
             projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 127, "Collect 20 Rainbow Charges", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
-            projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 167, "and press Q to gain flight", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
+            char* curText = (char*)calloc(50, sizeof(char));
+            if (!gController) sprintf(curText, "and press %s to gain flight", SDL_GetKeyName(keybinds[KEYBINDS_ABILITY]));
+            else {
+                std::string controllerAbilityButton;
+                switch (SDL_GameControllerGetType(gController)) {
+                    case SDL_CONTROLLER_TYPE_XBOX360: controllerAbilityButton = "Y"; break;
+                    case SDL_CONTROLLER_TYPE_XBOXONE: controllerAbilityButton = "Y"; break;
+                    case SDL_CONTROLLER_TYPE_PS3: controllerAbilityButton = "Triangle"; break;
+                    case SDL_CONTROLLER_TYPE_PS4: controllerAbilityButton = "Triangle"; break;
+                    case SDL_CONTROLLER_TYPE_PS5: controllerAbilityButton = "Triangle"; break;
+                    case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_PRO: controllerAbilityButton = "X"; break;
+                    case SDL_CONTROLLER_TYPE_NINTENDO_SWITCH_JOYCON_PAIR: controllerAbilityButton = "X"; break;
+                    default: controllerAbilityButton = "Y"; break;
+                }
+                sprintf(curText, "and press %s to gain flight", controllerAbilityButton.c_str());
+            }
+            projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 167, curText, SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(6680, 280, 40, 40, 6330, 207, "and invulnerability for a short time", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             projectiles.push_back(new CProjectile(6760, 80, 40, 240, 6850, 447, "Fly down here!", SDL_Color{0xFF, 0xFF, 0xFF}, 25));
             //Bounce blocks based around the level
-            projectiles.push_back(new CProjectile(840, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(0, 1559, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(1800, 919, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(1840, 559, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(2760, 1839, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(2800, 1599, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(840, 1559, 40));
+            projectiles.push_back(new CProjectile(0, 1559, 40));
+            projectiles.push_back(new CProjectile(1800, 919, 40));
+            projectiles.push_back(new CProjectile(1840, 559, 40));
+            projectiles.push_back(new CProjectile(2760, 1839, 40));
+            projectiles.push_back(new CProjectile(2800, 1599, 40));
             break;
         }
         case LEVEL_FOUR: {
@@ -191,6 +221,17 @@ void setProjectiles()
                 projectiles.push_back(new CProjectile(0, 2247, PROJECTILE_DAMAGEBALL, 225, 0));
                 projectiles.push_back(new CProjectile(0, 1807, PROJECTILE_DAMAGEBALL, 450, 0));
                 projectiles.push_back(new CProjectile(3535, 4407, PROJECTILE_DAMAGEBALL, -600, 0));
+                //Charges the player's rainbow ability
+                projectiles.push_back(new CProjectile(807, 1047, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(3407, 1487, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(3487, 2047, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(7, 3367, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(47, 3327, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(87, 3367, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(7, 3567, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(2007, 4007, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(3167, 3647, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(3687, 5807, PROJECTILE_CHARGER, 0, 0));
                 //Tile changing buttons
                 projectiles.push_back(new CProjectile(167, 1834, 7449, TILE_EMPTY, true)); //Removes a block to access a portal to the upper section, red side
                 projectiles.push_back(new CProjectile(2207, 914, 7549, TILE_EMPTY, true)); //Removes a block to access a portal to the upper section, green side
@@ -221,18 +262,28 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(0, 5940, 20, 20, 210, 5565, "You gained a second jump!", SDL_Color{0x00, 0x00, 0xFF}, 30));
             projectiles.push_back(new CProjectile(0, 5940, 20, 20, 210, 5605, "Use the Jump button mid-air to jump a second time!", SDL_Color{0x00, 0x00, 0xFF}, 30));
             //Bounce blocks based around the level
-            projectiles.push_back(new CProjectile(320, 4759, 40, 1, PROJECTILE_BOUNCEBLOCK));
-            projectiles.push_back(new CProjectile(280, 2159, 40, 1, PROJECTILE_BOUNCEBLOCK));
+            projectiles.push_back(new CProjectile(320, 4759, 40));
+            projectiles.push_back(new CProjectile(280, 2159, 40));
             break;
         }
         case LEVEL_FIVE: {
             if ((int)projectiles.size() == 0) {
-                //rlul
                 //Damage balls to serve as a hazard to the player
                 projectiles.push_back(new CProjectile(40, 847, PROJECTILE_DAMAGEBALL, 325, 0));
                 projectiles.push_back(new CProjectile(2615, 527, PROJECTILE_DAMAGEBALL, -500, 0));
-                projectiles.push_back(new CProjectile(4447, 1495, PROJECTILE_DAMAGEBALL, 0, -200));
-                projectiles.push_back(new CProjectile(5975, 367, PROJECTILE_DAMAGEBALL, -350, 0)); //Protects the exit
+                projectiles.push_back(new CProjectile(4455, 1327, PROJECTILE_DAMAGEBALL, -150, 0));
+                projectiles.push_back(new CProjectile(5975, 367, PROJECTILE_DAMAGEBALL, -350, 0));
+                //Charges the player's rainbow ability
+                projectiles.push_back(new CProjectile(647, 247, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(2167, 1647, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(2207, 1607, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(1087, 1567, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(2607, 2007, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(2167, 1607, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(2207, 1647, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(247, 1607, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(4647, 1127, PROJECTILE_CHARGER, 0, 0));
+                projectiles.push_back(new CProjectile(4887, 167, PROJECTILE_CHARGER, 0, 0));
                 //Tile changing buttons
                 projectiles.push_back(new CProjectile(87, 394, 3338, TILE_GHOST_F, true)); //Places a block to access the red crystal
                 projectiles.push_back(new CProjectile(2367, 1714, 4725, TILE_ASH, true)); //Places a block for blue to access the combination puzzle key
@@ -275,6 +326,76 @@ void setProjectiles()
             //Text Spawners
             projectiles.push_back(new CProjectile(240, 1360, 40, 880, 525, 1725, "Steam Vents push you upwards", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
             projectiles.push_back(new CProjectile(240, 1360, 40, 880, 525, 1765, "when you are in the air!", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
+            break;
+        }
+        case LEVEL_SIX: {
+            if ((int)projectiles.size() == 0) {
+                //Tile changing buttons
+                projectiles.push_back(new CProjectile(1567, 5274, 13942, TILE_MOONSTONE, true)); //Places a block for red to get up to the anti-gravity field
+                projectiles.push_back(new CProjectile(2967, 4994, 13369, TILE_MOONSTONE, true)); //Places blocks to get up to the anti-gravity field
+                projectiles.push_back(new CProjectile(2967, 4994, 13469, TILE_MOONSTONE, true)); //Places blocks to get up to the anti-gravity field
+                projectiles.push_back(new CProjectile(3127, 4154, 10576, TILE_EMPTY, true)); //Removes a block for green to get up to the portal
+                projectiles.push_back(new CProjectile(1607, 2754, 8302, TILE_REDCRYSTAL, true)); //Activates a red crystal
+                projectiles.push_back(new CProjectile(3127, 3034, 8215, TILE_BLUECRYSTAL, true)); //Activates a blue crystal
+                projectiles.push_back(new CProjectile(247, 1634, 6748, TILE_MOONSTONE, true)); //Places blocks for green to get to the right side
+                projectiles.push_back(new CProjectile(247, 1634, 7067, TILE_MOONSTONE, true)); //Places blocks for green to get to the right side
+                projectiles.push_back(new CProjectile(2927, 1874, 14561, TILE_WHITECRYSTAL, true)); //Activates the white crystal at the bottom
+            }
+            //Portals teleporting the player across the map
+            projectiles.push_back(new CProjectile(7, 4407, 1010, 500)); //Teleports the player from the lower left side to the combination puzzle
+            projectiles.push_back(new CProjectile(1447, 407, 2290, 5860)); //Teleports the player from the combination puzzle to the start of the map
+            projectiles.push_back(new CProjectile(3207, 3807, 370, 3300)); //Teleports the player from the lower part to the middle left
+            projectiles.push_back(new CProjectile(2167, 4527, 3530, 1860)); //Teleports the player from the lower part to the upper part if they are white
+            projectiles.push_back(new CProjectile(7, 1847, 3650, 1020)); //Teleports the player from the upper part to before the locks if they are white
+            projectiles.push_back(new CProjectile(2527, 487, 2210, 290)); //Teleports the player from after the locks to the exit
+            projectiles.push_back(new CProjectile(1847, 527, 3650, 1020)); //Teleports the player from the exit to before the locks
+            projectiles.push_back(new CProjectile(1447, 487, 1770, 330)); //Teleports the player from the combination puzzle to the secret medal
+            projectiles.push_back(new CProjectile(2127, 87, 1010, 500)); //Teleports the player from the secret medal to the combination puzzle
+            //Toggle buttons for the combination puzzle at the top SOLUTION 011011101
+            projectiles.push_back(new CProjectile(1087, 434, 1227, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1087, 434, 1228, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1087, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1087, 434, 1234, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1087, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1127, 434, 1228, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1127, 434, 1229, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1127, 434, 1230, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1127, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1127, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1127, 434, 1234, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1127, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1167, 434, 1229, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1167, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1167, 434, 1232, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1207, 434, 1227, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1207, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1207, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1207, 434, 1234, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1247, 434, 1228, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1247, 434, 1229, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1247, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1247, 434, 1232, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1247, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1287, 434, 1229, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1287, 434, 1230, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1287, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1287, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1287, 434, 1234, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1287, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1327, 434, 1228, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1327, 434, 1230, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1327, 434, 1232, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1327, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1367, 434, 1229, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1367, 434, 1231, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1367, 434, 1232, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1367, 434, 1234, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1367, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1407, 434, 1230, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1407, 434, 1232, TILE_EMPTY, TILE_VOIDSTONE));
+            projectiles.push_back(new CProjectile(1407, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
+            projectiles.push_back(new CProjectile(1407, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
+            break;
         }
     }
 }
@@ -291,21 +412,20 @@ bool setTiles()
     for (int i = 0; i < tileCount; i++) {
         int tileType = -1;
         map >> tileType;
-        if(map.fail()) {
+        if (map.fail()) {
             printf("Error loading map: Unexpected EoF\n");
             return false;
         }
-        if (tileType == TILE_MEDAL && save.collectedMedals[save.level]) {
-            tileType = TILE_EMPTY;
-        }
-        if(tileType >= 0 && tileType < TILE_TOTAL) {
+        if (tileType == TILE_MEDAL && save.collectedMedals[save.level]) tileType = TILE_EMPTY;
+        if (tileType == TILE_EXIT && save.finishedGame) tileType = TILE_EMPTY;
+        if (tileType >= 0 && tileType < TILE_TOTAL) {
             tiles.push_back(new CTile(x, y, tileType));
         } else {
             printf("Error loading map: Invalid tile type at %d\n", i);
             return false;
         }
         x += CTile::TILE_WIDTH;
-        if(x >= levelDimensions[save.level].w) {
+        if (x >= levelDimensions[save.level].w) {
             x = 0;
             y += CTile::TILE_HEIGHT;
         }
@@ -313,10 +433,10 @@ bool setTiles()
     x = 0, y = 0;
     for (int i = 0; i < TILE_TOTAL; i++) {
         tileClips[i] = {x, y, CTile::TILE_WIDTH, CTile::TILE_HEIGHT};
-        x += CTile::TILE_WIDTH;
+        x += CTile::TILE_WIDTH + 1;
         if(x >= tileTexture.getWidth()) {
             x = 0;
-            y += CTile::TILE_HEIGHT;
+            y += CTile::TILE_HEIGHT + 1;
         }
     }
     map.close();
@@ -331,26 +451,34 @@ void setLevel(int level)
 {
     if (player->getForm() == FORM_RAINBOW) player->setForm(FORM_WHITE);
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
-    if (level > save.level || isDead) {
-        SDL_ShowCursor(SDL_ENABLE);
-        for (int i = 0; i < (int)projectiles.size(); i++) {
-            delete projectiles[i];
-        }
-        projectiles.clear();
+    SDL_ShowCursor(SDL_ENABLE);
+    for (int i = 0; i < (int)projectiles.size(); i++) {
+        delete projectiles[i];
     }
+    projectiles.clear();
     if (level > save.level) {
         isEndLevel = true;
         if (save.chapterTime <= levelFinishTimes[save.level]) save.score += 100;
         save.chapterTime = 0;
         scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), SDL_Color{0xFF, 0xFF, 0xFF}, 80);
     }
+    if (isDead) curButton = GAME_BUTTON_DEATHRETRY;
+    for (int i = 0; i < 5; i++) {
+        save.collectedKeys[i] = -1;
+        save.unlockedLocks[i] = -1;
+    }
     if (save.score > maxScore) maxScore = save.score;
     if (level == LEVEL_TOTAL) {
-        finishedGame = true;
+        hasEverFinishedGame = true;
         savePersistent();
-        transition(SCENE_PAUSE);
-        isEndLevel = false;
-        isFinishingGame = true;
+        save.finishedGame = true;
+        save.x = levelStartPositions[LEVEL_SIX].x;
+        save.y = levelStartPositions[LEVEL_SIX].y;
+        char* slotFile = (char*)calloc(20, sizeof(char));
+        sprintf(slotFile, "saves/save_%s.bin", save.slot);
+        SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
+        SDL_RWwrite(writeFile, &save, sizeof(Save), 1);
+        SDL_RWclose(writeFile);
         return;
     }
     save.level = level;
@@ -359,10 +487,6 @@ void setLevel(int level)
     save.maxJumps = level > LEVEL_THREE ? 2 : 1;
     player->setPos(levelStartPositions[level].x, levelStartPositions[level].y);
     player->setCamera(camera);
-    for (int i = 0; i < 5; i++) {
-        save.collectedKeys[i] = -1;
-        save.unlockedLocks[i] = -1;
-    }
     if (level > maxLevel) {
         maxLevel = level;
         menuBackground.loadFromFile(bgNames[maxLevel]);
@@ -386,18 +510,27 @@ void setLevel(int level)
 
 void gameDeathRetryCall()
 {
+    if (!isDead) return;
+    curButton = -1;
     SDL_ShowCursor(SDL_DISABLE);
     isDead = false;
 }
 void gameDeathQuitCall()
 {
+    if (!isDead) return;
+    curButton = -1;
     isDead = false;
     transition(SCENE_MAINMENU);
 }
 void gameContinueCall()
 {
-    SDL_ShowCursor(SDL_DISABLE);
+    if (!isEndLevel) return;
     isEndLevel = false;
+    if (save.finishedGame) {
+        transition(SCENE_MAINMENU);
+        return;
+    }
+    SDL_ShowCursor(SDL_DISABLE);
 }
 
 bool gameLoadMedia()
@@ -435,10 +568,14 @@ void gameHandleEvent(SDL_Event* e)
 {
     player->handleEvent(e);
     if (isDead) {
+        gameButtons[curButton]->setSelected(false);
+        menuHandleButtonSwitching(e, GAME_BUTTON_CONTINUE);
+        gameButtons[curButton]->setSelected(true);
         gameButtons[GAME_BUTTON_DEATHRETRY]->handleEvent(e);
         gameButtons[GAME_BUTTON_DEATHQUIT]->handleEvent(e);
         return;
     } else if (isEndLevel) {
+        gameButtons[GAME_BUTTON_CONTINUE]->setSelected(true);
         gameButtons[GAME_BUTTON_CONTINUE]->handleEvent(e);
         return;
     }
@@ -449,8 +586,10 @@ void gameHandleEvent(SDL_Event* e)
     } else if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_k) {
         projectiles.push_back(new CProjectile(player->getPosX(), player->getPosY() - 50, PROJECTILE_CHARGER, 0, 0));
     }
+    if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE) return;
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         SDL_ShowCursor(SDL_ENABLE);
+        backStack.push_back(SCENE_GAME);
         transition(SCENE_PAUSE);
     }
 }
@@ -543,6 +682,7 @@ void gameRender()
         SDL_SetRenderDrawBlendMode(gRenderer, SDL_BLENDMODE_BLEND);
         SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xAF);
         SDL_RenderFillRect(gRenderer, NULL);
+        if (save.finishedGame) levelCompleteTexture.loadFromRenderedText("You Won!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
         levelCompleteTexture.render((LOGICAL_SCREEN_WIDTH - levelCompleteTexture.getWidth()) / 2, (LOGICAL_SCREEN_HEIGHT - levelCompleteTexture.getHeight()) / 4);
         scoreTexture.render(10, LOGICAL_SCREEN_HEIGHT - scoreTexture.getHeight() - 10);
         gameButtons[GAME_BUTTON_CONTINUE]->render();

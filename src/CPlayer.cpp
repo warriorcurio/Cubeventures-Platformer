@@ -62,7 +62,7 @@ void CPlayer::handleEvent(SDL_Event* e)
             if (e->jaxis.value > JOYSTICK_DEAD_ZONE) mVelX = mPlayerVel;
             else if (e->jaxis.value < -JOYSTICK_DEAD_ZONE) mVelX = -mPlayerVel;
             else mVelX = 0;
-        } else if (e->jaxis.axis == 1 && mIsClimbing) {
+        } else if (e->jaxis.axis == 1 && (mIsClimbing || mForm == FORM_RAINBOW)) {
             if (e->jaxis.value > JOYSTICK_DEAD_ZONE) mVelY = mPlayerVel;
             else if (e->jaxis.value < -JOYSTICK_DEAD_ZONE) mVelY = -mPlayerVel;
             else mVelY = 0;
@@ -71,11 +71,16 @@ void CPlayer::handleEvent(SDL_Event* e)
         if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A && !mIsClimbing && mJumpsRemaining > 0) {
             mVelY = -mJumpVelMax;
             mJumpsRemaining--;
-            SDL_GameControllerRumble(gController, 0x00FF, 0x00FF, 50);
         } 
     } else if (e->type == SDL_JOYBUTTONUP) {
         if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A && !mIsClimbing && mVelY < -mJumpVelMin) {
             mVelY = -mJumpVelMin;
+        } else if (e->jbutton.button == SDL_CONTROLLER_BUTTON_Y && mCharge >= MAX_CHARGE) {
+            setForm(FORM_RAINBOW);
+            setShield(mShield + 1);
+            setHealth(save.maxHealth);
+            setCharge(0);
+            mFrame = 0;
         }
     }
     if (gController) return;
@@ -99,8 +104,10 @@ void CPlayer::handleEvent(SDL_Event* e)
         if (e->key.keysym.sym == keybinds[KEYBINDS_DOWN] && (mIsClimbing || mForm == FORM_RAINBOW)) mVelY = 0;
         if (e->key.keysym.sym == keybinds[KEYBINDS_RIGHT]) mVelX -= mPlayerVel;
         if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mVelY < -mJumpVelMin && mForm != FORM_RAINBOW) mVelY = -mJumpVelMin;
-        if (e->key.keysym.sym == SDLK_q && mCharge >= MAX_CHARGE) {
+        if (e->key.keysym.sym == keybinds[KEYBINDS_ABILITY] && mCharge >= MAX_CHARGE) {
             setForm(FORM_RAINBOW);
+            setShield(mShield + 1);
+            setHealth(save.maxHealth);
             mCharge = 0;
             mFrame = 0;
         }
@@ -124,7 +131,7 @@ void CPlayer::move(float timeStep)
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
     else if(mCollisionBox.x > levelDimensions[save.level].w - PLAYER_WIDTH) mCollisionBox.x = levelDimensions[save.level].w - PLAYER_WIDTH;
     mCollisionBox.y += (int)(mVelY * timeStep);
-    if (mGravity > 0 && mVelY > 6 * mGravity) mVelY = 6 * mGravity;
+    if (mGravity > 0 && mVelY > mGravity) mVelY = mGravity;
     if(mCollisionBox.y < 0) mCollisionBox.y = 0;
     else if(mCollisionBox.y > levelDimensions[save.level].h - PLAYER_HEIGHT) mCollisionBox.y = levelDimensions[save.level].h - PLAYER_HEIGHT;
     if (touchesTile()) {
@@ -192,6 +199,7 @@ void CPlayer::checkSpecialTileCollisions()
 }
 void CPlayer::setForm(int form)
 {
+    if (gController && mForm != form) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
     int modifiedVel = 0;
     if (mVelX == mPlayerVel || mVelX == -mPlayerVel) {
         modifiedVel = mVelX == mPlayerVel ? 1 : -1;

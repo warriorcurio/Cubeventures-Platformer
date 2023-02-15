@@ -2,8 +2,8 @@
 
 typedef void (*call)();
 int keybinds[KEYBINDS_TOTAL] = {SDLK_w, SDLK_a, SDLK_s, SDLK_d, SDLK_SPACE};
-std::string keybindNames[KEYBINDS_TOTAL] = {"UP", "LEFT", "DOWN", "RIGHT", "JUMP"};
-call keybindCalls[KEYBINDS_TOTAL] = {&keybindSettingsUPCall, &keybindSettingsLEFTCall, &keybindSettingsDOWNCall, &keybindSettingsRIGHTCall, &keybindSettingsJUMPCall};
+std::string keybindNames[KEYBINDS_TOTAL] = {"UP", "LEFT", "DOWN", "RIGHT", "JUMP", "ABILITY"};
+call keybindCalls[KEYBINDS_TOTAL] = {&keybindSettingsUPCall, &keybindSettingsLEFTCall, &keybindSettingsDOWNCall, &keybindSettingsRIGHTCall, &keybindSettingsJUMPCall, &keybindSettingsABILITYCall};
 int curKeybind = -1;
 
 CButton* keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_TOTAL];
@@ -16,15 +16,15 @@ CButton* keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_TOTAL];
         delete keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND];\
         if (curKeybind == -1) {\
             curKeybind = KEYBINDS_##KEYBIND;\
-            keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND] = new CButton(0, 0, 60, curLabel, &keybindSettings##KEYBIND##Call);\
+            keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND] = new CButton(0, 0, 50, curLabel, &keybindSettings##KEYBIND##Call);\
             std::string selectedBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};\
             keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->setBGFromSVG(selectedBackgroundColours);\
         }\
         else {\
             curKeybind = -1;\
-            keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND] = new CButton(0, 0, 60, curLabel, &keybindSettings##KEYBIND##Call);\
+            keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND] = new CButton(0, 0, 50, curLabel, &keybindSettings##KEYBIND##Call);\
         }\
-        keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->getW()) / 2, 355 + 75 * (KEYBINDSETTINGS_BUTTON_##KEYBIND));\
+        keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->getW()) / 2, 355 + 65 * (KEYBINDSETTINGS_BUTTON_##KEYBIND));\
         for (int i = KEYBINDSETTINGS_BUTTON_UP; i < KEYBINDSETTINGS_BUTTON_BACK; i++) {\
             keybindSettingsButtons[i]->setClickable(curKeybind == -1 || i == KEYBINDSETTINGS_BUTTON_##KEYBIND);\
         }\
@@ -36,23 +36,26 @@ GEN_KEYBINDSETTINGS_CALL(LEFT);
 GEN_KEYBINDSETTINGS_CALL(DOWN);
 GEN_KEYBINDSETTINGS_CALL(RIGHT);
 GEN_KEYBINDSETTINGS_CALL(JUMP);
+GEN_KEYBINDSETTINGS_CALL(ABILITY);
 
 bool keybindSettingsLoadMedia()
 {
     keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_BACK] = new CButton(10, 1020, 40, "Back", &backCall);
     char* curLabel = (char*)calloc(20, sizeof(char));
     sprintf(curLabel, "UP - %s", SDL_GetKeyName(keybinds[KEYBINDS_UP]));
-    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_UP] = new CButton(0, 0, 60, curLabel, &keybindSettingsUPCall);
+    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_UP] = new CButton(0, 0, 50, curLabel, &keybindSettingsUPCall);
     sprintf(curLabel, "LEFT - %s", SDL_GetKeyName(keybinds[KEYBINDS_LEFT]));
-    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_LEFT] = new CButton(0, 0, 60, curLabel, &keybindSettingsLEFTCall);
+    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_LEFT] = new CButton(0, 0, 50, curLabel, &keybindSettingsLEFTCall);
     sprintf(curLabel, "DOWN - %s", SDL_GetKeyName(keybinds[KEYBINDS_DOWN]));
-    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_DOWN] = new CButton(0, 0, 60, curLabel, &keybindSettingsDOWNCall);
+    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_DOWN] = new CButton(0, 0, 50, curLabel, &keybindSettingsDOWNCall);
     sprintf(curLabel, "RIGHT - %s", SDL_GetKeyName(keybinds[KEYBINDS_RIGHT]));
-    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_RIGHT] = new CButton(0, 0, 60, curLabel, &keybindSettingsRIGHTCall);
+    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_RIGHT] = new CButton(0, 0, 50, curLabel, &keybindSettingsRIGHTCall);
     sprintf(curLabel, "JUMP - %s", SDL_GetKeyName(keybinds[KEYBINDS_JUMP]));
-    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_JUMP] = new CButton(0, 0, 60, curLabel, &keybindSettingsJUMPCall);
+    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_JUMP] = new CButton(0, 0, 50, curLabel, &keybindSettingsJUMPCall);
+    sprintf(curLabel, "ABILITY - %s", SDL_GetKeyName(keybinds[KEYBINDS_ABILITY]));
+    keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_ABILITY] = new CButton(0, 0, 50, curLabel, &keybindSettingsABILITYCall);
     for (int i = KEYBINDSETTINGS_BUTTON_UP; i < KEYBINDSETTINGS_BUTTON_BACK; i++) {
-        keybindSettingsButtons[i]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[i]->getW()) / 2, 355 + 75 * (i));
+        keybindSettingsButtons[i]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[i]->getW()) / 2, 355 + 65 * (i));
     }
     return true;
 }
@@ -69,8 +72,8 @@ void keybindSettingsHandleEvent(SDL_Event* e)
     char* curLabel = (char*)calloc(20, sizeof(char));
     sprintf(curLabel, "%s - %s", keybindNames[curKeybind].c_str(), SDL_GetKeyName(keybinds[curKeybind]));
     delete keybindSettingsButtons[curKeybind];
-    keybindSettingsButtons[curKeybind] = new CButton(0, 0, 60, curLabel, keybindCalls[curKeybind]);
-    keybindSettingsButtons[curKeybind]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[curKeybind]->getW()) / 2, 355 + 75 * curKeybind);
+    keybindSettingsButtons[curKeybind] = new CButton(0, 0, 50, curLabel, keybindCalls[curKeybind]);
+    keybindSettingsButtons[curKeybind]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[curKeybind]->getW()) / 2, 355 + 65 * curKeybind);
     for (int i = KEYBINDSETTINGS_BUTTON_UP; i < KEYBINDSETTINGS_BUTTON_BACK; i++) {
         keybindSettingsButtons[i]->setClickable(true);
     }

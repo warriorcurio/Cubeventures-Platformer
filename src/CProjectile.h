@@ -11,7 +11,7 @@ class CProjectile
         CProjectile(int x, int y, int editTileIndex, Tiles editTileNew, bool isOneTimeOnly); //Tile changing buttons
         CProjectile(int x, int y, int editTileIndex, Tiles editTileOriginal, Tiles editTileNew); //Tile toggling buttons
         CProjectile(int x, int y, int teleportX, int teleportY); //Teleporters
-        CProjectile(int x, int y, int w, int h, ProjectileTypes type); //Bounce blocks
+        CProjectile(int x, int y, int w); //Bounce blocks
         CProjectile(int x, int y, int w, int h, int textX, int textY, const char* textToDisplay, SDL_Color textColour, int size); //Text displayers
         ~CProjectile();
         void move(float timeStep);

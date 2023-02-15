@@ -20,34 +20,29 @@ void CTile::collisionEvent(int tileNum)
             mType = TILE_WHITECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_WHITE);
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_REDCRYSTAL:
             if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_REDCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_RED);
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_GREENCRYSTAL:
             if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_GREENCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_GREEN);
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_BLUECRYSTAL:
             if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_BLUECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_BLUE);
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 4, 0xFFFF * 3/4, 150);
             break;
         case TILE_JUMPCRYSTAL:
             mType = TILE_JUMPCRYSTAL_D;
             mActivationTime = 2.5f;
             player->setJumps(save.maxJumps);
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 2, 0xFFFF / 2, 150);
             break;
         case TILE_STEAM:
             if (player->getForm() != FORM_RAINBOW) player->setVel(player->getVelX(), -300);
@@ -87,7 +82,7 @@ void CTile::collisionEvent(int tileNum)
                 savePersistent();
             }
             save.collectedMedals[save.level] = true;
-            if (gController) SDL_GameControllerRumble(gController, 0xFFFF, 0xFFFF / 6, 250);
+            if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 250);
             break;
         case TILE_EXIT:
             save.score += (save.difficulty + 1) * 100;
@@ -95,6 +90,7 @@ void CTile::collisionEvent(int tileNum)
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 1000);
             break;
     }
+    if (mType <= TILE_ANTIGRAV_BOTTOMRIGHT && mType >= TILE_ANTIGRAV_SOURCEMOON && player->getForm() != FORM_RAINBOW) player->setVel(player->getVelX(), 0);
     if (mType < TILE_EMPTY && mType > TILE_EXIT) {
         if (player->getInvulnerable() || player->getForm() == FORM_RAINBOW) return;
         if (player->getShield() > 0) player->setShield(player->getShield() - 1);

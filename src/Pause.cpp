@@ -7,6 +7,7 @@ void pauseResumeCall()
 {
     timeTicks = SDL_GetTicks();
     close();
+    backStack.pop_back();
     loadMedia = &gameLoadMedia;
     handleEvent = &gameHandleEvent;
     update = &gameUpdate;
@@ -33,6 +34,7 @@ void pauseSettingsCall()
 }
 void pauseQuitCall()
 {
+    backStack.pop_back();
     transition(SCENE_MAINMENU);
     gameClose();
 }
@@ -55,7 +57,7 @@ void pauseHandleEvent(SDL_Event* e)
     if (curButton != -1) pauseButtons[curButton]->setSelected(false);
     menuHandleButtonSwitching(e, PAUSE_BUTTON_TOTAL);
     if (curButton != -1) pauseButtons[curButton]->setSelected(true);
-    if (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) {
+    if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         pauseResumeCall();
     }
     for (int i = 0; i < PAUSE_BUTTON_TOTAL; i++) {
@@ -64,7 +66,7 @@ void pauseHandleEvent(SDL_Event* e)
 }
 void pauseUpdate()
 {
-    if (isFinishingGame) pauseQuitCall();
+
 }
 void pauseRender()
 {

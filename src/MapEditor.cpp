@@ -6,7 +6,7 @@ Resolution editorLevelDimensions[LEVEL_TOTAL] = {
     {8000, 2000},
     {4000, 6000},
     {6000, 2400},
-    {4000, 1080}
+    {4000, 6000}
 };
 
 SDL_Rect editorCamera = {0, 0, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT};
@@ -47,10 +47,10 @@ bool editorSetTiles()
     x = 0, y = 0;
     for (int i = 0; i < TILE_TOTAL; i++) {
         tileClips[i] = {x, y, CTile::TILE_WIDTH, CTile::TILE_HEIGHT};
-        x += CTile::TILE_WIDTH;
+        x += CTile::TILE_WIDTH + 1;
         if(x >= tileTexture.getWidth()) {
             x = 0;
-            y += CTile::TILE_HEIGHT;
+            y += CTile::TILE_HEIGHT + 1;
         }
     }
     map.close();

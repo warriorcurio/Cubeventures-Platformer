@@ -63,21 +63,23 @@ void mainMenuHandleEvent(SDL_Event* e)
         keybinds[KEYBINDS_DOWN] = SDLK_s;
         keybinds[KEYBINDS_RIGHT] = SDLK_d;
         keybinds[KEYBINDS_JUMP] = SDLK_SPACE;
+        keybinds[KEYBINDS_ABILITY] = SDLK_q;
         maxLevel = LEVEL_ONE;
         maxScore = 0;
-        finishedGame = false;
+        hasEverFinishedGame = false;
         SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
         SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
         SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
         SDL_RWwrite(writeFile, &keybinds, sizeof(keybinds), 1);
         SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
         SDL_RWwrite(writeFile, &maxScore, sizeof(int), 1);
-        SDL_RWwrite(writeFile, &finishedGame, sizeof(bool), 1);
+        SDL_RWwrite(writeFile, &hasEverFinishedGame, sizeof(bool), 1);
         SDL_RWclose(writeFile);
         save.~Save();
         remove("saves/save_ONE.bin");
         remove("saves/save_TWO.bin");
         remove("saves/save_THREE.bin");
+        menuBackground.loadFromFile(bgNames[LEVEL_ONE]);
     }
 }
 void mainMenuUpdate()
@@ -98,7 +100,7 @@ void mainMenuRender()
     for (int i = LEVEL_TWO; i < maxLevel; i++) {
         star.render(i * 80 - 72, 1008);
     }
-    if (finishedGame) star.render(328, 1008);
+    if (hasEverFinishedGame) star.render(328, 1008);
     if (maxScore == 500 * LEVEL_TOTAL) star.render(408, 1008);
     for (int i = 0; i < MAINMENU_BUTTON_TOTAL; i++) {
         if (mainMenuButtons[i]) mainMenuButtons[i]->render();
