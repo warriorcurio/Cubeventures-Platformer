@@ -5,6 +5,7 @@ CButton* pauseButtons[PAUSE_BUTTON_TOTAL];
 
 void pauseResumeCall()
 {
+    Mix_Resume(SFX_RAINBOW);
     timeTicks = SDL_GetTicks();
     close();
     backStack.pop_back();
@@ -29,18 +30,24 @@ void pauseSaveCall()
 }
 void pauseSettingsCall()
 {
+    Mix_HaltMusic();
     backStack.push_back(SCENE_PAUSE);
     transition(SCENE_SETTINGS);
 }
 void pauseQuitCall()
 {
     backStack.pop_back();
+    Mix_HaltMusic();
     transition(SCENE_MAINMENU);
     gameClose();
 }
 
 bool pauseLoadMedia()
 {
+    if (Mix_PlayingMusic() == 0) {
+        bgMusic = Mix_LoadMUS(levelMusicNames[save.level].c_str());
+        Mix_PlayMusic(bgMusic, -1);
+    }
     pauseButtons[PAUSE_BUTTON_RESUME]  = new CButton(0, 0, 40, "Resume", &pauseResumeCall);
     pauseButtons[PAUSE_BUTTON_RESUME]->setPos((LOGICAL_SCREEN_WIDTH - pauseButtons[PAUSE_BUTTON_RESUME]->getW()) / 2, 400);
     pauseButtons[PAUSE_BUTTON_SAVE] = new CButton(0, 0, 40, "Save", &pauseSaveCall);

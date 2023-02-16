@@ -20,29 +20,34 @@ void CTile::collisionEvent(int tileNum)
             mType = TILE_WHITECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_WHITE);
+            Mix_PlayChannel(SFX_CRYSTALBREAK, sfx[SFX_CRYSTALBREAK], 0);
             break;
         case TILE_REDCRYSTAL:
             if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_REDCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_RED);
+            Mix_PlayChannel(SFX_CRYSTALBREAK, sfx[SFX_CRYSTALBREAK], 0);
             break;
         case TILE_GREENCRYSTAL:
             if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_GREENCRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_GREEN);
+            Mix_PlayChannel(SFX_CRYSTALBREAK, sfx[SFX_CRYSTALBREAK], 0);
             break;
         case TILE_BLUECRYSTAL:
             if (player->getForm() == FORM_RAINBOW) break;
             mType = TILE_BLUECRYSTAL_D;
             mActivationTime = 2.f;
             player->setForm(FORM_BLUE);
+            Mix_PlayChannel(SFX_CRYSTALBREAK, sfx[SFX_CRYSTALBREAK], 0);
             break;
         case TILE_JUMPCRYSTAL:
             mType = TILE_JUMPCRYSTAL_D;
             mActivationTime = 2.5f;
             player->setJumps(save.maxJumps);
+            Mix_PlayChannel(SFX_CRYSTALBREAK, sfx[SFX_CRYSTALBREAK], 0);
             break;
         case TILE_STEAM:
             if (player->getForm() != FORM_RAINBOW) player->setVel(player->getVelX(), -300);
@@ -56,6 +61,7 @@ void CTile::collisionEvent(int tileNum)
                     break;
                 }
             }
+            Mix_PlayChannel(SFX_KEY, sfx[SFX_KEY], 0);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF, 50);
             break;
         case TILE_LOCK_D:
@@ -72,6 +78,7 @@ void CTile::collisionEvent(int tileNum)
                     break;
                 }
             }
+            Mix_PlayChannel(SFX_BREAK, sfx[SFX_BREAK], 0);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 3, 50);
             break;
         case TILE_MEDAL:
@@ -83,10 +90,12 @@ void CTile::collisionEvent(int tileNum)
             }
             save.collectedMedals[save.level] = true;
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 250);
+            Mix_PlayChannel(SFX_MEDAL, sfx[SFX_MEDAL], 0);
             break;
         case TILE_EXIT:
             save.score += (save.difficulty + 1) * 100;
             setLevel(save.level + 1);
+            Mix_PlayChannel(SFX_MEDAL, sfx[SFX_MEDAL], 0);
             if (gController) SDL_GameControllerRumble(gController, 0xFFFF / 6, 0xFFFF / 6, 1000);
             break;
     }
@@ -102,7 +111,11 @@ void CTile::collisionEvent(int tileNum)
             player->setKeys(0);
             isDead = true;
             setLevel(save.level);
-        } else player->setInvulnerable(true);
+            Mix_PlayChannel(SFX_DEATH, sfx[SFX_DEATH], 0);
+        } else {
+            player->setInvulnerable(true);
+            Mix_PlayChannel(SFX_HIT, sfx[SFX_HIT], 0);
+        }
     }
 }
 void CTile::updateTiles(float timeStep)
@@ -111,6 +124,7 @@ void CTile::updateTiles(float timeStep)
         mActivationCounter += timeStep;
         if (mActivationCounter < mActivationTime) return;
         if (gController) SDL_GameControllerRumble(gController, 0xFFFF * 3/4, 0xFFFF / 6, 150);
+        Mix_PlayChannel(SFX_CRYSTALREACTIVATE, sfx[SFX_CRYSTALREACTIVATE], 0);
         mActivationCounter = 0;
         mActivationTime = 0;
         switch (mType) {

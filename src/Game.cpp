@@ -45,8 +45,11 @@ CTexture levelCompleteTexture, scoreTexture;
 CTexture bgTexture;
 CTexture bgPTexture;
 float parallaxOffset;
-std::string bgNames[LEVEL_TOTAL] = {"res/bgONE.png", "res/bgONE.png", "res/bgTWO.png", "res/bgTHREE.png", "res/bgFOUR.png", "res/bgFIVE.png"};
-std::string bgParallaxNames[LEVEL_TOTAL] = {"res/bgONE_P.png", "res/bgONE_P.png", "res/bgTWO_P.png", "res/bgTHREE_P.png", "res/bgFOUR_P.png", "res/bgFIVE_P.png"};
+std::string bgNames[LEVEL_TOTAL] = {"res/bg/bgONE.png", "res/bg/bgONE.png", "res/bg/bgTWO.png", "res/bg/bgTHREE.png", "res/bg/bgFOUR.png", "res/bg/bgFIVE.png"};
+std::string bgParallaxNames[LEVEL_TOTAL] = {"res/bg/bgONE_P.png", "res/bg/bgONE_P.png", "res/bg/bgTWO_P.png", "res/bg/bgTHREE_P.png", "res/bg/bgFOUR_P.png", "res/bg/bgFIVE_P.png"};
+
+std::string levelMusicNames[LEVEL_TOTAL] = {"res/mus/LEVEL_ONE.wav", "res/mus/LEVEL_TWO.wav", "res/mus/LEVEL_THREE.wav", "res/mus/LEVEL_FOUR.wav", "res/mus/LEVEL_FIVE.wav", "res/mus/LEVEL_SIX.wav"};
+std::string sfxNames[SFX_TOTAL] = {"res/sfx/SFX_BUTTON.wav", "res/sfx/SFX_JUMP.wav", "res/sfx/SFX_KEY.wav", "res/sfx/SFX_BREAK.wav", "res/sfx/SFX_CRYSTALBREAK.wav", "res/sfx/SFX_CRYSTALREACTIVATE.wav", "res/sfx/SFX_HIT.wav", "res/sfx/SFX_DEATH.wav", "res/sfx/SFX_MEDAL.wav", "res/sfx/SFX_RAINBOW.wav", "res/sfx/SFX_TELEPORT.wav"};
 
 CButton* gameButtons[GAME_BUTTON_TOTAL];
 
@@ -395,6 +398,10 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(1407, 434, 1232, TILE_EMPTY, TILE_VOIDSTONE));
             projectiles.push_back(new CProjectile(1407, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
             projectiles.push_back(new CProjectile(1407, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
+            //Text Spawners
+            projectiles.push_back(new CProjectile(2240, 4520, 660, 480, 2370, 4705, "Anti-gravity fields", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
+            projectiles.push_back(new CProjectile(2240, 4520, 660, 480, 2370, 4745, "prevent vertical", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
+            projectiles.push_back(new CProjectile(2240, 4520, 660, 480, 2370, 4785, "movement!", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
             break;
         }
     }
@@ -457,6 +464,7 @@ void setLevel(int level)
     }
     projectiles.clear();
     if (level > save.level) {
+        bgMusic = Mix_LoadMUS(levelMusicNames[level].c_str());
         isEndLevel = true;
         if (save.chapterTime <= levelFinishTimes[save.level]) save.score += 100;
         save.chapterTime = 0;
@@ -481,6 +489,7 @@ void setLevel(int level)
         SDL_RWclose(writeFile);
         return;
     }
+    if (level > save.level) Mix_PlayMusic(bgMusic, -1);
     save.level = level;
     bgTexture.loadFromFile(bgNames[level]);
     bgPTexture.loadFromFile(bgParallaxNames[level]);
@@ -520,6 +529,8 @@ void gameDeathQuitCall()
     if (!isDead) return;
     curButton = -1;
     isDead = false;
+    Mix_HaltChannel(SFX_RAINBOW);
+    Mix_HaltMusic();
     transition(SCENE_MAINMENU);
 }
 void gameContinueCall()
@@ -527,6 +538,8 @@ void gameContinueCall()
     if (!isEndLevel) return;
     isEndLevel = false;
     if (save.finishedGame) {
+        Mix_HaltChannel(SFX_RAINBOW);
+        Mix_HaltMusic();
         transition(SCENE_MAINMENU);
         return;
     }
@@ -537,6 +550,10 @@ bool gameLoadMedia()
 {
     SDL_ShowCursor(SDL_DISABLE);
     setWindowIcon(save.level + 1);
+    if (Mix_PlayingMusic() == 0) {
+        bgMusic = Mix_LoadMUS(levelMusicNames[save.level].c_str());
+        Mix_PlayMusic(bgMusic, -1);
+    }
     gameOverTexture.loadFromRenderedText("You Died!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
     levelCompleteTexture.loadFromRenderedText("Level Complete!", SDL_Color{0xFF, 0xFF, 0xFF}, 100);
     gameButtons[GAME_BUTTON_DEATHRETRY] = new CButton(0, 0, 80, "Retry", &gameDeathRetryCall);
@@ -568,14 +585,16 @@ void gameHandleEvent(SDL_Event* e)
 {
     player->handleEvent(e);
     if (isDead) {
-        gameButtons[curButton]->setSelected(false);
-        menuHandleButtonSwitching(e, GAME_BUTTON_CONTINUE);
-        gameButtons[curButton]->setSelected(true);
+        if (gController) {
+            gameButtons[curButton]->setSelected(false);
+            menuHandleButtonSwitching(e, GAME_BUTTON_CONTINUE);
+            gameButtons[curButton]->setSelected(true);
+        }
         gameButtons[GAME_BUTTON_DEATHRETRY]->handleEvent(e);
         gameButtons[GAME_BUTTON_DEATHQUIT]->handleEvent(e);
         return;
     } else if (isEndLevel) {
-        gameButtons[GAME_BUTTON_CONTINUE]->setSelected(true);
+        if (gController) gameButtons[GAME_BUTTON_CONTINUE]->setSelected(true);
         gameButtons[GAME_BUTTON_CONTINUE]->handleEvent(e);
         return;
     }
@@ -589,6 +608,7 @@ void gameHandleEvent(SDL_Event* e)
     if (SDL_ShowCursor(SDL_QUERY) == SDL_ENABLE) return;
     if ((e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_ESCAPE) || (e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_START)) {
         SDL_ShowCursor(SDL_ENABLE);
+        Mix_Pause(SFX_RAINBOW);
         backStack.push_back(SCENE_GAME);
         transition(SCENE_PAUSE);
     }

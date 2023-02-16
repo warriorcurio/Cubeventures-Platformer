@@ -3,7 +3,7 @@ CC = g++
 INCLUDE_PATHS = -I include
 LIBRARY_PATHS = -L lib
 COMPILER_FLAGS = -Wall -Wl,-subsystem,windows -O3 -std=c++17 -static-libgcc -static-libstdc++
-LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
+LINKER_FLAGS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 OBJ_NAME = bin/cube
 
 all : $(OBJS)

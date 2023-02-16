@@ -9,12 +9,17 @@ int curButton = -1;
 const int LOGICAL_SCREEN_WIDTH = 1920;
 const int LOGICAL_SCREEN_HEIGHT = 1080;
 
+Mix_Music* bgMusic;
+Mix_Chunk* sfx[SFX_TOTAL];
+
 const int JOYSTICK_DEAD_ZONE = 8000;
 Uint8 controllerRGB[3] = {0xFF, 0x00, 0x00};
 
 int maxLevel;
 int maxScore;
 bool hasEverFinishedGame;
+int musicVolume;
+int sfxVolume;
 
 typedef void (*voidProcedure)();
 typedef bool (*boolProcedure)();
@@ -106,6 +111,8 @@ void savePersistent()
     SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
     SDL_RWwrite(writeFile, &maxScore, sizeof(int), 1);
     SDL_RWwrite(writeFile, &hasEverFinishedGame, sizeof(bool), 1);
+    SDL_RWwrite(writeFile, &musicVolume, sizeof(int), 1);
+    SDL_RWwrite(writeFile, &sfxVolume, sizeof(int), 1);
     SDL_RWclose(writeFile);
 }
 void backCall()
@@ -126,7 +133,7 @@ void transition(Scene scene)
 }
 bool init()
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
         printf("SDL couldn't init: %s\n", SDL_GetError());
         return false;
     }
@@ -146,6 +153,8 @@ bool init()
     SDL_RWread(readFile, &maxLevel, sizeof(int), 1);
     SDL_RWread(readFile, &maxScore, sizeof(int), 1);
     SDL_RWread(readFile, &hasEverFinishedGame, sizeof(bool), 1);
+    SDL_RWread(readFile, &musicVolume, sizeof(int), 1);
+    SDL_RWread(readFile, &sfxVolume, sizeof(int), 1);
     SDL_RWclose(readFile);
     gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, windowFlags);
     if (gWindow == NULL) {
@@ -167,6 +176,16 @@ bool init()
         printf("SDL_ttf couldn't initialise: %s\n", TTF_GetError());
         return false;
     }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1835008) < 0) {
+        printf("SDL_mixer could not initialise: %s\n", Mix_GetError());
+        return false;
+    }
+    Mix_AllocateChannels(SFX_TOTAL);
+    for (int i = 0; i < SFX_TOTAL; i++) {
+        sfx[i] = Mix_LoadWAV(sfxNames[i].c_str());
+    }
+    Mix_VolumeMusic(musicVolume * MIX_MAX_VOLUME / 100);
+    Mix_Volume(-1, sfxVolume * MIX_MAX_VOLUME / 100);
     loadMedia = &mainMenuLoadMedia;
     handleEvent = &mainMenuHandleEvent;
     update = &mainMenuUpdate;

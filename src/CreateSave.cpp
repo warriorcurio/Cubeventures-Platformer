@@ -30,6 +30,7 @@ CTexture textCreateScores[3], textCreateNumDeaths[3], textCreateTimes[3], textCr
         SDL_RWops* writeFile = SDL_RWFromFile("saves/save_"#NUMBER".bin", "wb");\
         SDL_RWwrite(writeFile, &save, sizeof(Save), 1);\
         SDL_RWclose(writeFile);\
+        Mix_HaltMusic();\
         transition(SCENE_GAME);\
     }\
     void createSaveDel##NUMBER##Call()\

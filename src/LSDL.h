@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include <stdio.h>
 #include <string>
 #include <cstring>
@@ -134,16 +135,31 @@ enum ProjectileTypes {
     PROJECTILE_BUTTON_TILECHANGE,
     PROJECTILE_BUTTON_TILETOGGLE,
     PROJECTILE_TELEPORTER,
-    PROJECTILE_SAVER,
     PROJECTILE_TEXTDISPLAYER,
     PROJECTILE_BOUNCEBLOCK,
-    PROJECTILE_ANTIGRAV,
     PROJECTILE_TOTAL
+};
+
+enum SoundEffects {
+    SFX_BUTTON,
+    SFX_JUMP,
+    SFX_KEY,
+    SFX_BREAK,
+    SFX_CRYSTALBREAK,
+    SFX_CRYSTALREACTIVATE,
+    SFX_HIT,
+    SFX_DEATH,
+    SFX_MEDAL,
+    SFX_RAINBOW,
+    SFX_TELEPORT,
+    SFX_TOTAL
 };
 
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern SDL_GameController* gController;
+extern Mix_Music* bgMusic;
+extern Mix_Chunk* sfx[SFX_TOTAL];
 extern int curButton;
 extern Save save;
 extern std::vector<Scene> backStack;
@@ -160,8 +176,12 @@ extern int curRes;
 extern int maxLevel;
 extern int maxScore;
 extern bool hasEverFinishedGame;
+extern int musicVolume;
+extern int sfxVolume;
 extern std::string bgNames[LEVEL_TOTAL];
 extern std::string bgParallaxNames[LEVEL_TOTAL];
+extern std::string levelMusicNames[LEVEL_TOTAL];
+extern std::string sfxNames[SFX_TOTAL];
 extern int keybinds[KEYBINDS_TOTAL];
 extern bool quit;
 extern void menuHandleButtonSwitching(SDL_Event* e, int totalButtons);

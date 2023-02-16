@@ -25,6 +25,11 @@ int main(int argc, char* args[])
         runMainLoop();
     }
     close();
+    Mix_CloseAudio();
+    Mix_FreeMusic(bgMusic);
+    for (int i = 0; i < SFX_TOTAL; i++) {
+        Mix_FreeChunk(sfx[i]);
+    } 
     menuBackground.free();
     menuOverlay.free();
     SDL_DestroyWindow(gWindow);
@@ -33,6 +38,10 @@ int main(int argc, char* args[])
     gWindow = NULL;
     gRenderer = NULL;
     gController = NULL;
+    Mix_Quit();
+    IMG_Quit();
+    TTF_Quit();
+    SDL_Quit();
     return 0;
 }
 

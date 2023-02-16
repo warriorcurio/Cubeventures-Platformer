@@ -33,6 +33,10 @@ void mainMenuExitCall()
 bool mainMenuLoadMedia()
 {
     setWindowIcon(0);
+    if (Mix_PlayingMusic() == 0) {
+        bgMusic = Mix_LoadMUS("res/mus/menu.wav");
+        Mix_PlayMusic(bgMusic, -1);
+    }
     menuBackground.loadFromFile(bgNames[maxLevel]);
     menuOverlay.loadFromFile("res/menuOverlay.png");
     logo.loadFromFile("res/logo.png");
@@ -67,6 +71,8 @@ void mainMenuHandleEvent(SDL_Event* e)
         maxLevel = LEVEL_ONE;
         maxScore = 0;
         hasEverFinishedGame = false;
+        musicVolume = 80;
+        sfxVolume = 80;
         SDL_RWops* writeFile = SDL_RWFromFile("saves/persistent.bin", "wb");
         SDL_RWwrite(writeFile, &curRes, sizeof(int), 1);
         SDL_RWwrite(writeFile, &windowFlags, sizeof(Uint32), 1);
@@ -74,6 +80,8 @@ void mainMenuHandleEvent(SDL_Event* e)
         SDL_RWwrite(writeFile, &maxLevel, sizeof(int), 1);
         SDL_RWwrite(writeFile, &maxScore, sizeof(int), 1);
         SDL_RWwrite(writeFile, &hasEverFinishedGame, sizeof(bool), 1);
+        SDL_RWwrite(writeFile, &musicVolume, sizeof(int), 1);
+        SDL_RWwrite(writeFile, &sfxVolume, sizeof(int), 1);
         SDL_RWclose(writeFile);
         save.~Save();
         remove("saves/save_ONE.bin");

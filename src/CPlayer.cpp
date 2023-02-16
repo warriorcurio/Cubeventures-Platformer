@@ -71,6 +71,7 @@ void CPlayer::handleEvent(SDL_Event* e)
         if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A && !mIsClimbing && mJumpsRemaining > 0) {
             mVelY = -mJumpVelMax;
             mJumpsRemaining--;
+            Mix_PlayChannel(SFX_JUMP, sfx[SFX_JUMP], 0);
         } 
     } else if (e->type == SDL_JOYBUTTONUP) {
         if (e->jbutton.button == SDL_CONTROLLER_BUTTON_A && !mIsClimbing && mVelY < -mJumpVelMin) {
@@ -92,6 +93,7 @@ void CPlayer::handleEvent(SDL_Event* e)
         if (e->key.keysym.sym == keybinds[KEYBINDS_JUMP] && !mIsClimbing && mJumpsRemaining > 0 && mForm != FORM_RAINBOW) {
             mVelY = -mJumpVelMax;
             mJumpsRemaining--;
+            Mix_PlayChannel(SFX_JUMP, sfx[SFX_JUMP], 0);
         }
         switch (e->key.keysym.sym) {
             case SDLK_p:
@@ -108,6 +110,7 @@ void CPlayer::handleEvent(SDL_Event* e)
             setForm(FORM_RAINBOW);
             setShield(mShield + 1);
             setHealth(save.maxHealth);
+            setCharge(0);
             mCharge = 0;
             mFrame = 0;
         }
@@ -126,6 +129,7 @@ void CPlayer::move(float timeStep)
         mIsInvulnerable = true;
         setForm(FORM_WHITE);
         rainbowTimeTimerSeconds = 0;
+        Mix_HaltChannel(SFX_RAINBOW);
     }
     mCollisionBox.x += (int)(mVelX * timeStep);
     if(mCollisionBox.x < 0) mCollisionBox.x = 0;
@@ -246,6 +250,7 @@ void CPlayer::setForm(int form)
             mJumpVelMax = 0;
             mJumpVelMin = 0;
             mVelY = 0;
+            Mix_PlayChannel(SFX_RAINBOW, sfx[SFX_RAINBOW], 0);
             break;
     }
     mVelX = mPlayerVel * modifiedVel;

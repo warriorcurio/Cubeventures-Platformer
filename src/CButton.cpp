@@ -32,6 +32,7 @@ void CButton::handleEvent(SDL_Event* e)
     } else if (mIsSelected && ((e->type == SDL_JOYBUTTONUP && e->jbutton.button == SDL_CONTROLLER_BUTTON_A) || (e->type == SDL_KEYUP && e->key.keysym.sym == SDLK_SPACE))) {
         mCurFrame = BUTTON_MOUSE_OVER;
         mCallback();
+        Mix_PlayChannel(SFX_BUTTON, sfx[SFX_BUTTON], 0);
     }
     if (!(e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP)) return;
     curButton = -1;
@@ -61,6 +62,7 @@ void CButton::handleEvent(SDL_Event* e)
             if (mCurFrame != BUTTON_MOUSE_DOWN) break;
             mCurFrame = BUTTON_MOUSE_OVER;
             mCallback();
+            Mix_PlayChannel(SFX_BUTTON, sfx[SFX_BUTTON], 0);
             break;
     }
 }

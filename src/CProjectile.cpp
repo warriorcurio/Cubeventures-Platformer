@@ -1,7 +1,7 @@
 #include "CProjectile.h"
 #include "Game.h"
 
-int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1, 1, 1, 1};
+int numFrames[PROJECTILE_TOTAL] = {1, 1, 4, 4, 1, 1, 4, 1, 1};
 
 CProjectile::CProjectile(int x, int y, ProjectileTypes type, int velX, int velY, int respawnX, int respawnY)
 {
@@ -181,10 +181,11 @@ void CProjectile::setPos(int x, int y)
 }
 void CProjectile::render(SDL_Rect& camera)
 {
+    if (mDisplayText) mTextTexture.render(mUtilityX - camera.x, mUtilityY- camera.y);
+    if (mType > PROJECTILE_TELEPORTER) return;
     mFrame = (mFrame + 1) % (numFrames[mType] * mAnimationSpeed);
     SDL_Rect renderRect = {mType * 25, (int)(mFrame / mAnimationSpeed) * 25, 25, 25};
     projectileTexture.render(mCollisionBox.x - camera.x, mCollisionBox.y - camera.y + mCollisionBox.h - 25, &renderRect);
-    if (mDisplayText) mTextTexture.render(mUtilityX - camera.x, mUtilityY- camera.y);
 }
 int CProjectile::getPosX()
 {
@@ -236,25 +237,36 @@ void CProjectile::projectileEvent()
                 player->setKeys(0);
                 isDead = true;
                 setLevel(save.level);
-            } else player->setInvulnerable(true);
+                Mix_PlayChannel(SFX_DEATH, sfx[SFX_DEATH], 0);
+            } else {
+                player->setInvulnerable(true);
+                Mix_PlayChannel(SFX_HIT, sfx[SFX_HIT], 0);
+            }
             destroySelf();
             break;
         case PROJECTILE_BUTTON_TILECHANGE:
             tiles[mEditTileIndex]->setType(mEditTileNew);
+            switch (mEditTileNew) {
+                case TILE_WHITECRYSTAL: Mix_PlayChannel(SFX_CRYSTALREACTIVATE, sfx[SFX_CRYSTALREACTIVATE], 0); break;
+                case TILE_REDCRYSTAL: Mix_PlayChannel(SFX_CRYSTALREACTIVATE, sfx[SFX_CRYSTALREACTIVATE], 0); break;
+                case TILE_GREENCRYSTAL: Mix_PlayChannel(SFX_CRYSTALREACTIVATE, sfx[SFX_CRYSTALREACTIVATE], 0); break;
+                case TILE_BLUECRYSTAL: Mix_PlayChannel(SFX_CRYSTALREACTIVATE, sfx[SFX_CRYSTALREACTIVATE], 0); break;
+                case TILE_JUMPCRYSTAL: Mix_PlayChannel(SFX_CRYSTALREACTIVATE, sfx[SFX_CRYSTALREACTIVATE], 0); break;
+                default: Mix_PlayChannel(SFX_BREAK, sfx[SFX_BREAK], 0); break;
+            }
             mEditTileNew = mEditTileOriginal;
             mEditTileOriginal = tiles[mEditTileIndex]->getType();
             break;
         case PROJECTILE_BUTTON_TILETOGGLE:
             if (tiles[mEditTileIndex]->getType() == mEditTileOriginal) tiles[mEditTileIndex]->setType(mEditTileNew);
             else tiles[mEditTileIndex]->setType(mEditTileOriginal);
+            Mix_PlayChannel(SFX_BREAK, sfx[SFX_BREAK], 0);
             break;
         case PROJECTILE_TELEPORTER:
             player->setPos(mUtilityX, mUtilityY);
             save.x = player->getSafePos().x;
             save.y = player->getSafePos().y;
-            break;
-        case PROJECTILE_SAVER:
-            player->setSafePos(player->getBox().x, player->getBox().y);
+            Mix_PlayChannel(SFX_TELEPORT, sfx[SFX_TELEPORT], 0);
             break;
         case PROJECTILE_TEXTDISPLAYER:
             mDisplayText = true;

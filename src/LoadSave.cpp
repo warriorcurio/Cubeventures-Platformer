@@ -24,6 +24,7 @@ CTexture textLoadScores[3], textLoadNumDeaths[3], textLoadTimes[3], textLoadNumK
         }\
         projectiles.pop_back();\
         SDL_RWclose(readFile);\
+        Mix_HaltMusic();\
         transition(SCENE_GAME);\
     }\
     void loadSaveDel##NUMBER##Call()\
