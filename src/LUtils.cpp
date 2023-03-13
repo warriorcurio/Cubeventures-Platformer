@@ -6,6 +6,9 @@ SDL_Renderer* gRenderer = NULL;
 SDL_GameController* gController = NULL;
 int curButton = -1;
 
+discord::Core* core{};
+discord::Activity activity{};
+
 const int LOGICAL_SCREEN_WIDTH = 1920;
 const int LOGICAL_SCREEN_HEIGHT = 1080;
 
@@ -133,6 +136,8 @@ void transition(Scene scene)
 }
 bool init()
 {
+    discord::Core::Create(1081774738013163550, DiscordCreateFlags_Default, &core);
+    //initialise SDL subsystems
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_GAMECONTROLLER) < 0) {
         printf("SDL couldn't init: %s\n", SDL_GetError());
         return false;
@@ -156,22 +161,25 @@ bool init()
     SDL_RWread(readFile, &musicVolume, sizeof(int), 1);
     SDL_RWread(readFile, &sfxVolume, sizeof(int), 1);
     SDL_RWclose(readFile);
+    //create the window
     gWindow = SDL_CreateWindow("Cubeventures", (DM.w - resolutions[curRes].w)/2, (DM.h - resolutions[curRes].h) / 2, resolutions[curRes].w, resolutions[curRes].h, windowFlags);
     if (gWindow == NULL) {
         printf("Window couldn't create: %s\n", SDL_GetError());
         return false;
     }
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC);
+    //create the renderer where all visuals will be rendered to
+    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
     if (gRenderer == NULL) {
         printf("Renderer couldn't create: %s\n", SDL_GetError());
         return false;
     }
     SDL_RenderSetLogicalSize(gRenderer, LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);
-    int imgFlags = IMG_INIT_PNG|IMG_INIT_JPG;
-    if (!(IMG_Init(imgFlags) & imgFlags)) {
+    //initialise SDL_image for PNG loading
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
         printf("SDL_image couldn't initialise: %s\n", IMG_GetError());
         return false;
     }
+    //initialise SDL_ttf for font loading
     if (TTF_Init() == -1) {
         printf("SDL_ttf couldn't initialise: %s\n", TTF_GetError());
         return false;

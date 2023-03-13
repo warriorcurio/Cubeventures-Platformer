@@ -47,6 +47,7 @@ GEN_CREATESAVE_CALL(THREE);
 bool createSaveLoadMedia()
 {
     textCreateSave.loadFromRenderedText("Create Save", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+    //reads each save file and puts relevant data in text textures
     for (int i = 0; i < 3; i++) {
         if (!std::filesystem::exists(saveFileNames[i].c_str())) continue;
         SDL_RWops* readFile = SDL_RWFromFile(saveFileNames[i].c_str(), "rb");
@@ -66,6 +67,7 @@ bool createSaveLoadMedia()
     createSaveButtons[CREATESAVE_BUTTON_ONE] = new CButton(402, 390, 60, " ", &createSaveONECall, 300, 300);
     createSaveButtons[CREATESAVE_BUTTON_TWO] = new CButton(810, 390, 60, " ", &createSaveTWOCall, 300, 300);
     createSaveButtons[CREATESAVE_BUTTON_THREE] = new CButton(1218, 390, 60, " ", &createSaveTHREECall, 300, 300);
+    //sets the texture for a save file's level, or the level currently set
     for (int i = CREATESAVE_BUTTON_ONE; i <= CREATESAVE_BUTTON_THREE; i++) {
         createSaveButtons[i]->setClickable(!std::filesystem::exists(saveFileNames[i].c_str()));
         if (std::filesystem::exists(saveFileNames[i].c_str())) {
@@ -108,6 +110,7 @@ void createSaveRender()
     for (int i = 0; i < CREATESAVE_BUTTON_TOTAL; i++) {
         if (createSaveButtons[i]) createSaveButtons[i]->render();
     }
+    //renders the save file's textures on the buttons accordingly
     for (int i = 0; i < 3; i++) {
         if (!std::filesystem::exists(saveFileNames[i].c_str())) continue;
         textCreateScores[i].render(createSaveButtons[i]->getX() + 160, createSaveButtons[i]->getY() + 4);

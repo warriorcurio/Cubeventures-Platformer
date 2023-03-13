@@ -5,14 +5,13 @@
 class CTexture
 {
     public:
-        CTexture();
-        ~CTexture();
-        bool loadFromFile(std::string path);
-        bool loadFromRenderedText(std::string textureText, SDL_Color textColor, int size);
-        bool loadFromSVG(std::string svg);
-        void free();
-        void setColour(Uint8 r, Uint8 g, Uint8 b);
-        void render(int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* centre = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE);
+        CTexture(); //initialiser
+        void loadFromFile(std::string path); //loads an image from its path
+        void loadFromRenderedText(std::string textureText, SDL_Color textColor, int size); //loads text
+        void loadFromSVG(std::string svg); //loads from SVG text
+        void free(); //frees the texture
+        void setColour(Uint8 r, Uint8 g, Uint8 b); //sets the colour of the texture
+        void render(int x, int y, SDL_Rect* clip = NULL);
         int getWidth();
         int getHeight();
     private:

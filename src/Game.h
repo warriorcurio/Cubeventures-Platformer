@@ -18,6 +18,7 @@ void setLevel(int level);
 
 void gameDeathRetryCall();
 void gameDeathQuitCall();
+void gameContinueCall();
 
 bool gameLoadMedia();
 void gameHandleEvent(SDL_Event* e);

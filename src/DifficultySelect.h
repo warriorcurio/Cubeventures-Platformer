@@ -11,10 +11,9 @@ enum DifficultySelectButtons {
 
 };
 
-void difficultySelectGeneralCall();
-void difficultySelectEasyCall();
-void difficultySelectMediumCall();
-void difficultySelectHardCall();
+void difficultySelectEASYCall();
+void difficultySelectMEDIUMCall();
+void difficultySelectHARDCall();
 
 bool difficultySelectLoadMedia();
 void difficultySelectHandleEvent(SDL_Event* e);

@@ -19,6 +19,7 @@ void settingsWindowEditCall()
         SDL_SetWindowFullscreen(gWindow, SDL_WINDOW_FULLSCREEN_DESKTOP);
         windowEditLabel = "Fullscreen";
     }
+    //deletes the window edit button to create a new one with the updated window state as the label
     delete settingsButtons[SETTINGS_BUTTON_WINDOWEDIT];
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new CButton(0, 0, 40, windowEditLabel.c_str(), &settingsWindowEditCall);
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - (20 + settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()));
@@ -29,11 +30,13 @@ void settingsResolutionCall()
     curRes = (curRes + 1) % 5;
     SDL_DisplayMode DM;
     SDL_GetDesktopDisplayMode(0, &DM);
+    //cycles through the resolutions until either looping back to the current resolution or finding a different resolution which is smaller than the screen size
     while (curRes != tempRes && (resolutions[curRes].w > DM.w || resolutions[curRes].w == resolutions[tempRes].w)) {
         curRes = (curRes + 1) % 5;
     }
     SDL_SetWindowSize(gWindow, resolutions[curRes].w, resolutions[curRes].h);
     SDL_SetWindowPosition(gWindow, (DM.w - resolutions[curRes].w) / 2, (DM.h - resolutions[curRes].h) / 2);
+    //deletes the resolution button to create a new one with the updated resolution as the label
     char res[11];
     sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
     delete settingsButtons[SETTINGS_BUTTON_RESOLUTION];
@@ -79,18 +82,17 @@ bool settingsLoadMedia()
     }
     settingsButtons[SETTINGS_BUTTON_BACK] = new CButton(10, 1020, 40, "Back", &settingsBackCall);
     char res[11];
-    sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h);
+    sprintf(res, "%dx%d", resolutions[curRes].w, resolutions[curRes].h); //creates the label for the resolution button using the current resolution
     settingsButtons[SETTINGS_BUTTON_RESOLUTION] = new CButton(0, 0, 40, res, &settingsResolutionCall);
+    //sets the position of the resolution button to the middle of the screen
     settingsButtons[SETTINGS_BUTTON_RESOLUTION]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH()) / 2 + 10 + settingsButtons[SETTINGS_BUTTON_RESOLUTION]->getH());
+    //sets the label of the window edit button depending on the current state of the window
     std::string windowEditLabel;
-    if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
-        windowEditLabel = "Fullscreen";
-    } else if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_BORDERLESS) {
-        windowEditLabel = "Borderless";
-    } else {
-        windowEditLabel = "Bordered";
-    }
+    if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_FULLSCREEN_DESKTOP) windowEditLabel = "Fullscreen";
+    else if (SDL_GetWindowFlags(gWindow) & SDL_WINDOW_BORDERLESS) windowEditLabel = "Borderless";
+    else windowEditLabel = "Bordered";
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT] = new CButton(0, 0, 40, windowEditLabel.c_str(), &settingsWindowEditCall);
+    //sets the position of the window edit button to above the resolution button in the middle of the screen
     settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->setPos((LOGICAL_SCREEN_WIDTH - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getW()) / 2, (LOGICAL_SCREEN_HEIGHT - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH()) / 2 - 10 - settingsButtons[SETTINGS_BUTTON_WINDOWEDIT]->getH());
     settingsButtons[SETTINGS_BUTTON_KEYBINDS] = new CButton(0, 0, 40, "Keybinds", &settingsKeybindsCall);
     settingsButtons[SETTINGS_BUTTON_KEYBINDS]->setPos(300 + (440 - settingsButtons[SETTINGS_BUTTON_KEYBINDS]->getW()) / 2, 515);

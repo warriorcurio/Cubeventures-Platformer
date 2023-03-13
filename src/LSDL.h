@@ -13,6 +13,8 @@
 #include <iomanip>
 #include <fstream>
 #include <filesystem>
+#include <ctime>
+#include "discord.h"
 
 enum Scene {
     SCENE_MAINMENU,
@@ -131,12 +133,12 @@ enum ProjectileTypes {
     PROJECTILE_HEART,
     PROJECTILE_SHIELD,
     PROJECTILE_CHARGER,
-    PROJECTILE_DAMAGEBALL,
+    PROJECTILE_ENERGYBULLET,
     PROJECTILE_BUTTON_TILECHANGE,
     PROJECTILE_BUTTON_TILETOGGLE,
     PROJECTILE_TELEPORTER,
     PROJECTILE_TEXTDISPLAYER,
-    PROJECTILE_BOUNCEBLOCK,
+    PROJECTILE_BOUNCE,
     PROJECTILE_TOTAL
 };
 
@@ -155,6 +157,8 @@ enum SoundEffects {
     SFX_TOTAL
 };
 
+extern discord::Core* core;
+extern discord::Activity activity;
 extern SDL_Window* gWindow;
 extern SDL_Renderer* gRenderer;
 extern SDL_GameController* gController;

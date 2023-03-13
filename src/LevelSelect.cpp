@@ -4,6 +4,7 @@ CButton* levelSelectButtons[LEVELSELECT_BUTTON_TOTAL];
 
 CTexture textLevelSelect;
 
+//creates a generator for the level select buttons
 #define GEN_LEVELSELECT_CALL(NUMBER)\
     void levelSelect##NUMBER##Call()\
     {\
@@ -13,6 +14,7 @@ CTexture textLevelSelect;
         save.y = 0;\
         transition(SCENE_DIFFICULTYSELECT);\
     }
+//generates the level select buttons
 GEN_LEVELSELECT_CALL(ONE);
 GEN_LEVELSELECT_CALL(TWO);
 GEN_LEVELSELECT_CALL(THREE);

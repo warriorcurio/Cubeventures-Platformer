@@ -26,25 +26,24 @@ void nameSaveHandleEvent(SDL_Event* e)
         if (nameSaveButtons[i]) nameSaveButtons[i]->handleEvent(e);
     }
     if (e->type == SDL_KEYDOWN) {
+        //enters the player's inputted name to the save and transitions to the next screen
         if(e->key.keysym.sym == SDLK_RETURN && inputName != "") {
-            std::strcpy(save.name, inputName.c_str());
+            strcpy(save.name, inputName.c_str());
             backStack.push_back(SCENE_NAMESAVE);
             transition(SCENE_CREATESAVE);
-        } else if (e->key.keysym.sym == SDLK_BACKSPACE && inputName != "") {
-            inputName.pop_back();
-        }
-    } else if(e->type == SDL_TEXTINPUT) {
+        } else if (e->key.keysym.sym == SDLK_BACKSPACE && inputName != "") inputName.pop_back(); //removes the end character when the player backspaces
+    } else if(e->type == SDL_TEXTINPUT) { //enters the player's inputted character
         inputName += e->text.text;
-        if (inputName.length() > 6) inputName.pop_back();
+        if (inputName.length() > 6) inputName.pop_back(); //stops the player from entering more than six characters
     }
 }
 void nameSaveUpdate()
 {
-    if (inputName != "") {
-        textInputName.loadFromRenderedText(inputName.c_str(), SDL_Color{0xFF, 0xFF, 0xFF}, 60);
-    } else {
-        textInputName.loadFromRenderedText(" ", SDL_Color{0xFF, 0xFF, 0xFF}, 60);
-    }
+    //updates the texture displaying the player's input
+    //textures can't be created from an empty string
+    //if no text has been inputted then the text is rendered as a space, which is invisible
+    if (inputName != "") textInputName.loadFromRenderedText(inputName.c_str(), SDL_Color{0xFF, 0xFF, 0xFF}, 60);
+    else textInputName.loadFromRenderedText(" ", SDL_Color{0xFF, 0xFF, 0xFF}, 60);
 }
 void nameSaveRender()
 {

@@ -1,36 +1,42 @@
 #include "KeybindSettings.h"
 
 typedef void (*call)();
-int keybinds[KEYBINDS_TOTAL] = {SDLK_w, SDLK_a, SDLK_s, SDLK_d, SDLK_SPACE};
+int keybinds[KEYBINDS_TOTAL] = {SDLK_w, SDLK_a, SDLK_s, SDLK_d, SDLK_SPACE, SDLK_q};
 std::string keybindNames[KEYBINDS_TOTAL] = {"UP", "LEFT", "DOWN", "RIGHT", "JUMP", "ABILITY"};
 call keybindCalls[KEYBINDS_TOTAL] = {&keybindSettingsUPCall, &keybindSettingsLEFTCall, &keybindSettingsDOWNCall, &keybindSettingsRIGHTCall, &keybindSettingsJUMPCall, &keybindSettingsABILITYCall};
 int curKeybind = -1;
 
 CButton* keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_TOTAL];
 
+//creates a generator for the keybind setting buttons
 #define GEN_KEYBINDSETTINGS_CALL(KEYBIND)\
     void keybindSettings##KEYBIND##Call()\
     {\
         char* curLabel = (char*)calloc(20, sizeof(char));\
         sprintf(curLabel, #KEYBIND " - %s", SDL_GetKeyName(keybinds[KEYBINDS_##KEYBIND]));\
         delete keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND];\
+        /*if no keybinds were being set*/\
         if (curKeybind == -1) {\
             curKeybind = KEYBINDS_##KEYBIND;\
             keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND] = new CButton(0, 0, 50, curLabel, &keybindSettings##KEYBIND##Call);\
+            /*red button background*/\
             std::string selectedBackgroundColours[3] = {"#FF0000", "#7F0000", "#7F1F00"};\
             keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->setBGFromSVG(selectedBackgroundColours);\
         }\
+        /*if a keybind was being set*/\
         else {\
             curKeybind = -1;\
             keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND] = new CButton(0, 0, 50, curLabel, &keybindSettings##KEYBIND##Call);\
         }\
-        keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->getW()) / 2, 355 + 65 * (KEYBINDSETTINGS_BUTTON_##KEYBIND));\
+        /*recreates the button with an updated label*/\
+        keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->setPos((LOGICAL_SCREEN_WIDTH - keybindSettingsButtons[KEYBINDSETTINGS_BUTTON_##KEYBIND]->getW()) / 2, 355 + 75 * (KEYBINDSETTINGS_BUTTON_##KEYBIND));\
+        /*sets all keybind buttons to activated if no keybind is being set or deactivated if a keybind is being set*/\
         for (int i = KEYBINDSETTINGS_BUTTON_UP; i < KEYBINDSETTINGS_BUTTON_BACK; i++) {\
             keybindSettingsButtons[i]->setClickable(curKeybind == -1 || i == KEYBINDSETTINGS_BUTTON_##KEYBIND);\
         }\
         return;\
     }
-
+//generates the keybind setting buttons
 GEN_KEYBINDSETTINGS_CALL(UP);
 GEN_KEYBINDSETTINGS_CALL(LEFT);
 GEN_KEYBINDSETTINGS_CALL(DOWN);

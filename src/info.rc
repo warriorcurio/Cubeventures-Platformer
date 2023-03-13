@@ -6,14 +6,14 @@ BEGIN
   BEGIN
     BLOCK "080904E4"
     BEGIN
-      VALUE "CompanyName", "Ayush Bhatnagar"
-      VALUE "FileDescription", "2D Puzzle Platformer Game made for the OCR Computer Science NEA"
-      VALUE "FileVersion", "1.0"
+      VALUE "CompanyName", "warriorcurio"
+      VALUE "FileDescription", "Cubeventures"
+      VALUE "FileVersion", "0.9.0"
       VALUE "InternalName", "cube"
-      VALUE "LegalCopyright", "Ayush"
+      VALUE "LegalCopyright", "warriorcurio"
       VALUE "OriginalFilename", "cube.exe"
       VALUE "ProductName", "Cubeventures"
-      VALUE "ProductVersion", "1.0"
+      VALUE "ProductVersion", "0.9.0"
     END
   END
   BLOCK "VarFileInfo"

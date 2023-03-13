@@ -62,10 +62,10 @@ Uint8 rainbowIndicatorRGB[3] = {0xFF, 0x00, 0x00};
 
 bool checkCollision(SDL_Rect a, SDL_Rect b)
 {
-    if(a.y + a.h <= b.y) return false;
-    if(b.y + b.h <= a.y) return false;
-    if(a.x + a.w <= b.x) return false;
-    if(b.x + b.w <= a.x) return false;
+    if(a.y + a.h <= b.y) return false; //if a's bottom is above b's top then there is no collision
+    if(b.y + b.h <= a.y) return false; //if b's bottom is above a's top then there is no collision
+    if(a.x + a.w <= b.x) return false; //if a's right is to the left of b's left then there is no collision
+    if(b.x + b.w <= a.x) return false; //if b's right is to the left of a's left then there is no collision
     return true;
 }
 void setProjectiles()
@@ -113,7 +113,6 @@ void setProjectiles()
         case LEVEL_TWO: {
             if ((int)projectiles.size() == 0) {
                 projectiles.push_back(new CProjectile(4295, 855, PROJECTILE_SHIELD, 0, 0)); //Shield intended to let hard difficulty players access the secret gold medal
-                //Tile changing buttons
                 projectiles.push_back(new CProjectile(5370, 874, 2234, TILE_WHITECRYSTAL, true)); //Activates crystal for gold medal
                 projectiles.push_back(new CProjectile(640, 3434, 13389, TILE_EMPTY, true)); //Lower left side, lets white jump over a grass pillar
                 projectiles.push_back(new CProjectile(640, 3434, 13990, TILE_STONE, true)); //Lower left side, lets white jump over a grass pillar
@@ -218,12 +217,12 @@ void setProjectiles()
         case LEVEL_FOUR: {
             if ((int)projectiles.size() == 0) {
                 //Damage balls to serve as a hazard to the player
-                projectiles.push_back(new CProjectile(0, 4247, PROJECTILE_DAMAGEBALL, 400, 0)); //Protects the secret medal
-                projectiles.push_back(new CProjectile(0, 4407, PROJECTILE_DAMAGEBALL, 300, 0)); //Protects the secret medal
-                projectiles.push_back(new CProjectile(0, 4567, PROJECTILE_DAMAGEBALL, 500, 0)); //Protects the secret medal
-                projectiles.push_back(new CProjectile(0, 2247, PROJECTILE_DAMAGEBALL, 225, 0));
-                projectiles.push_back(new CProjectile(0, 1807, PROJECTILE_DAMAGEBALL, 450, 0));
-                projectiles.push_back(new CProjectile(3535, 4407, PROJECTILE_DAMAGEBALL, -600, 0));
+                projectiles.push_back(new CProjectile(0, 4247, PROJECTILE_ENERGYBULLET, 400, 0)); //Protects the secret medal
+                projectiles.push_back(new CProjectile(0, 4407, PROJECTILE_ENERGYBULLET, 300, 0)); //Protects the secret medal
+                projectiles.push_back(new CProjectile(0, 4567, PROJECTILE_ENERGYBULLET, 500, 0)); //Protects the secret medal
+                projectiles.push_back(new CProjectile(0, 2247, PROJECTILE_ENERGYBULLET, 225, 0));
+                projectiles.push_back(new CProjectile(0, 1807, PROJECTILE_ENERGYBULLET, 450, 0));
+                projectiles.push_back(new CProjectile(3535, 4407, PROJECTILE_ENERGYBULLET, -600, 0));
                 //Charges the player's rainbow ability
                 projectiles.push_back(new CProjectile(807, 1047, PROJECTILE_CHARGER, 0, 0));
                 projectiles.push_back(new CProjectile(3407, 1487, PROJECTILE_CHARGER, 0, 0));
@@ -272,10 +271,10 @@ void setProjectiles()
         case LEVEL_FIVE: {
             if ((int)projectiles.size() == 0) {
                 //Damage balls to serve as a hazard to the player
-                projectiles.push_back(new CProjectile(40, 847, PROJECTILE_DAMAGEBALL, 325, 0));
-                projectiles.push_back(new CProjectile(2615, 527, PROJECTILE_DAMAGEBALL, -500, 0));
-                projectiles.push_back(new CProjectile(4455, 1327, PROJECTILE_DAMAGEBALL, -150, 0));
-                projectiles.push_back(new CProjectile(5975, 367, PROJECTILE_DAMAGEBALL, -350, 0));
+                projectiles.push_back(new CProjectile(40, 847, PROJECTILE_ENERGYBULLET, 325, 0));
+                projectiles.push_back(new CProjectile(2615, 527, PROJECTILE_ENERGYBULLET, -500, 0));
+                projectiles.push_back(new CProjectile(4455, 1327, PROJECTILE_ENERGYBULLET, -150, 0));
+                projectiles.push_back(new CProjectile(5975, 367, PROJECTILE_ENERGYBULLET, -350, 0));
                 //Charges the player's rainbow ability
                 projectiles.push_back(new CProjectile(647, 247, PROJECTILE_CHARGER, 0, 0));
                 projectiles.push_back(new CProjectile(2167, 1647, PROJECTILE_CHARGER, 0, 0));
@@ -418,28 +417,32 @@ bool setTiles()
     }
     for (int i = 0; i < tileCount; i++) {
         int tileType = -1;
-        map >> tileType;
+        map >> tileType; //puts the next value in the map into the tile type
         if (map.fail()) {
             printf("Error loading map: Unexpected EoF\n");
             return false;
         }
         if (tileType == TILE_MEDAL && save.collectedMedals[save.level]) tileType = TILE_EMPTY;
         if (tileType == TILE_EXIT && save.finishedGame) tileType = TILE_EMPTY;
+        //ensures maps do not contain any undefined tile types
         if (tileType >= 0 && tileType < TILE_TOTAL) {
             tiles.push_back(new CTile(x, y, tileType));
         } else {
             printf("Error loading map: Invalid tile type at %d\n", i);
             return false;
         }
+        //pushes the current position of the tile to the right, or to the next row if the current row has completed
         x += CTile::TILE_WIDTH;
         if (x >= levelDimensions[save.level].w) {
             x = 0;
             y += CTile::TILE_HEIGHT;
         }
     }
+    //sets the clips associated with each tile type
     x = 0, y = 0;
     for (int i = 0; i < TILE_TOTAL; i++) {
         tileClips[i] = {x, y, CTile::TILE_WIDTH, CTile::TILE_HEIGHT};
+        //pushes the current position of the tile clip to the right, or to the next row if the current row has completed
         x += CTile::TILE_WIDTH + 1;
         if(x >= tileTexture.getWidth()) {
             x = 0;
@@ -456,32 +459,51 @@ bool setTiles()
 
 void setLevel(int level)
 {
-    if (player->getForm() == FORM_RAINBOW) player->setForm(FORM_WHITE);
+    if (player->getForm() == FORM_RAINBOW) {
+        Mix_HaltChannel(SFX_RAINBOW);
+        player->setForm(FORM_WHITE);
+    }
     parallaxOffset = -1 * (rand() % LOGICAL_SCREEN_WIDTH);
     SDL_ShowCursor(SDL_ENABLE);
     for (int i = 0; i < (int)projectiles.size(); i++) {
         delete projectiles[i];
     }
     projectiles.clear();
+    //handles end level events
     if (level > save.level) {
         bgMusic = Mix_LoadMUS(levelMusicNames[level].c_str());
         isEndLevel = true;
         if (save.chapterTime <= levelFinishTimes[save.level]) save.score += 100;
         save.chapterTime = 0;
         scoreTexture.loadFromRenderedText("Score: " + std::to_string(save.score), SDL_Color{0xFF, 0xFF, 0xFF}, 80);
+        activity.SetDetails("");
+        activity.SetState(("Score: " + std::to_string(save.score)).c_str());
+        activity.GetAssets().SetSmallImage("rccomplete");
+        activity.GetAssets().SetSmallText("Level Complete!");
+        core->ActivityManager().UpdateActivity(activity, NULL);
     }
-    if (isDead) curButton = GAME_BUTTON_DEATHRETRY;
+    if (isDead) {
+        curButton = GAME_BUTTON_DEATHRETRY;
+        activity.SetDetails("");
+        activity.GetAssets().SetSmallImage("rcdead");
+        activity.GetAssets().SetSmallText("Dead");
+        core->ActivityManager().UpdateActivity(activity, NULL);
+    }
+    //resets the save's lock and key arrays
     for (int i = 0; i < 5; i++) {
         save.collectedKeys[i] = -1;
         save.unlockedLocks[i] = -1;
     }
     if (save.score > maxScore) maxScore = save.score;
+    //if the player has completed the final level
+    //skips the loading of the next level and saves the game
     if (level == LEVEL_TOTAL) {
         hasEverFinishedGame = true;
         savePersistent();
         save.finishedGame = true;
         save.x = levelStartPositions[LEVEL_SIX].x;
         save.y = levelStartPositions[LEVEL_SIX].y;
+        //saves the game
         char* slotFile = (char*)calloc(20, sizeof(char));
         sprintf(slotFile, "saves/save_%s.bin", save.slot);
         SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
@@ -493,7 +515,10 @@ void setLevel(int level)
     save.level = level;
     bgTexture.loadFromFile(bgNames[level]);
     bgPTexture.loadFromFile(bgParallaxNames[level]);
-    save.maxJumps = level > LEVEL_THREE ? 2 : 1;
+    //gives the player a double jump if they reach level 4
+    if (level > LEVEL_THREE) save.maxJumps = 2;
+    else save.maxJumps = 1;
+    //sets the player's position to the beginning of the level
     player->setPos(levelStartPositions[level].x, levelStartPositions[level].y);
     player->setCamera(camera);
     if (level > maxLevel) {
@@ -501,6 +526,7 @@ void setLevel(int level)
         menuBackground.loadFromFile(bgNames[maxLevel]);
         savePersistent();
     }
+    //saves the game
     char* slotFile = (char*)calloc(20, sizeof(char));
     sprintf(slotFile, "saves/save_%s.bin", save.slot);
     SDL_RWops* writeFile = SDL_RWFromFile(slotFile, "wb");
@@ -519,14 +545,21 @@ void setLevel(int level)
 
 void gameDeathRetryCall()
 {
-    if (!isDead) return;
     curButton = -1;
-    SDL_ShowCursor(SDL_DISABLE);
     isDead = false;
+    activity.GetTimestamps().SetStart(std::time(NULL));
+    std::string tempString = "Keys: 0/5 | ";
+    for (int i = 0; i < save.maxHealth; i++) {
+        tempString += "❤️";
+    }
+    activity.SetDetails(tempString.c_str());
+    activity.GetAssets().SetSmallImage("");
+    activity.GetAssets().SetSmallText("");
+    core->ActivityManager().UpdateActivity(activity, NULL);
+    SDL_ShowCursor(SDL_DISABLE);
 }
 void gameDeathQuitCall()
 {
-    if (!isDead) return;
     curButton = -1;
     isDead = false;
     Mix_HaltChannel(SFX_RAINBOW);
@@ -535,7 +568,6 @@ void gameDeathQuitCall()
 }
 void gameContinueCall()
 {
-    if (!isEndLevel) return;
     isEndLevel = false;
     if (save.finishedGame) {
         Mix_HaltChannel(SFX_RAINBOW);
@@ -543,11 +575,32 @@ void gameContinueCall()
         transition(SCENE_MAINMENU);
         return;
     }
+    activity.GetTimestamps().SetStart(std::time(NULL));
+    std::string tempString = "Keys: 0/5 | ";
+    for (int i = 0; i < save.maxHealth; i++) {
+        tempString += "❤️";
+    }
+    activity.SetDetails(tempString.c_str());
+    const char* temp[LEVEL_TOTAL] = {"rclevelone", "rcleveltwo", "rclevelthree", "rclevelfour", "rclevelfive", "rclevelsix"};
+    activity.GetAssets().SetLargeImage(temp[save.level]);
+    activity.GetAssets().SetSmallImage("");
+    activity.GetAssets().SetSmallText("");
+    core->ActivityManager().UpdateActivity(activity, NULL);
     SDL_ShowCursor(SDL_DISABLE);
 }
 
 bool gameLoadMedia()
 {
+    activity.GetTimestamps().SetStart(std::time(NULL));
+    std::string tempString = "Keys: 0/5 | ";
+    for (int i = 0; i < save.maxHealth; i++) {
+        tempString += "❤️";
+    }
+    activity.SetDetails(tempString.c_str());
+    activity.SetState(("Score: " + std::to_string(save.score)).c_str());
+    const char* temp[LEVEL_TOTAL] = {"rclevelone", "rcleveltwo", "rclevelthree", "rclevelfour", "rclevelfive", "rclevelsix"};
+    activity.GetAssets().SetLargeImage(temp[save.level]);
+    core->ActivityManager().UpdateActivity(activity, NULL);
     SDL_ShowCursor(SDL_DISABLE);
     setWindowIcon(save.level + 1);
     if (Mix_PlayingMusic() == 0) {
@@ -584,6 +637,7 @@ bool gameLoadMedia()
 void gameHandleEvent(SDL_Event* e)
 {
     player->handleEvent(e);
+    //only handle the death screen button events if the player is dead
     if (isDead) {
         if (gController) {
             gameButtons[curButton]->setSelected(false);
@@ -627,21 +681,27 @@ void gameUpdate()
         heartTwinkleFrames.erase(heartTwinkleFrames.begin());
         heartTwinklePositions.erase(heartTwinklePositions.begin());
     }
+    //time is updated by getting the milliseconds since the last frame and turning it into seconds
     timeStep = (SDL_GetTicks() - timeTicks) / 1000.f;
-    if (isDead || isEndLevel) {
-        timeTicks = SDL_GetTicks();
-        return;
+    if (timeStep < 1.f/60.f) {
+        SDL_Delay(100.f/6.f - timeStep * 1000.f);
+        timeStep = 1.f/60.f;
     }
-    player->move(timeStep);
-    for (int i = 0; i < (int)projectiles.size(); i++) {
-        if (projectiles[i]) projectiles[i]->move(timeStep);
-    }
-    for (int i = 0; i < tileCount; i++) {
-        tiles[i]->updateTiles(timeStep);
-    }
-    save.chapterTime += timeStep;
-    save.totalTime += timeStep;
     timeTicks = SDL_GetTicks();
+    if (isDead || isEndLevel) return;
+    //time-dependent events take place after this
+    while (timeStep > 0.f) {
+        player->move(1.f/60.f);
+        for (int i = 0; i < (int)projectiles.size(); i++) {
+            if (projectiles[i]) projectiles[i]->move(1.f/60.f);
+        }
+        for (int i = 0; i < tileCount; i++) {
+            tiles[i]->updateTiles(1.f/60.f);
+        }
+        save.chapterTime += 1.f/60.f;
+        save.totalTime += 1.f/60.f;
+        timeStep -= 1.f/60.f;
+    }
     player->setCamera(camera);
     if (parallaxOffset < -LOGICAL_SCREEN_WIDTH) parallaxOffset += LOGICAL_SCREEN_WIDTH;
     if (parallaxOffset > 0) parallaxOffset -= LOGICAL_SCREEN_WIDTH;
@@ -683,11 +743,21 @@ void gameRender()
     }
     if (player->getCharge() >= CPlayer::MAX_CHARGE || player->getForm() == FORM_RAINBOW) {
         rainbowIndicatorTexture.render(0, 0);
+        //if the blue value is maximum
+        //  if the green value is 0 then the red value is incremented
+        //  otherwise the green value is decreased
+        //if the red value is maximum then the blue value is decreased
         if(rainbowIndicatorRGB[2] == 0xFF) {
             rainbowIndicatorRGB[1] == 0 ? rainbowIndicatorRGB[0]++ : rainbowIndicatorRGB[1]--;
             if (rainbowIndicatorRGB[0] == 0xFF) rainbowIndicatorRGB[2]--;
         }
+        //if the green value is maximum
+        //  if the red value is 0 then the blue value is incremented
+        //  otherwise the red value is decreased
         else if(rainbowIndicatorRGB[1] == 0xFF) rainbowIndicatorRGB[0] == 0 ? rainbowIndicatorRGB[2]++ : rainbowIndicatorRGB[0]--;
+        //if the red value is maximum
+        //  if the blue value is 0 then the green value is incremented
+        //  otherwise the blue value is decreased
         else if(rainbowIndicatorRGB[0] == 0xFF) rainbowIndicatorRGB[2] == 0 ? rainbowIndicatorRGB[1]++ : rainbowIndicatorRGB[2]--;
         rainbowIndicatorTexture.setColour(rainbowIndicatorRGB[0], rainbowIndicatorRGB[1], rainbowIndicatorRGB[2]);
     }

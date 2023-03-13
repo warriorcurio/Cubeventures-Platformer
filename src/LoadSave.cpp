@@ -12,6 +12,8 @@ Save saveSlots[3];
 CTexture textLoadSave, saveHearts;
 CTexture textLoadScores[3], textLoadNumDeaths[3], textLoadTimes[3], textLoadNumKeys[3], textLoadNames[3], textLoadDifficulties[3];
 
+//creates a generator for the load save buttons
+//creates a generator for the delete save buttons
 #define GEN_LOADSAVE_CALL(NUMBER)\
     void loadSave##NUMBER##Call()\
     {\
@@ -19,9 +21,12 @@ CTexture textLoadScores[3], textLoadNumDeaths[3], textLoadTimes[3], textLoadNumK
         SDL_RWread(readFile, &save, sizeof(Save), 1);\
         projectiles.clear();\
         projectiles.push_back(new CProjectile(0, 0, (ProjectileTypes)0, 0, 0));\
+        /*the last member in the projectile vector is written into from the file*/\
         while (SDL_RWread(readFile, projectiles.back(), sizeof(CProjectile), 1) != 0) {\
             projectiles.push_back(new CProjectile(0, 0, (ProjectileTypes)0, 0, 0));\
         }\
+        /*deletes the extra projectile pointer created from the loop*/\
+        delete projectiles.back();\
         projectiles.pop_back();\
         SDL_RWclose(readFile);\
         Mix_HaltMusic();\
@@ -33,6 +38,7 @@ CTexture textLoadScores[3], textLoadNumDeaths[3], textLoadTimes[3], textLoadNumK
         loadSaveButtons[LOADSAVE_BUTTON_##NUMBER]->setClickable(false);\
         loadSaveButtons[LOADSAVE_BUTTON_DEL##NUMBER]->setPos(LOGICAL_SCREEN_WIDTH, LOGICAL_SCREEN_HEIGHT);\
     }
+//generates the load and delete save buttons
 GEN_LOADSAVE_CALL(ONE);
 GEN_LOADSAVE_CALL(TWO);
 GEN_LOADSAVE_CALL(THREE);
@@ -40,6 +46,7 @@ GEN_LOADSAVE_CALL(THREE);
 bool loadSaveLoadMedia()
 {
     textLoadSave.loadFromRenderedText("Load Save", SDL_Color{0xFF, 0xFF, 0xFF}, 40);
+    //reads each save file and puts relevant data in text textures
     for (int i = 0; i < 3; i++) {
         if (!std::filesystem::exists(saveFileNames[i].c_str())) continue;
         SDL_RWops* readFile = SDL_RWFromFile(saveFileNames[i].c_str(), "rb");
@@ -59,6 +66,7 @@ bool loadSaveLoadMedia()
     loadSaveButtons[LOADSAVE_BUTTON_ONE] = new CButton(402, 390, 60, " ", &loadSaveONECall, 300, 300);
     loadSaveButtons[LOADSAVE_BUTTON_TWO] = new CButton(810, 390, 60, " ", &loadSaveTWOCall, 300, 300);
     loadSaveButtons[LOADSAVE_BUTTON_THREE] = new CButton(1218, 390, 60, " ", &loadSaveTHREECall, 300, 300);
+    //sets the texture for a save file's level, or a default one if there is no associated save file
     for (int i = LOADSAVE_BUTTON_ONE; i <= LOADSAVE_BUTTON_THREE; i++) {
         loadSaveButtons[i]->setClickable(std::filesystem::exists(saveFileNames[i].c_str()));
         if (std::filesystem::exists(saveFileNames[i].c_str())) {
@@ -101,6 +109,7 @@ void loadSaveRender()
     for (int i = 0; i < LOADSAVE_BUTTON_TOTAL; i++) {
         if (loadSaveButtons[i]) loadSaveButtons[i]->render();
     }
+    //renders the save file's textures on the buttons accordingly
     for (int i = 0; i < 3; i++) {
         if (!std::filesystem::exists(saveFileNames[i].c_str()) || loadSaveButtons[i]->getFrame() != BUTTON_MOUSE_OVER) continue;
         textLoadScores[i].render(loadSaveButtons[i]->getX() + 160, loadSaveButtons[i]->getY() + 4);

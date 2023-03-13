@@ -49,8 +49,7 @@ class CPlayer
         bool touchesTile();
         bool touchesGround();
         bool touchesCeiling();
-        bool touchesWallRight();
-        bool touchesWallLeft();
+        bool touchesWall();
         SDL_Point getNearestCollision(int xVel, int yVel, SDL_Rect oldBox);
         CTexture mTexture;
         SDL_Rect mCollisionBox;

@@ -47,6 +47,7 @@ int main(int argc, char* args[])
 
 void runMainLoop()
 {
+    core->RunCallbacks();
     if (!gController && SDL_NumJoysticks() > 0) gController = SDL_GameControllerOpen(0);
     else if (gController && SDL_NumJoysticks() == 0) gController = NULL;
     else if (gController) changeControllerRGB();

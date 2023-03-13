@@ -32,6 +32,13 @@ void mainMenuExitCall()
 
 bool mainMenuLoadMedia()
 {
+    activity.GetTimestamps().SetStart(std::time(NULL));
+    activity.SetDetails("");
+    activity.SetState("Navigating The Menus");
+    activity.GetAssets().SetLargeImage("rcicon");
+    activity.GetAssets().SetSmallImage("");
+    activity.GetAssets().SetSmallText("");
+    core->ActivityManager().UpdateActivity(activity, NULL);
     setWindowIcon(0);
     if (Mix_PlayingMusic() == 0) {
         bgMusic = Mix_LoadMUS("res/mus/menu.wav");
