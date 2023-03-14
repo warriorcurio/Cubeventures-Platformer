@@ -149,7 +149,7 @@ void setProjectiles()
                     projectiles.push_back(new CProjectile(6687 + i % 2, 327 + 80 * i, PROJECTILE_CHARGER, 0, 0));
                 }
                 //Tile changing buttons
-                projectiles.push_back(new CProjectile(687, 1834, 7805, TILE_STONE, true)); //Places a block for the secret gold medal
+                projectiles.push_back(new CProjectile(687, 1834, 7803, TILE_STONE, true)); //Places a block for the secret gold medal
                 projectiles.push_back(new CProjectile(687, 1834, 7800, TILE_BOUNCE, true)); //Places a bounce block for the secret gold medal
                 projectiles.push_back(new CProjectile(7007, 1954, 4800, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
                 projectiles.push_back(new CProjectile(4407, 314, 3400, TILE_JUMPCRYSTAL, true)); //Activates a jump crystal for the secret gold medal
@@ -216,6 +216,10 @@ void setProjectiles()
         }
         case LEVEL_FOUR: {
             if ((int)projectiles.size() == 0) {
+                //Extra lives to aid the player
+                projectiles.push_back(new CProjectile(2567, 3895, PROJECTILE_HEART, 0, 0));
+                //Absorbs damage for the player
+                projectiles.push_back(new CProjectile(7, 3055, PROJECTILE_SHIELD, 0, 0));
                 //Damage balls to serve as a hazard to the player
                 projectiles.push_back(new CProjectile(0, 4247, PROJECTILE_ENERGYBULLET, 400, 0)); //Protects the secret medal
                 projectiles.push_back(new CProjectile(0, 4407, PROJECTILE_ENERGYBULLET, 300, 0)); //Protects the secret medal
@@ -248,6 +252,7 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(127, 407, 1810, 2980)); //Teleports the player from the top section to the middle section
             projectiles.push_back(new CProjectile(3767, 1807, 3930, 3180)); //Teleports the player from the top right to the middle right
             projectiles.push_back(new CProjectile(3207, 3527, 3890, 5820)); //Teleports the player from the middle right to the exit
+            projectiles.push_back(new CProjectile(3967, 5567, 3970, 3340)); //Teleports the player from the exit to the middle right
             //Toggle buttons for the end-level puzzle SOLUTION 0110
             projectiles.push_back(new CProjectile(2867, 434, 783, TILE_EMPTY, TILE_BLUESTONE));
             projectiles.push_back(new CProjectile(2867, 434, 784, TILE_BLUESTONE, TILE_EMPTY));
@@ -270,6 +275,8 @@ void setProjectiles()
         }
         case LEVEL_FIVE: {
             if ((int)projectiles.size() == 0) {
+                //Absorbs damage for the player
+                projectiles.push_back(new CProjectile(4287, 1295, PROJECTILE_SHIELD, 0, 0));
                 //Damage balls to serve as a hazard to the player
                 projectiles.push_back(new CProjectile(40, 847, PROJECTILE_ENERGYBULLET, 325, 0));
                 projectiles.push_back(new CProjectile(2615, 527, PROJECTILE_ENERGYBULLET, -500, 0));
@@ -332,6 +339,10 @@ void setProjectiles()
         }
         case LEVEL_SIX: {
             if ((int)projectiles.size() == 0) {
+                //Extra lives to aid the player
+                projectiles.push_back(new CProjectile(2207, 4775, PROJECTILE_HEART, 0, -1260));
+                //Absorbs damage for the player
+                projectiles.push_back(new CProjectile(3527, 2415, PROJECTILE_SHIELD, 0, 0));
                 //Tile changing buttons
                 projectiles.push_back(new CProjectile(1567, 5274, 13942, TILE_MOONSTONE, true)); //Places a block for red to get up to the anti-gravity field
                 projectiles.push_back(new CProjectile(2967, 4994, 13369, TILE_MOONSTONE, true)); //Places blocks to get up to the anti-gravity field
@@ -398,9 +409,9 @@ void setProjectiles()
             projectiles.push_back(new CProjectile(1407, 434, 1233, TILE_VOIDSTONE, TILE_EMPTY));
             projectiles.push_back(new CProjectile(1407, 434, 1235, TILE_VOIDSTONE, TILE_EMPTY));
             //Text Spawners
-            projectiles.push_back(new CProjectile(2240, 4520, 660, 480, 2370, 4705, "Anti-gravity fields", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
-            projectiles.push_back(new CProjectile(2240, 4520, 660, 480, 2370, 4745, "prevent vertical", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
-            projectiles.push_back(new CProjectile(2240, 4520, 660, 480, 2370, 4785, "movement!", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
+            projectiles.push_back(new CProjectile(1560, 5240, 40, 40, 2370, 4705, "Anti-gravity fields", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
+            projectiles.push_back(new CProjectile(1560, 5240, 40, 40, 2370, 4745, "prevent vertical", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
+            projectiles.push_back(new CProjectile(1560, 5240, 40, 40, 2370, 4785, "movement!", SDL_Color{0xFF, 0xFF, 0xFF}, 30));
             break;
         }
     }
