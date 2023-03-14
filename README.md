@@ -1,7 +1,5 @@
 # Cubeventures-Platformer
 
-Hello ALL!
-
-This is a very excellent game made by the one and only AYUSH BHATNAGAR
+NEA Game
 
 Have fun!
